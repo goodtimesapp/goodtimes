@@ -22,7 +22,7 @@ export function reducer(state: State = initialState, action: Action) {
 
     case ActionTypes.GET_LOCATIONS_SUCCEEDED: {
       
-      console.warn("SUCCEDED");
+      // console.warn("SUCCEDED");
 
       /*
        * We have autocompletion here
@@ -30,7 +30,7 @@ export function reducer(state: State = initialState, action: Action) {
        * todo is type of Todo
        */
         const locs = action.payload.locations
-        console.warn(locs);
+        // console.warn(locs);
         return {
           ...state,
           locations: [...locs] 
@@ -38,11 +38,11 @@ export function reducer(state: State = initialState, action: Action) {
     }
 
     case ActionTypes.GET_LOCATIONS_STARTED :{
-      console.warn("STARTED");
+      // console.warn("STARTED");
     }
 
     case ActionTypes.GET_LOCATIONS_FAILED :{
-      console.warn("FAILED", action.payload);
+      // console.warn("FAILED", action.payload);
     }
 
     default:

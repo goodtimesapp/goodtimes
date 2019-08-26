@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './reduxStore/configureStore';
 import { StyleProvider } from "native-base";
 // @ts-ignore
-import theme from './native-base-theme/plasticoin';
+import theme from './native-base-theme/variables/material.js';
 // @ts-ignore
 import getTheme from './native-base-theme/components';
 import { PersistGate } from 'redux-persist/integration/react'

@@ -157,20 +157,20 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: '#3F51B5',
+  footerDefaultBg: 'white',
   footerPaddingBottom: 0,
 
   // FooterTab
-  tabBarTextColor: '#bfc6ea',
+  tabBarTextColor: 'grey',
   tabBarTextSize: 11,
-  activeTab: '#fff',
-  sTabBarActiveTextColor: '#007aff',
-  tabBarActiveTextColor: '#fff',
-  tabActiveBgColor: '#3F51B5',
+  activeTab: 'white',
+  sTabBarActiveTextColor: 'grey',
+  tabBarActiveTextColor: 'grey',
+  tabActiveBgColor: 'white',
 
   // Header
   toolbarBtnColor: '#fff',
-  toolbarDefaultBg: '#3F51B5',
+  toolbarDefaultBg: 'white',
   toolbarHeight: 56,
   toolbarSearchIconSize: 23,
   toolbarInputColor: '#fff',

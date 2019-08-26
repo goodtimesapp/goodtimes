@@ -70,7 +70,7 @@ export default class Maps extends Component<Props, State> {
     getCurrentLocation = () =>{
         navigator.geolocation.getCurrentPosition(
             position => {
-              console.warn(position);
+             
               this.setState({
                latitude: position.coords.latitude,
                longitude: position.coords.longitude,
@@ -129,7 +129,7 @@ export default class Maps extends Component<Props, State> {
     trackOnce = () => {
         Radar.trackOnce().then((result: any) => {
             // do something with result.location, result.events, result.user.geofences
-            console.warn(result.user.geofences);
+           // console.warn(result.user.geofences);
             this.setState({
                 datas: result.user.geofences
             }) ;

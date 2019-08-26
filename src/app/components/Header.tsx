@@ -6,8 +6,7 @@ import { withNavigation } from 'react-navigation';
 import { StackActions } from 'react-navigation';
 
 interface Props {
-    navigation: any,
-   
+    navigation: any, 
 }
 interface State {
     showIntro: boolean
@@ -46,25 +45,28 @@ class HeaderComponent extends Component<Props, State> {
         this.props.navigation.dispatch(pushAction);
     }
 
+    openDrawer = () =>{
+        this.props.navigation.openDrawer();
+    }
+
     render() {
         return (
-            <Header style={{ marginTop: -5, height: 64 }}>
-                <Left style={{ marginTop: -10 }}>
+            <Header >
+                <Left >
                     <Button transparent onPress={ () => this.push('Camera')  } >
-                        <Icon name='trash' style={{color: 'grey'}} />
-                        <Icon name='add' style={{color: 'grey'}} />
+                        <Icon name='camera' style={{color: 'grey'}} />
                     </Button>
                 </Left>
-                <Body style={{ marginTop: -10 }}>
+                <Body>
                     <View>
                         <Image style={{width: 32, height: 32}} source={ require('./../assets/LOGO.png') } />
                     </View>
                 </Body>
                 
                 <Right>
-                    <Button transparent>
+                    <Button transparent onPress={ () => this.openDrawer()  } style={{marginTop:10}}>
                         <Badge style={{ position: 'absolute' }}><Text>2</Text></Badge>
-                        <Icon name='notifications' style={{color: 'grey'}} />
+                        <Icon name='chatboxes' style={{color: 'grey'}} />
                     </Button>
                 </Right>
             </Header>

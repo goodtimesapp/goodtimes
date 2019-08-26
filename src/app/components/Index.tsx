@@ -1,23 +1,26 @@
 
 import React, { Component } from 'react'
-import { StyleSheet, Linking, ScrollView, Platform, TouchableOpacity } from "react-native";
+import { StyleSheet, Linking, ScrollView, Platform, TouchableOpacity, Dimensions } from "react-native";
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text, View, Footer, Content, FooterTab, Badge, StyleProvider } from "native-base";
 import Markers from "./test/Markers";
 import Camera from './camera/Camera.Container';
 import FooterComponent from './Footer';
-import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator, createAppContainer, createDrawerNavigator, SafeAreaView, DrawerItems } from 'react-navigation';
 import LocationsList from "./location/LocationsList.Container";
 import Chat from './chat/Chat';
 import Blockstack from './blockstack/Blockstack';
 import Splash from './Splash';
 import Bar from './../components/bottombar/bar';
 import ExpandPage from './ExpandPage';
+import Goodtimes from './Goodtimes';
+const { width, height } = Dimensions.get('screen');
+
 
 
 const MainNavigator = createStackNavigator(
     {
         Index: {
-            screen: Markers,
+            screen: Goodtimes,
             navigationOptions: {
                 header: null
             },
@@ -30,6 +33,12 @@ const MainNavigator = createStackNavigator(
         },
         Camera: { 
             screen: Camera,
+            navigationOptions: {
+                header: null,
+            },
+        },
+        Chat: { 
+            screen: Chat,
             navigationOptions: {
                 header: null,
             },
@@ -48,7 +57,7 @@ const MainNavigator = createStackNavigator(
         },
     },
     {
-        initialRouteName: "ExpandPage"
+        initialRouteName: "Index"
     }
 );
 
@@ -56,14 +65,14 @@ const MainNavigator = createStackNavigator(
 const Tabs = createBottomTabNavigator({
     Home: { screen: MainNavigator },
     LocationsList: { screen: LocationsList },
-    Chat: { screen: Chat },
     Blockstack: { screen: Blockstack },
     Markers: { screen: Markers },
+    Goodtimes: {screen: Goodtimes}
 },
     {
         tabBarComponent: props => {
             return (
-               <View style={{backgroundColor: '#8BC34A'}}>
+               <View style={{backgroundColor: 'transparent'}}>
                    <FooterComponent />
                </View> 
                
@@ -72,4 +81,29 @@ const Tabs = createBottomTabNavigator({
     }
 );
 
-export default createAppContainer(Tabs);
+
+
+const DrawerRight = createDrawerNavigator({
+    Home: { screen: Tabs },
+}, {
+    drawerBackgroundColor: 'white',
+    overlayColor: 'white',
+    contentOptions: {
+      activeTintColor: 'white',
+      activeBackgroundColor: 'white',
+    },
+    drawerWidth: width,
+    drawerPosition: 'right',
+    drawerType: "slide",
+    contentComponent: (props:any) => (
+        <ScrollView>
+          <SafeAreaView style={{flex: 1}} forceInset={{ top: 'always', horizontal: 'never' }}>
+            <Chat />
+          </SafeAreaView>
+        </ScrollView>
+    )
+})
+
+export default createAppContainer(DrawerRight);
+
+

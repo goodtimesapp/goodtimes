@@ -19,26 +19,22 @@ class FooterComponent extends Component<Props, State> {
 
   render() {
     return (
-      <Footer style={{ borderRadius: 45 }} >
-        <FooterTab style={{ borderTopLeftRadius: 45, borderTopRightRadius: 45 }}>
-          <Button
-            onPress={() => this.props.navigation.navigate('Markers')}>
-            <Icon name='person' />
-            <Text>Me!</Text>
-          </Button>
+      <Footer >
+        <FooterTab>
           <Button active badge vertical
-            onPress={() => this.props.navigation.navigate('Chat')}>
+            onPress={() => this.props.navigation.navigate('Goodtimes')}>
             <Badge><Text>51</Text></Badge>
-            <Icon active name='clock' />
-            <Text>History</Text>
+            <Icon name='happy' />
+            <Text>Goodtimes</Text>
+          </Button>
+          <Button 
+            onPress={() => this.props.navigation.navigate('Markers')}>
+            <Icon active name='navigate' />
+            <Text>Discover</Text>
           </Button>
           <Button onPress={() => this.props.navigation.navigate('LocationsList')}>
-            <Icon name='wallet' />
-            <Text>Wallet</Text>
-          </Button>
-          <Button onPress={() => this.props.navigation.navigate('Blockstack')}>
-            <Icon name='cog' />
-            <Text>Settings</Text>
+            <Icon name='person' />
+            <Text>Me!</Text>
           </Button>
         </FooterTab>
       </Footer>
