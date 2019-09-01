@@ -1,7 +1,7 @@
 Goodtimes
 ---------------------
 
-The social app for where you're at! [privacy included]
+The social app for where you're at! :dark_sunglasses:  [privacy included] :lock::lock::lock: 
 
 
 Setup and Install (Android)

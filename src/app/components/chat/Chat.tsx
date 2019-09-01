@@ -3,6 +3,10 @@ import { Text, Image } from 'react-native'
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { Container, View, Content, Header, Icon, Left, Button, Body, Right, Badge, Title, Thumbnail } from "native-base";
 import { withNavigation } from 'react-navigation';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
+import Message from './../../models/Message';
+
 
 interface Props {
   navigation: any;
@@ -44,6 +48,9 @@ export class Chat extends React.Component<Props, State> {
     this.setState((previousState: any) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
+    console.log('mms',messages);
+    // @ts-ignore
+    this.radiksPutMessage( messages[0].text  );
   }
 
   closeDrawer = () => {
@@ -96,7 +103,7 @@ export class Chat extends React.Component<Props, State> {
     console.log('setting up websocket....');
 
     // @ts-ignore
-    var ws = new WebSocket('ws://localhost:5000/radiks/stream');
+    var ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
     ws.onopen = () => {
       // connection opened
       // ws.send('something'); // send a message
@@ -104,7 +111,7 @@ export class Chat extends React.Component<Props, State> {
 
     ws.onmessage = (e: any) => {
       // a message was received
-      console.log(e.data);
+      console.log('[MSG_RECIEVED]', e.data);
       let msg = 'nada';
       try {
         let data = JSON.parse(e.data);
@@ -155,6 +162,31 @@ export class Chat extends React.Component<Props, State> {
 
     };
 
+  }
+
+  async radiksPutMessage(msg: any) {
+
+    // @ts-ignore
+    let message = new Message({
+      content: msg,
+      _id: this.uuid(),
+      createdBy: 'nicktee.id',
+      votes: []
+    });
+    let resp = await message.save();
+    console.log('radiks resp', resp);
+    // @ts-ignore
+    let mz = await Message.findById(resp._id);
+    console.log('msgzzz', mz);
+
+
+  }
+
+  uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
 
