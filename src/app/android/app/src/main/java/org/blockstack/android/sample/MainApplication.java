@@ -3,6 +3,7 @@ package org.blockstack.android.sample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.horcrux.svg.SvgPackage;
 import ui.apptour.RNAppTourPackage;
 import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
@@ -49,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
 
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFusedLocationPackage(),
             new SvgPackage(),
             new RNAppTourPackage(),
             new BottomSheetBehaviorPackage(),

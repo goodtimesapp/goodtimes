@@ -14,6 +14,24 @@ import { List, ListItem, Left, Right, Icon, Container, Content } from 'native-ba
 import HeaderComponent from "../Header";
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
+// @ts-ignore
+import * as bitcoin from 'react-native-bitcoinjs-lib';
+import * as blockstack from 'blockstack';
+import * as bip39 from 'bip39';
+// @ts-ignore
+import * as bip32utils from 'bip32-utils';
+declare let window: any;
+
+import {
+  authorizationHeaderValue,
+  btcToSatoshis,
+  satoshisToBtc,
+  encrypt,
+  getInsightUrls,
+  getBlockchainIdentities
+  // @ts-ignore
+} from '@utils';
+import { randomBytes } from 'crypto'
 
 
 interface State {
@@ -49,6 +67,7 @@ export default class Blockstack extends Component<Props, State> {
   }
 
   componentDidMount() {
+    this.createAccount();
     console.log("didMount");
     console.log("props" + JSON.stringify(this.props));
     this.createSession();
@@ -90,6 +109,158 @@ export default class Blockstack extends Component<Props, State> {
 
 
 
+
+  }
+
+  // https://github.com/bitcoinjs/bip32-utils
+  // https://github.com/bitcoinjs/bitcoinjs-lib/issues/997
+  // https://github.com/bitcoinjs/bitcoinjs-lib/issues/997
+  // https://github.com/blockstack/blockstack-browser/blob/8103c82f5b4ae24c8b1f4e52385326c0a5a60ce8/app/js/profiles/store/registration/actions.js
+  // https://github.com/blockstack/blockstack-browser/blob/5f7fa28672abfd53ee454ff96283072a499ab869/app/js/account/CreateAccountPage.js
+  async createAccount(){
+
+    
+    //1) init wallet
+    let masterKeychain = null
+    const STRENGTH = 128 // 128 bits generates a 12 word mnemonic
+    let backupPhrase = bip39.generateMnemonic(STRENGTH, randomBytes)
+    const seedBuffer = await bip39.mnemonicToSeed(backupPhrase)
+    masterKeychain = await bitcoin.HDNode.fromSeedBuffer(seedBuffer)
+    // const ciphertextBuffer = await encrypt(new Buffer(backupPhrase), 'password');
+    // const encryptedBackupPhrase = ciphertextBuffer.toString('hex')
+   
+    let identitiesToGenerate = 2;
+
+    //2) create account
+    const {
+      identityPublicKeychain,
+      bitcoinPublicKeychain,
+      firstBitcoinAddress,
+      identityAddresses,
+      identityKeypairs
+    } = getBlockchainIdentities(masterKeychain, identitiesToGenerate)
+
+  
+    //3) registerSubdomain
+    this.registerSubdomain('good' + this.rando(), 0,  identityAddresses[0], null);
+   
+
+  }
+
+
+  async registerSubdomain(
+    domainName:any,
+    identityIndex:any,
+    ownerAddress:any,
+    zoneFile:any
+  ) {
+    let nameSuffix = null
+  
+    nameSuffix = '.id.blockstack'
+  
+    console.log(`registerName: ${domainName} is a subdomain of ${nameSuffix}`)
+  
+    const registerUrl = 'https://registrar.blockstack.org/register';
+  
+    const registrationRequestBody = JSON.stringify({
+      "zonefile": `$ORIGIN ${domainName + nameSuffix}\n$TTL 3600\n_https._tcp URI 10 1 \"https://gaia.blockstack.org/hub/${ownerAddress}/profile.json\"\n`,
+      "name": `${domainName}`,
+      "owner_address": `${ownerAddress}`
+    })
+  
+    const requestHeaders = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `bearer PretendPasswordAPI`
+    }
+  
+    console.log(`Submitting registration for ${domainName} to ${registerUrl}`)
+  
+    const response = await fetch(registerUrl, {
+      method: 'POST',
+      headers: requestHeaders,
+      body: registrationRequestBody
+    })
+  
+    if (!response.ok) {
+      console.log(
+        `Subdomain registrar responded with status code ${response.status}`
+      )
+  
+      return Promise.reject({
+        error: 'Failed to register username',
+        status: response.status
+      })
+    }
+  
+    const responseText = await response.text()
+  
+    return JSON.parse(responseText)
+  }
+  
+
+  async createAccount2(){
+    window.bitcoin = bitcoin;
+    window.blockstack = blockstack;
+    window.bip39 = bip39;
+    window.bip32utils = bip32utils;
+    console.log('bitcoin', bitcoin);
+
+    // backup this mnemonic locally in secure storage so the user can recover his account
+    let mnemonic = bip39.generateMnemonic();
+    console.log(mnemonic);
+    
+    let seedHex = bip39.mnemonicToSeedSync(mnemonic).toString('hex')
+    console.log(seedHex);
+    let masterNode = bitcoin.HDNode.fromSeedHex(seedHex)
+
+    // use this pub/pri keypair for the goodtimes gaia bucket
+    // skip for the 0/0 first keypair, since its reserved for the blockstack browser
+
+    let key0 = masterNode.derivePath("0/0").keyPair.toWIF();
+    let address0 = masterNode.derivePath("0/0").keyPair.getAddress();
+
+    let key1 = masterNode.derivePath("0/1").keyPair.toWIF();
+    let address1 = masterNode.derivePath("0/1").keyPair.getAddress();
+
+    let username = 'good_' +  this.rando();
+
+
+    // 1) check that name does not exist
+    // https://registrar.blockstack.org/v1/names/good_23412.id.blockstack
+    // fetch("https://registrar.blockstack.org/v1/names/good_23412.id.blockstack", {"credentials":"omit","headers":{"sec-fetch-mode":"cors"},"referrer":"https://browser.blockstack.org/sign-up?redirect=%2F","referrerPolicy":"no-referrer-when-downgrade","body":null,"method":"GET","mode":"cors"});
+
+    // 2) create profile
+    // fetch("https://hub.blockstack.org/store/1HuzntVntyz2MKXbWXHQkwip66udNuvNaE/profile.json", {"credentials":"include","headers":{"authorization":"bearer v1:eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJnYWlhQ2hhbGxlbmdlIjoiW1wiZ2FpYWh1YlwiLFwiMFwiLFwic3RvcmFnZTIuYmxvY2tzdGFjay5vcmdcIixcImJsb2Nrc3RhY2tfc3RvcmFnZV9wbGVhc2Vfc2lnblwiXSIsImh1YlVybCI6Imh0dHBzOi8vaHViLmJsb2Nrc3RhY2sub3JnIiwiaXNzIjoiMDJjNjI2YmIxMjY1MTc3MDk0YmM3MzUyYjg2NTcxOGIzODU5NzkzZGUzNjZhMGJlOTQ4OGY3ZDNjMjJjMWJmNmUxIiwic2FsdCI6ImJkNDgyNTBmMWZiYzc0ZDAyZTNhZjA4ZTI2ZTEyZmFlIn0.BlPIcgs606TIwoWdJENAsFev9w1nRz7Hj1LhjW_P_tduVBIDFa-kRSZc5JmUmq9eBhVqOjuAj7PEaaPL9XXj3A","content-type":"application/json","sec-fetch-mode":"cors"},"referrer":"https://browser.blockstack.org/sign-up?redirect=%2F","referrerPolicy":"no-referrer-when-downgrade","body":"[\n  {\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJqdGkiOiJiNWJlYTA1ZC0zNGNmLTQwMzQtOWI1ZC02YWFjNGQzNDMyMmMiLCJpYXQiOiIyMDE5LTA5LTAzVDE2OjA2OjE4LjQxMloiLCJleHAiOiIyMDIwLTA5LTAzVDE2OjA2OjE4LjQxMloiLCJzdWJqZWN0Ijp7InB1YmxpY0tleSI6IjAyYzYyNmJiMTI2NTE3NzA5NGJjNzM1MmI4NjU3MThiMzg1OTc5M2RlMzY2YTBiZTk0ODhmN2QzYzIyYzFiZjZlMSJ9LCJpc3N1ZXIiOnsicHVibGljS2V5IjoiMDJjNjI2YmIxMjY1MTc3MDk0YmM3MzUyYjg2NTcxOGIzODU5NzkzZGUzNjZhMGJlOTQ4OGY3ZDNjMjJjMWJmNmUxIn0sImNsYWltIjp7IkB0eXBlIjoiUGVyc29uIiwiQGNvbnRleHQiOiJodHRwOi8vc2NoZW1hLm9yZyIsImFwaSI6eyJnYWlhSHViQ29uZmlnIjp7InVybF9wcmVmaXgiOiJodHRwczovL2dhaWEuYmxvY2tzdGFjay5vcmcvaHViLyJ9LCJnYWlhSHViVXJsIjoiaHR0cHM6Ly9odWIuYmxvY2tzdGFjay5vcmcifX19.ZODsEEytugVO8RGJpf5Sb3viht2mBU_Ub2wg2CM4szVJZpT2sm2CTQW1CUEk0uN5-n7wxMnKrrYp_1DQkx2YHQ\",\n    \"decodedToken\": {\n      \"header\": {\n        \"typ\": \"JWT\",\n        \"alg\": \"ES256K\"\n      },\n      \"payload\": {\n        \"jti\": \"b5bea05d-34cf-4034-9b5d-6aac4d34322c\",\n        \"iat\": \"2019-09-03T16:06:18.412Z\",\n        \"exp\": \"2020-09-03T16:06:18.412Z\",\n        \"subject\": {\n          \"publicKey\": \"02c626bb1265177094bc7352b865718b3859793de366a0be9488f7d3c22c1bf6e1\"\n        },\n        \"issuer\": {\n          \"publicKey\": \"02c626bb1265177094bc7352b865718b3859793de366a0be9488f7d3c22c1bf6e1\"\n        },\n        \"claim\": {\n          \"@type\": \"Person\",\n          \"@context\": \"http://schema.org\",\n          \"api\": {\n            \"gaiaHubConfig\": {\n              \"url_prefix\": \"https://gaia.blockstack.org/hub/\"\n            },\n            \"gaiaHubUrl\": \"https://hub.blockstack.org\"\n          }\n        }\n      },\n      \"signature\": \"ZODsEEytugVO8RGJpf5Sb3viht2mBU_Ub2wg2CM4szVJZpT2sm2CTQW1CUEk0uN5-n7wxMnKrrYp_1DQkx2YHQ\"\n    }\n  }\n]","method":"POST","mode":"cors"});
+
+
+    //3) now create a subdomain name registrations and get a gaia bucket
+    try{
+      let resp = await fetch('https://registrar.blockstack.org/register', {
+        method: 'post',
+        headers:{
+          'Authorization': 'bearer PretendPasswordAPI',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "zonefile": `$ORIGIN ${username}\n$TTL 3600\n_https._tcp URI 10 1 \"https://gaia.blockstack.org/hub/profile.json\"\n`,
+          "name": `${username}`,
+          "owner_address": `${address0}`
+        })
+      });
+      console.log('success subdomina', resp);
+    } catch (e){
+      console.log('error creating subdomain', e)
+    }
+    
+
+    // now create an auth token for the app
+
+
+  }
+
+  rando(){
+    return (Math.floor(Math.random() * 100000) + 100000).toString().substring(1);
   }
 
   render() {
@@ -444,6 +615,8 @@ export default class Blockstack extends Component<Props, State> {
   }
 
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

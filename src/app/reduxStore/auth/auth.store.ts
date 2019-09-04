@@ -3,6 +3,7 @@ import { Auth } from './../../models/Auth';
 import { Config } from './getConfig.js';
 import { createSelector } from 'reselect';
 
+
 declare let authorize:any;
 declare let revoke:any;
 declare let refresh:any;
@@ -70,6 +71,10 @@ export function refreshToken(refreshToken: any) {
             dispatch(failed(e));
         }
     }
+}
+
+export function createTempAccount( ){
+
 }
 
 export function started() {

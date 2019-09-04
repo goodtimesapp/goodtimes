@@ -23,7 +23,8 @@ export class Chat extends React.Component<Props, State> {
 
   state = {
     messages: [],
-    nextId: 0
+    nextId: 0,
+    lastMsg: 'hello'
   };
 
   componentDidMount() {
@@ -31,7 +32,7 @@ export class Chat extends React.Component<Props, State> {
       messages: [
         {
           _id: 1,
-          text: "I think we passed the first step of the tutorial. We will now need a Pusher account!",
+          text: "hello",
           createdAt: new Date(),
           user: {
             _id: 1,
@@ -50,7 +51,11 @@ export class Chat extends React.Component<Props, State> {
     }))
     console.log('mms',messages);
     // @ts-ignore
-    this.radiksPutMessage( messages[0].text  );
+    let m = messages[0].text;
+    this.setState({
+      lastMsg: m
+    })
+    this.radiksPutMessage(m);
   }
 
   closeDrawer = () => {
@@ -113,19 +118,22 @@ export class Chat extends React.Component<Props, State> {
       // a message was received
       console.log('[MSG_RECIEVED]', e.data);
       let msg = 'nada';
+
+
+
       try {
         let data = JSON.parse(e.data);
         let modelType = data.radiksType;
         switch (modelType) {
           case "Message":
-            if (!data.content) return;
+            if (!data.content || (data.content == this.state.lastMsg) ) return;
             msg = data.content;
             this.setState({
               nextId: (this.state.nextId + 1)
             })
             this.setState({
               messages: GiftedChat.append(this.state.messages, [{
-                _id: this.state.nextId,
+                _id: this.uuid(),
                 text: msg,
                 createdAt: new Date(),
                 user: {
@@ -143,7 +151,7 @@ export class Chat extends React.Component<Props, State> {
             })
             this.setState({
               messages: GiftedChat.append(this.state.messages, [{
-                _id: this.state.nextId,
+                _id: this.uuid(),
                 text: msg,
                 createdAt: Date.now(),
                 user: {
