@@ -22,6 +22,7 @@ import * as bip39 from 'bip39';
 import * as bip32utils from 'bip32-utils';
 declare let window: any;
 
+
 import {
   authorizationHeaderValue,
   btcToSatoshis,
@@ -32,6 +33,8 @@ import {
   // @ts-ignore
 } from '@utils';
 import { randomBytes } from 'crypto'
+
+
 
 
 interface State {
@@ -118,12 +121,18 @@ export default class Blockstack extends Component<Props, State> {
   // https://github.com/blockstack/blockstack-browser/blob/8103c82f5b4ae24c8b1f4e52385326c0a5a60ce8/app/js/profiles/store/registration/actions.js
   // https://github.com/blockstack/blockstack-browser/blob/5f7fa28672abfd53ee454ff96283072a499ab869/app/js/account/CreateAccountPage.js
   async createAccount(){
-
+    window.bs = RNBlockstackSdk;
+    window.bitcoin = bitcoin;
+    window.blockstack = blockstack;
+    window.bip39 = bip39;
+    window.bip32utils = bip32utils;
+    console.log('bitcoin', bitcoin);
     
     //1) init wallet
     let masterKeychain = null
     const STRENGTH = 128 // 128 bits generates a 12 word mnemonic
     let backupPhrase = bip39.generateMnemonic(STRENGTH, randomBytes)
+    console.log(backupPhrase);
     const seedBuffer = await bip39.mnemonicToSeed(backupPhrase)
     masterKeychain = await bitcoin.HDNode.fromSeedBuffer(seedBuffer)
     // const ciphertextBuffer = await encrypt(new Buffer(backupPhrase), 'password');
@@ -140,11 +149,34 @@ export default class Blockstack extends Component<Props, State> {
       identityKeypairs
     } = getBlockchainIdentities(masterKeychain, identitiesToGenerate)
 
-  
-    //3) registerSubdomain
-    this.registerSubdomain('good' + this.rando(), 0,  identityAddresses[0], null);
+    // get jwt
+    console.log(backupPhrase);
+    console.log(identityKeypairs);
+
+    // https://github.com/blockstack/blockstack.js/blob/f655858b71c33531a7b897ef73088ae9dbd3e4a7/src/auth/authSession.ts
+    // let jwt = blockstack.makeCoreSessionRequest('goodtimes.io', ["store_write", "publish_data"], identityKeypairs[1].key, undefined, "android"  );
+    // let token = blockstack.sendCoreSessionRequest('browser.blockstack.org', 80, jwt, 'PretendPasswordAPI');
+    // console.log(token);
+        //debugger;
+    // this.putFileTest(identityKeypairs[1].address, jwt, 'test.json', {test: 'file'});
+     
+    //3) registerSubdomain - do this later on when the user chooses a name
+    // this.registerSubdomain('good' + this.rando(), 0,  identityAddresses[0], null);
+    // if sucess and 202
+    // 
    
 
+  }
+
+  putFileTest(pubKey:string,jwt: string,fileName:string, content: any) {
+    fetch(`https://hub.blockstack.org/store/${pubKey}/${fileName}`, {
+        method: 'POST',
+        "headers":{
+          "authorization":`bearer ${jwt}`,
+          "content-type":"application/json"
+        },
+        "body": JSON.stringify(content)
+      })
   }
 
 
@@ -201,6 +233,7 @@ export default class Blockstack extends Component<Props, State> {
 
   async createAccount2(){
     window.bitcoin = bitcoin;
+    window.bs = RNBlockstackSdk;
     window.blockstack = blockstack;
     window.bip39 = bip39;
     window.bip32utils = bip32utils;
@@ -277,6 +310,13 @@ export default class Blockstack extends Component<Props, State> {
 
         <Content>
           <Text style={styles.welcome}>Blockstack React Native Example</Text>
+
+          <Button
+            title="Create Session"
+            onPress={() => this.createSession()}
+          />
+          <Text>jwt</Text>
+
 
           <Button
             title="Sign In with Blockstack"
@@ -389,7 +429,7 @@ export default class Blockstack extends Component<Props, State> {
         let d = await SecureStorage.getItem('GROUP_MEMBERSHIPS_STORAGE_KEY');
         console.log("GROUP_MEMBERSHIPS_STORAGE_KEY", d)
 
-
+        debugger;
         this.configInitialAppSession(userData);
         this.configureRadiks();
         await User.createWithCurrentUser();
