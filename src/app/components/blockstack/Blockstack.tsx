@@ -17,6 +17,8 @@ import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
 import * as bitcoin from 'react-native-bitcoinjs-lib';
 import * as blockstack from 'blockstack';
+import { InstanceDataStore } from 'blockstack/lib/auth/sessionStore';
+import { UserData } from 'blockstack/lib/auth/authApp';
 import * as bip39 from 'bip39';
 // @ts-ignore
 import * as bip32utils from 'bip32-utils';
@@ -24,14 +26,9 @@ declare let window: any;
 
 
 import {
-  authorizationHeaderValue,
-  btcToSatoshis,
-  satoshisToBtc,
-  encrypt,
-  getInsightUrls,
   getBlockchainIdentities
   // @ts-ignore
-} from '@utils';
+} from '@utils'; // copied from the blockstack browser project utils https://github.com/blockstack/blockstack-browser/tree/master/app/js/utils
 import { randomBytes } from 'crypto'
 
 
@@ -149,18 +146,39 @@ export default class Blockstack extends Component<Props, State> {
       identityKeypairs
     } = getBlockchainIdentities(masterKeychain, identitiesToGenerate)
 
-    // get jwt
+    //3) get jwt by creating user session
     console.log(backupPhrase);
     console.log(identityKeypairs);
+    let appPublicKey = identityKeypairs[1].address;
+    let appPrivateKey = identityKeypairs[1].key;
+    const appConfig = new blockstack.AppConfig(
+      ['store_write', 'publish_data'], 
+      'goodtimesx.com' 
+    )
+    const userData: UserData = {
+      username: '',
+      decentralizedID: '',
+      appPrivateKey: appPrivateKey,
+      authResponseToken: '',
+      hubUrl: 'https://hub.blockstack.org',
+      identityAddress: appPublicKey,
+      profile: null,
+    }
+    const dataStore = new InstanceDataStore({ 
+        appPrivateKey: appPrivateKey, 
+        hubUrl: 'https://hub.blockstack.org',
+        userData: userData
+    });
+    const userSession = new blockstack.UserSession({
+      appConfig: appConfig,
+      sessionStore: dataStore
+    });
+    window.userSession = userSession;
 
-    // https://github.com/blockstack/blockstack.js/blob/f655858b71c33531a7b897ef73088ae9dbd3e4a7/src/auth/authSession.ts
-    // let jwt = blockstack.makeCoreSessionRequest('goodtimes.io', ["store_write", "publish_data"], identityKeypairs[1].key, undefined, "android"  );
-    // let token = blockstack.sendCoreSessionRequest('browser.blockstack.org', 80, jwt, 'PretendPasswordAPI');
-    // console.log(token);
-        //debugger;
-    // this.putFileTest(identityKeypairs[1].address, jwt, 'test.json', {test: 'file'});
-     
-    //3) registerSubdomain - do this later on when the user chooses a name
+    // 4) put file
+    userSession.putFile('goodtimes.json', '{"blockstack":"rocks"}');
+  
+    //5) registerSubdomain - do this later on when the user chooses a name
     // this.registerSubdomain('good' + this.rando(), 0,  identityAddresses[0], null);
     // if sucess and 202
     // 
