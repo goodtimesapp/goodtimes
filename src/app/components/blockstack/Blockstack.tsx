@@ -136,7 +136,7 @@ export default class Blockstack extends Component<Props, State> {
     // const encryptedBackupPhrase = ciphertextBuffer.toString('hex')
    
     let identitiesToGenerate = 2;
-
+    
     //2) create account
     const {
       identityPublicKeychain,
@@ -145,6 +145,8 @@ export default class Blockstack extends Component<Props, State> {
       identityAddresses,
       identityKeypairs
     } = getBlockchainIdentities(masterKeychain, identitiesToGenerate)
+
+    debugger;
 
     //3) get jwt by creating user session
     console.log(backupPhrase);

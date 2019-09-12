@@ -32,7 +32,7 @@ class FooterComponent extends Component<Props, State> {
             <Icon active name='navigate' />
             <Text>Discover</Text>
           </Button>
-          <Button onPress={() => this.props.navigation.navigate('Blockstack')}>
+          <Button onPress={() => this.props.navigation.navigate('Profile')}>
             <Icon name='person' />
             <Text>Me!</Text>
           </Button>
