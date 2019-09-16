@@ -8,7 +8,7 @@ import * as bip32utils from 'bip32-utils';
 // @ts-ignore
 import * as bitcoin from 'react-native-bitcoinjs-lib';
 // @ts-ignore
-import { getBlockchainIdentities } from '@utils'; // copied from the blockstack browser project utils https://github.com/blockstack/blockstack-browser/tree/master/app/js/utils
+import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils'; // copied from the blockstack browser project utils https://github.com/blockstack/blockstack-browser/tree/master/app/js/utils
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
 import { randomBytes } from 'crypto'
@@ -45,6 +45,14 @@ export default class Profile extends Component<Props, State> {
         let keychain = await this.initWallet();
         let id = this.createBlockchainIdentity(keychain.masterKeychain);
         let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey);
+        let api = {
+            gaiaHubConfig: {
+                url_prefix: 'https://gaia.blockstack.org/hub/'
+            },
+            gaiaHubUrl: 'https://hub.blockstack.org'
+        }
+        let profileJSON = this.makeProfileJSON(DEFAULT_PROFILE, {key: id.appPrivateKey, keyID: id.appPublicKey}, api);
+        
         this.setState({
             backupPhrase: keychain.backupPhrase,
             publicKey: id.appPublicKey,
@@ -126,6 +134,12 @@ export default class Profile extends Component<Props, State> {
         });
 
         return userSession;
+    }
+
+    makeProfileJSON(profile: any, keypair: any, api: any){
+        debugger;
+        let profileJSON = signProfileForUpload(profile, keypair, api);
+        return profileJSON;
     }
 
     render() {
