@@ -14,15 +14,15 @@
     "g": "plop",
     "android": "npm-run-all --sequential androidPre:* && npm-run-all --parallel android:*",
     "androidPre:install": "npm install",
-    "androidPre:adbproxy": "adb reverse tcp:8081 tcp:8081",
-    "androidPre:debugproxy": "adb reverse tcp:8097 tcp:8097",
-    "androidPre:debugReduxproxy": "adb reverse tcp:8083 tcp:8083",
-    "androidPre:radiksProxy": "adb reverse tcp:5000 tcp:5000",
-    "android:jetify": "npx jetify",
-    "android:postinstall": "rn-nodeify --install stream,buffer,events,assert,vm,crypto,blob,fs,path --hack && npm i -S buffer@5",
+    "androidPre:postinstall": "rn-nodeify --install stream,buffer,events,assert,vm,crypto,blob,fs,path --hack && npm i -S buffer@5",
+    "androidPre:jetify": "npx jetify",
+    "android:adbproxy": "adb reverse tcp:8081 tcp:8081",
+    "android:debugproxy": "adb reverse tcp:8097 tcp:8097",
+    "android:debugReduxproxy": "adb reverse tcp:8083 tcp:8083",
+    "android:radiksProxy": "adb reverse tcp:5000 tcp:5000",
     "android:start": "react-native run-android",
-    "1android:debugwin": "C: && cd Users/u402046/Downloads/rn-debugger-windows-x64 && start react-native-debugger.exe",
-    "android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app"
+    "android:debugwin": "cd /c/Users/u402046/Downloads/rn-debugger-windows-x64 && start react-native-debugger.exe",
+    "1android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
