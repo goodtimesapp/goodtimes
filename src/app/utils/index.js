@@ -39,7 +39,7 @@ export {
   getNamePrices
 } from './name-utils'
 
-export { getProfileFromTokens, signProfileForUpload, verifyToken } from './profile-utils'
+export { getProfileFromTokens, signProfileForUpload, verifyToken, DEFAULT_PROFILE } from './profile-utils'
 
 export { openInNewTab, isMobile } from './window-utils'
 
