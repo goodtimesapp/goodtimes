@@ -28,6 +28,7 @@ interface State {
     privateKey: string;
     backupPhrase: string;
     userSession: any;
+    username: string;
 }
 
 export default class Profile extends Component<Props, State> {
@@ -38,13 +39,15 @@ export default class Profile extends Component<Props, State> {
             privateKey: '',
             publicKey: '',
             backupPhrase: '',
-            userSession: {}
+            userSession: {},
+            username: ''
         }
     }
 
     async componentDidMount() {
         await this.silentLogin();
-        this.radiksPutMessage();
+        this.radiksGetMessage();
+        //this.radiksPutMessage();
     }
 
     async silentLogin() {
@@ -55,12 +58,13 @@ export default class Profile extends Component<Props, State> {
         let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey, username, id.profileJSON.decodedToken.payload.claim);
         window.userSession = userSession;
         this.configureRadiks(userSession);
-        await User.createWithCurrentUser();
+        User.createWithCurrentUser();
         this.setState({
             backupPhrase: keychain.backupPhrase,
             publicKey: id.appPublicKey,
             privateKey: id.appPrivateKey,
-            userSession: userSession
+            userSession: userSession,
+            username: username
         })
     }
 
@@ -106,6 +110,7 @@ export default class Profile extends Component<Props, State> {
         }
         
         let profileJSON = this.makeProfileJSON(DEFAULT_PROFILE, { key: browserPrivateKey, keyID: browserKeyID }, api);
+   
         if (keychain.isNewAccount) { // make profileJSON
             let username = "good" + this.rando() + '.id.blockstack';
             await SecureStorage.setItem('username', username);
@@ -179,16 +184,25 @@ export default class Profile extends Component<Props, State> {
 
         // @ts-ignore
         let message = new Message({
-          content: 'onemsg',
+          content: this.rando().toString(),
           _id: this.uuid(),
-          createdBy: 'nicktee.id',
+          createdBy: this.state.username,
           votes: []
         });
         let resp = await message.save();
         console.log('radiks resp', resp);
         // @ts-ignore
-        let mz = await Message.findById(resp._id);
-        console.log('msgzzz', mz);
+        // let mz = await Message.findById(resp._id);
+        // console.log('msgzzz', mz);
+    
+    }
+
+    async radiksGetMessage() {
+
+      
+        // @ts-ignore
+        let messages = await Message.fetchList({  });
+        console.log('get messages ', messages);
     
     }
 
@@ -207,6 +221,11 @@ export default class Profile extends Component<Props, State> {
     render() {
         return (
             <ScrollView>
+                <Text>Username</Text>
+                <Text>{this.state.username}</Text>
+                <Text />
+                <Text />
+
                 <Text>Public Key</Text>
                 <Text>{this.state.publicKey}</Text>
                 <Text />
