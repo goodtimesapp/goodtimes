@@ -13,6 +13,11 @@ import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '
 import SecureStorage from 'react-native-secure-storage';
 import { randomBytes } from 'crypto'
 import * as blockstack from 'blockstack';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
+// @ts-ignore
+import { configure, User } from './../../radiks/lib/index.js';
+import Message from './../../models/Message';
 declare let window: any;
 
 interface Props {
@@ -37,16 +42,20 @@ export default class Profile extends Component<Props, State> {
         }
     }
 
-    componentDidMount() {
-        this.silentLogin()
+    async componentDidMount() {
+        await this.silentLogin();
+        this.radiksPutMessage();
     }
 
     async silentLogin() {
 
         let keychain = await this.initWallet();
-        let id = this.createBlockchainIdentity(keychain);
-        let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey);
+        let id = await this.createBlockchainIdentity(keychain);
+        let username = await SecureStorage.getItem('username');
+        let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey, username, id.profileJSON.decodedToken.payload.claim);
         window.userSession = userSession;
+        this.configureRadiks(userSession);
+        await User.createWithCurrentUser();
         this.setState({
             backupPhrase: keychain.backupPhrase,
             publicKey: id.appPublicKey,
@@ -81,7 +90,7 @@ export default class Profile extends Component<Props, State> {
         return keychain;
     }
 
-    createBlockchainIdentity(keychain: any, identitiesToGenerate: number = 2) {
+    async createBlockchainIdentity(keychain: any, identitiesToGenerate: number = 2) {
 
         const { identityKeypairs } = getBlockchainIdentities(keychain.masterKeychain, identitiesToGenerate)
 
@@ -97,8 +106,10 @@ export default class Profile extends Component<Props, State> {
         }
         
         let profileJSON = this.makeProfileJSON(DEFAULT_PROFILE, { key: browserPrivateKey, keyID: browserKeyID }, api);
-        if (keychain.isNewAccount) { // make profileJSON            
-            let userSession = this.makeUserSession(browserPrivateKey, browserPublicKey);
+        if (keychain.isNewAccount) { // make profileJSON
+            let username = "good" + this.rando() + '.id.blockstack';
+            await SecureStorage.setItem('username', username);
+            let userSession = this.makeUserSession(browserPrivateKey, browserPublicKey, username, (JSON.parse(profileJSON))[0].decodedToken.payload.claim);
             let profileResp = this.saveProfileJSON(userSession, JSON.parse(profileJSON));
         }
 
@@ -110,11 +121,11 @@ export default class Profile extends Component<Props, State> {
             appPublicKey: appPublicKey,
             appPrivateKey: appPrivateKey,
             identityKeypairs: identityKeypairs,
-            profileJSON: JSON.parse(profileJSON)
+            profileJSON: JSON.parse(profileJSON)[0],
         }
     }
 
-    makeUserSession(appPrivateKey: string, appPublicKey: string, scopes: Array<string> = ['store_write', 'publish_data'], appUrl: string = 'goodtimesx.com', hubUrl: string = 'https://hub.blockstack.org', profileJSON: any = null) {
+    makeUserSession(appPrivateKey: string, appPublicKey: string, username: string, profileJSON: any = null, scopes: Array<string> = ['store_write', 'publish_data'], appUrl: string = 'goodtimesx.com', hubUrl: string = 'https://hub.blockstack.org') {
         // see https://forum.blockstack.org/t/creating-a-usersession-using-app-private-key/8096/4
 
         const appConfig = new blockstack.AppConfig(
@@ -124,8 +135,8 @@ export default class Profile extends Component<Props, State> {
 
 
         const userData: UserData = {
-            username: '',
-            decentralizedID: '',
+            username: username,
+            decentralizedID: 'did:btc-addr:' + appPublicKey,
             appPrivateKey: appPrivateKey,
             authResponseToken: '',
             hubUrl: hubUrl,
@@ -155,6 +166,42 @@ export default class Profile extends Component<Props, State> {
     async saveProfileJSON(userSession: any, profileJSON: any) {
         let resp = await userSession.putFile('profile.json', JSON.stringify(profileJSON), { encrypt: false, contentType: 'application/json' })
         return resp;
+    }
+
+    configureRadiks(userSession: any) {
+        configure({
+          apiServer: `https://${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
+          userSession: userSession
+        });   
+    }
+
+    async radiksPutMessage() {
+
+        // @ts-ignore
+        let message = new Message({
+          content: 'onemsg',
+          _id: this.uuid(),
+          createdBy: 'nicktee.id',
+          votes: []
+        });
+        let resp = await message.save();
+        console.log('radiks resp', resp);
+        // @ts-ignore
+        let mz = await Message.findById(resp._id);
+        console.log('msgzzz', mz);
+    
+    }
+
+    uuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+    
+    
+    rando(){
+        return (Math.floor(Math.random() * 100000) + 100000).toString().substring(1);
     }
 
     render() {
