@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, Text, InteractionManager } from 'react-native'
+import { ScrollView, Text, TextInput, Button } from 'react-native'
 import { InstanceDataStore } from 'blockstack/lib/auth/sessionStore';
 import { UserData } from 'blockstack/lib/auth/authApp';
 import * as bip39 from 'bip39';
@@ -16,8 +16,9 @@ import * as blockstack from 'blockstack';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
-import { configure, User } from './../../radiks/lib/index.js';
+import { configure, User, UserGroup, GroupInvitation, Model } from './../../radiks/src/index';
 import Message from './../../models/Message';
+import AsyncStorage from '@react-native-community/async-storage';
 declare let window: any;
 
 interface Props {
@@ -29,6 +30,8 @@ interface State {
     backupPhrase: string;
     userSession: any;
     username: string;
+    text: string;
+    value: string;
 }
 
 export default class Profile extends Component<Props, State> {
@@ -40,14 +43,19 @@ export default class Profile extends Component<Props, State> {
             publicKey: '',
             backupPhrase: '',
             userSession: {},
-            username: ''
+            username: '',
+            text: '',
+            value: ''
         }
     }
 
     async componentDidMount() {
         await this.silentLogin();
-        this.radiksGetMessage();
-        //this.radiksPutMessage();
+        // this.radiksGetMessage();
+        // this.radiksPutMessage();
+        // let group: any = await this.createRadiksGroup('Starbucks');
+        // await AsyncStorage.setItem( group.attrs.name, group._id );
+        this.viewMyGroups();
     }
 
     async silentLogin() {
@@ -180,42 +188,74 @@ export default class Profile extends Component<Props, State> {
         });   
     }
 
-    async radiksPutMessage() {
-
+    async radiksPutMessage(text: string) {
         // @ts-ignore
         let message = new Message({
-          content: this.rando().toString(),
+          content: text || this.rando().toString(),
           _id: this.uuid(),
           createdBy: this.state.username,
           votes: []
         });
         let resp = await message.save();
         console.log('radiks resp', resp);
-        // @ts-ignore
-        // let mz = await Message.findById(resp._id);
-        // console.log('msgzzz', mz);
-    
     }
 
+    // https://github.com/ntheile/sheety-app/blob/1ff058fb602f2c62cf50dcd110160c7661b6ccdb/ClientApp/src/app/group/group.component.ts
     async radiksGetMessage() {
-
-      
         // @ts-ignore
         let messages = await Message.fetchList({  });
         console.log('get messages ', messages);
-    
     }
+
+    async createRadiksGroup(groupName: string){
+        const group: UserGroup = new UserGroup({ name: groupName });
+        let groupResp = null;
+        try{
+            groupResp =  await group.create();
+        } catch(e) {
+
+        }
+        console.log('groupResp', groupResp);
+        await AsyncStorage.setItem('group', JSON.stringify(groupResp));
+        return groupResp;
+    }
+
+    async inviteMember(groupId: string, userToInvite: string){
+        let group: UserGroup = await UserGroup.findById(groupId) as UserGroup;
+        const usernameToInvite = userToInvite;
+        const invitation = await group.makeGroupMembership(usernameToInvite);
+        console.log('invitation._id', invitation._id); // the ID used to later activate an invitation
+    }
+
+    async acceptInvitation(myInvitationID: string){
+        const invitation: GroupInvitation  = await GroupInvitation.findById(myInvitationID) as GroupInvitation;
+        await invitation.activate();
+        console.log('Accepted Invitation');
+    }
+
+    async viewMyGroups(){
+        const groups = await UserGroup.myGroups();
+        console.log('My groups', groups);
+    }
+
+
 
     uuid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
           var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
           return v.toString(16);
         });
-      }
+    }
     
     
     rando(){
         return (Math.floor(Math.random() * 100000) + 100000).toString().substring(1);
+    }
+
+    onTextChange(text:any){
+        this.setState({
+            text: text
+        })
     }
 
     render() {
@@ -243,6 +283,16 @@ export default class Profile extends Component<Props, State> {
 
                 <Text>User Session</Text>
                 <Text>{JSON.stringify(this.state.userSession) || ''}</Text>
+                <Text />
+                <Text />
+
+                <Text>Put Message</Text>
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                    onChangeText={ text => this.onTextChange(text) }
+                    />
+                <Button title="Submit" onPress={ ()=> this.radiksPutMessage(this.state.text) } ></Button>
+
             </ScrollView>
         )
     }

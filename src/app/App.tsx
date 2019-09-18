@@ -12,6 +12,7 @@ import { View, TouchableOpacity, Text } from 'react-native'
 declare let window: any;
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export interface Props { }
 interface State { }
@@ -22,6 +23,7 @@ export default class App extends Component<Props, State> {
   constructor(props: Props){
     super(props);
     window.SecureStorage = SecureStorage;
+    window.AsyncStorage = AsyncStorage;
   }
  
 
