@@ -64,7 +64,6 @@ export default class BlockstackUser extends Model {
         _resolve: (value?: {} | PromiseLike<{}>) => void,
       ) => {
         user.save().then(() => {
-          debugger;
           GroupMembership.cacheKeys().then(() => {
             _resolve(user);
           });

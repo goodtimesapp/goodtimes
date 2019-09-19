@@ -18,8 +18,11 @@ import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
 import { configure, User, UserGroup, GroupInvitation, Model } from './../../radiks/src/index';
 import Message from './../../models/Message';
+import EncryptedMessage from './../../models/EncryptedMessage';
 import AsyncStorage from '@react-native-community/async-storage';
 declare let window: any;
+window.radiks = require('./../../radiks/src/index');
+
 
 interface Props {
 
@@ -55,7 +58,13 @@ export default class Profile extends Component<Props, State> {
         // this.radiksPutMessage();
         // let group: any = await this.createRadiksGroup('Starbucks');
         // await AsyncStorage.setItem( group.attrs.name, group._id );
-        this.viewMyGroups();
+        // this.viewMyGroups();
+        // setTimeout( () =>{
+        //     this.radiksPutEncryptedMessage('one');
+        // }, 2000 )
+        //good66619.id.blockstack
+        // https://hub.blockstack.org/store/1RRBjbgXSWAs8pW4mC8VfkGL3EdcDG3TK/GroupInvitation/769d006a85bc-4bee-aaa1-e78d3f726a70
+        
     }
 
     async silentLogin() {
@@ -66,7 +75,7 @@ export default class Profile extends Component<Props, State> {
         let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey, username, id.profileJSON.decodedToken.payload.claim);
         window.userSession = userSession;
         this.configureRadiks(userSession);
-        User.createWithCurrentUser();
+        await User.createWithCurrentUser();
         this.setState({
             backupPhrase: keychain.backupPhrase,
             publicKey: id.appPublicKey,
@@ -199,6 +208,23 @@ export default class Profile extends Component<Props, State> {
         let resp = await message.save();
         console.log('radiks resp', resp);
     }
+
+    async radiksPutEncryptedMessage(text: string) {
+        // @ts-ignore
+        let m = new EncryptedMessage({
+            content: 'from samsung',
+            _id: this.uuid(),
+            createdBy: this.state.username,
+            votes: [], 
+            category: 'phone',
+            userGroupId: '769d006a85bc-4bee-aaa1-e78d3f726a70'
+          });
+        let resp = await m.save();
+        console.log('radiks resp encrypted msg', resp);
+        // other user on samsung good66619.id.blockstack
+    }
+
+    
 
     // https://github.com/ntheile/sheety-app/blob/1ff058fb602f2c62cf50dcd110160c7661b6ccdb/ClientApp/src/app/group/group.component.ts
     async radiksGetMessage() {
