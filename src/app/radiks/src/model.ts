@@ -98,8 +98,9 @@ export default class Model {
    * @param {Object} _selector - A query to include when fetching models
    */
   static async fetchOwnList(_selector: FindQuery = {}) {
-    // @ts-ignore
-    const { _id } = await userGroupKeys().personal;
+    
+    const { personal } = await userGroupKeys();
+    const _id = personal._id;
     const selector = {
       ..._selector,
       signingKeyId: _id,
@@ -216,7 +217,6 @@ export default class Model {
   async getSigningKey() {
     if (this.attrs.userGroupId) {
       const { userGroups, signingKeys } = await userGroupKeys();
-
       const _id = userGroups[this.attrs.userGroupId];
       const privateKey = signingKeys[_id];
       return {
@@ -224,8 +224,8 @@ export default class Model {
         privateKey,
       };
     }
-    // @ts-ignore
-    return userGroupKeys().personal;
+    let { personal } = await userGroupKeys();
+    return personal;
   }
 
   async encryptionPublicKey() {

@@ -6,7 +6,7 @@ import { DeviceEventEmitter } from "react-native";
 import RNBlockstackSdk from "react-native-blockstack";
 const textFileName = "message.txt";
 // @ts-ignore
-import { configure, User } from './../../radiks/lib/index.js';
+import { configure, User } from './../../radiks/src/index';
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
 import Message from './../../models/Message';

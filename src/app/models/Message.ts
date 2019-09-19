@@ -1,5 +1,5 @@
 // @ts-ignore
-import Model from './../radiks/lib/model.js';
+import Model from './../radiks/src/model';
 
 
 export default class Message extends Model {
@@ -13,10 +13,6 @@ export default class Message extends Model {
     createdBy: {
       type: String,
       decrypted: true,
-    },
-    _id: {
-        type: String,
-        decrypted: true
     }
   };
 

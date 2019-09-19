@@ -16,12 +16,13 @@ import * as blockstack from 'blockstack';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
-import { configure, User, UserGroup, GroupInvitation, Model } from './../../radiks/src/index';
+import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
 import Message from './../../models/Message';
 import EncryptedMessage from './../../models/EncryptedMessage';
 import AsyncStorage from '@react-native-community/async-storage';
 declare let window: any;
 window.radiks = require('./../../radiks/src/index');
+window.EncryptedMessage = EncryptedMessage;
 
 
 interface Props {
@@ -55,16 +56,15 @@ export default class Profile extends Component<Props, State> {
     async componentDidMount() {
         await this.silentLogin();
         // this.radiksGetMessage();
-        // this.radiksPutMessage();
+        // this.radiksPutMessage('poo');
         // let group: any = await this.createRadiksGroup('Starbucks');
         // await AsyncStorage.setItem( group.attrs.name, group._id );
         // this.viewMyGroups();
-        // setTimeout( () =>{
-        //     this.radiksPutEncryptedMessage('one');
-        // }, 2000 )
-        //good66619.id.blockstack
-        // https://hub.blockstack.org/store/1RRBjbgXSWAs8pW4mC8VfkGL3EdcDG3TK/GroupInvitation/769d006a85bc-4bee-aaa1-e78d3f726a70
-        
+        // this.radiksPutEncryptedGroupMessage('one');
+        // good34973.id.blockstack - inviter
+        // pizza (group) = 2a8498105aa8-499c-83af-439d4ed1089f
+        // Invite = good17942.id.blockstack, effb50a03c3c-4b18-aca2-3b04aa8f5231
+
     }
 
     async silentLogin() {
@@ -75,7 +75,7 @@ export default class Profile extends Component<Props, State> {
         let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey, username, id.profileJSON.decodedToken.payload.claim);
         window.userSession = userSession;
         this.configureRadiks(userSession);
-        await User.createWithCurrentUser();
+        let blockstackUser = await User.createWithCurrentUser();
         this.setState({
             backupPhrase: keychain.backupPhrase,
             publicKey: id.appPublicKey,
@@ -201,7 +201,6 @@ export default class Profile extends Component<Props, State> {
         // @ts-ignore
         let message = new Message({
           content: text || this.rando().toString(),
-          _id: this.uuid(),
           createdBy: this.state.username,
           votes: []
         });
@@ -209,19 +208,25 @@ export default class Profile extends Component<Props, State> {
         console.log('radiks resp', resp);
     }
 
-    async radiksPutEncryptedMessage(text: string) {
+    async radiksPutEncryptedGroupMessage(text: string) {
         // @ts-ignore
         let m = new EncryptedMessage({
             content: 'from samsung',
-            _id: this.uuid(),
             createdBy: this.state.username,
             votes: [], 
             category: 'phone',
-            userGroupId: '769d006a85bc-4bee-aaa1-e78d3f726a70'
+            userGroupId: ''
           });
         let resp = await m.save();
         console.log('radiks resp encrypted msg', resp);
-        // other user on samsung good66619.id.blockstack
+    }
+
+    async radiksPutCentral(){
+        const key = 'UserSettings';
+        const value = { email: 'myemail@example.com' };
+        await Central.save(key, value);
+        const result = await Central.get(key);
+        console.log(result); // { email: 'myemail@example.com' }
     }
 
     
