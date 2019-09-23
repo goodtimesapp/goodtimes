@@ -9,13 +9,12 @@ import { createBottomTabNavigator, createStackNavigator, createAppContainer, cre
 import LocationsList from "./location/LocationsList.Container";
 import Chat from './chat/Chat';
 import Blockstack from './blockstack/Blockstack';
-import Profile from './blockstack/Profile';
+import { ProfilePage } from './blockstack/Index';
 import Splash from './Splash';
 import Bar from './../components/bottombar/bar';
 import ExpandPage from './ExpandPage';
 import Goodtimes from './Goodtimes';
 const { width, height } = Dimensions.get('screen');
-
 
 
 const MainNavigator = createStackNavigator(
@@ -69,7 +68,7 @@ const Tabs = createBottomTabNavigator({
     Blockstack: { screen: Blockstack },
     Markers: { screen: Markers },
     Goodtimes: {screen: Goodtimes},
-    Profile: { screen: Profile },
+    Profile: { screen: ProfilePage },
 },
     {
         tabBarComponent: props => {

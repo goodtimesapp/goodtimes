@@ -14,7 +14,7 @@ import * as blockstack from 'blockstack';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
-import { configure } from './../../radiks/src/index';
+import { configure } from './../radiks/src/index';
 
 export const initWallet = async () => {
 
@@ -97,5 +97,43 @@ export function rando() {
     return (Math.floor(Math.random() * 100000) + 100000).toString().substring(1);
 }
 
+export const createBlockchainIdentity = async (
+    keychain: any, 
+    username:string =  "good" + rando() + '.id.blockstack',  
+    avatarUrl: string = 'https://gaia.blockstack.org/hub/17xxYBCvxwrwKtAna4bubsxGCMCcVNAgyw/avatar-0',  
+    identitiesToGenerate: number = 2
+) => {
 
+    const { identityKeypairs } = getBlockchainIdentities(keychain.masterKeychain, identitiesToGenerate)
+    // use identity 0 for blockstack browser and profile
+    let browserPublicKey = identityKeypairs[0].address;
+    let browserPrivateKey = identityKeypairs[0].key;
+    let browserKeyID = identityKeypairs[0].keyID;
+    let api = {
+        gaiaHubConfig: {
+            url_prefix: 'https://gaia.blockstack.org/hub/'
+        },
+        gaiaHubUrl: 'https://hub.blockstack.org'
+    }
+    let profileJSON = makeProfileJSON(DEFAULT_PROFILE, { key: browserPrivateKey, keyID: browserKeyID }, api);
+    let profile = (JSON.parse(profileJSON))[0];
+    profile.decodedToken.payload.claim.image = [{
+        '@type': 'ImageObject',
+        'contentUrl': avatarUrl,
+        'name': 'avatar'    
+    }]
+    let userSession = makeUserSession(browserPrivateKey, browserPublicKey, username, profile.decodedToken.payload.claim);
+    let profileResp = saveProfileJSON(userSession, [profile]);
+    // use identity 1 for this first app keypair
+    let appPublicKey = identityKeypairs[1].address;
+    let appPrivateKey = identityKeypairs[1].key;
 
+    return {
+        appPublicKey: appPublicKey,
+        appPrivateKey: appPrivateKey,
+        identityKeypairs: identityKeypairs,
+        profileJSON: profile,
+        username: username,
+        profileResp: profileResp
+    }
+}

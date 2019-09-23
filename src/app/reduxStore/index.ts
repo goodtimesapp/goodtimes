@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import * as fromLocations from './locations/reducers/reduce.locations';
 import * as fromTabs from './tabs/reducers/reduce.tabs.reducers';
+import * as fromProfile from './profile/profile.store';
 
 /*
  * This is the root state of the app
@@ -8,7 +9,8 @@ import * as fromTabs from './tabs/reducers/reduce.tabs.reducers';
  */
 export interface State {
     locations: fromLocations.State,
-    tabs: fromTabs.State
+    tabs: fromTabs.State,
+    profile: fromProfile.State
 }
 
 /*
@@ -16,7 +18,8 @@ export interface State {
  */
 export const initialState: State = {
   locations: fromLocations.initialState,  
-  tabs: fromTabs.initialState
+  tabs: fromTabs.initialState,
+  profile: fromProfile.initialState
 }
 
 /*
@@ -25,5 +28,6 @@ export const initialState: State = {
  */
 export const reducer = combineReducers<State>({
   locations: fromLocations.reducer,
-  tabs: fromTabs.reducer
+  tabs: fromTabs.reducer,
+  profile: fromProfile.reducers
 })

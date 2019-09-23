@@ -1,9 +1,20 @@
 import { UserSession } from './../../radiks/src/types/index';
 import { createSelector } from 'reselect';
-import { configureRadiks, initWallet, makeUserSession, makeProfileJSON, saveProfileJSON  } from './../../utils/profile';
+import { 
+    configureRadiks,
+    createBlockchainIdentity,
+    initWallet, 
+    makeUserSession, 
+    makeProfileJSON, 
+    saveProfileJSON  } from './../../utils/profile';
 // @ts-ignore
 import { getBlockchainIdentities, DEFAULT_PROFILE } from '@utils'; // copied from the blockstack browser project utils https://github.com/blockstack/blockstack-browser/tree/master/app/js/utils
 declare let window: any;
+import AsyncStorage from '@react-native-community/async-storage';
+// @ts-ignore
+import SecureStorage from 'react-native-secure-storage';
+import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
+
 
 //#region Initial State
 export interface State {
@@ -13,14 +24,16 @@ export interface State {
     privateKey: string;
     backupPhrase: string;
     username: string;
+    profileJSON: any
 }
 export const initialState: State = {
     userSession: {} as UserSession,
-    error: null,
+    error: '',
     publicKey: '',
     privateKey: '',
     backupPhrase: '',
     username: '',
+    profileJSON: {}
 }
 //#endregion Initial State
 
@@ -39,7 +52,22 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
-            const payload = 'login succeeded - see userSession'
+
+            let keychain = await initWallet();
+            let id = await createBlockchainIdentity(keychain);
+            let userSession = makeUserSession(id.appPrivateKey, id.appPublicKey, id.username, id.profileJSON.decodedToken.payload.claim);
+            window.userSession = userSession;
+            configureRadiks(userSession);
+            let blockstackUser = await User.createWithCurrentUser();
+            const payload = {
+                backupPhrase: keychain.backupPhrase,
+                publicKey: id.appPublicKey,
+                privateKey: id.appPrivateKey,
+                userSession: userSession,
+                username: id.username,
+                error: 'none',
+                profileJSON: id.profileJSON
+            }
             dispatch(succeeded(payload, ActionTypes.CREATE_ACCOUNT_SILENTLY));
         } catch (e) {
             console.log('error', e)
@@ -48,11 +76,18 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
     }
 }
 
-export function silentLogin(backupPhrase: string) {
+export function silentLogin(state: State) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
-            const payload = 'silent login with backup phrase'
+            
+            let userSession = makeUserSession(state.privateKey, state.publicKey, state.username, state.profileJSON.decodedToken.payload.claim);
+            window.userSession = userSession;
+            configureRadiks(userSession);
+            let blockstackUser = await User.createWithCurrentUser();
+            let payload = {
+                userSession: userSession
+            }
             dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
         } catch (e) {
             console.log('error', e)
@@ -75,12 +110,14 @@ export function blockstackLogin() {
     }
 }
 
-export function logout(token: any) {
+export function logout() {
     return async (dispatch: any) => {
         dispatch(started());
         try {
-            // @ts-ignore
-            const result = 'logout with Blockstack RN or clear ASync and Secure Storage'
+            await SecureStorage.removeItem('backupPhrase');
+            await SecureStorage.removeItem('GROUP_MEMBERSHIPS_STORAGE_KEY');
+            await SecureStorage.removeItem('username');
+            const result = 'logout with Blockstack RN or clear Secure Storage'
             // todo if 200 then pass success with no payload {}
             // else dispatch error
             dispatch(succeeded(result, ActionTypes.LOGOUT));
@@ -103,9 +140,7 @@ export function succeeded(payload: any, action: ActionTypes) {
     console.log(payload);
     return {
         type: action,
-        payload: {
-            auth: payload
-        },
+        payload: payload,
         status: action
     }
 }
@@ -129,33 +164,36 @@ export function failed(error: any, action: ActionTypes) {
 export function reducers(state: State = initialState, action: any) {
     switch (action.type) {
 
-        case ActionTypes.LOGIN: {
+        case ActionTypes.CREATE_ACCOUNT_SILENTLY: {
+            return action.payload
+        }
+
+        case ActionTypes.BLOCKSTACK_LOGIN: {
             return {
                 ...state,
-                auth: action.payload.auth
+                profile: action.payload
             }
         }
 
         case ActionTypes.LOGOUT: {
-            return {
-                ...state,
-                auth: {}
+            return  { 
+
             }
         }
 
-        case ActionTypes.REFRESH_TOKEN: {
+        case ActionTypes.SILENT_LOGIN: {
             return {
                 ...state,
-                auth: action.payload.auth
+                userSession: action.payload.userSession
             }
         }
 
-        case ActionTypes.AUTH_ACTION_STARTED: {
-            console.log("AUTH_STARTED");
+        case ActionTypes.PROFILE_ACTION_STARTED: {
+            console.log("PROFILE_STARTED");
         }
 
-        case ActionTypes.AUTH_ACTION_FAILED: {
-            console.log("AUTH_FAILED", action.payload);
+        case ActionTypes.PROFILE_ACTION_FAILED: {
+            console.log("PROFILE_FAILED", action.payload);
             return {
                 ...state,
                 error: action.payload
@@ -169,5 +207,7 @@ export function reducers(state: State = initialState, action: any) {
 //#endregion Reducers
 
 //#region Selectors
-export const getUserSession = createSelector(( (state: State) => state.userSession), s => s)
+export const getUserSession = createSelector(( (state: State) => state), s => s.userSession)
+export const getProfileState = createSelector( (state: State) => state, state => state);
+export const getUserName= createSelector( (state: State) => state, state => state.username);
 //#endregion Selectors
