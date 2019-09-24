@@ -122,3 +122,25 @@ Troubleshooting
 -----------------
 - On windows you might need to run the `adb reverse tcp:8081 tcp:8081` if you recieve a `script failed to load...metro server ` error
 - You also might need to recreate debug signing certificates or uninstall a previous version of the app if the code signing certs do not match. 
+
+Federated Network Design Proposals and Ideas
+--------------------------------------------
+[See Radiverse] https://forum.blockstack.org/t/radiks-decentralization-proposal/8400
+
+*Data Flow*
+
+User data, (like a photo) gets written to the users chosen bucket (gaia), then it gets indexed to a central server (federated in the future...like mastadon) and encrypted with a group key only users in the physical location have access to. Physical location is proven by a combination of reputation, gps location, and pinging nearby users via bluetooth/audio/wifi via the google nearby messaging protocol. User encrypted Indexed data gets deleted after a day or so. The users generated data (like a photo) remains in full ownership forever in their chosen storage bucket
+
+*Network Design, Monetization, Smart Contracts and Governance*
+
+The network does not ever need to run as peer to peer. It shall run as a federated network. The federated network will stay honest because each node will enter a smart contract and share in the profit from the AD revenue. The network will stay fast and have a high uptime because federated opertors will be voted in regionally. Eventually as the network grows you will not need a central authority to approve regional nodes. It can be done by some sort of a Goodtimes Cosortium or voting goverence process.
+
+*Governance*
+
+If a government or local police department wants access to the encryted data they will have to contact the regional operator. They can be given encrypted data that they will never be able to decrypt. Or like in real life they need to be present where the incident happens to see the feed, or talk to eye witnesses
+
+*Code Signing*
+
+All client side code will be signed and checksum'd to the peer reviewed code (via google play and apple app stores) . If a regional operator decides to fork and create their own client (maybe with a backdoor) they will be kicked off the network as the client code hash (or signed code) will not be in consensus with the majority of regional node operators
+
+
