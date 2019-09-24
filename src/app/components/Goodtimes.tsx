@@ -4,9 +4,44 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Header from './Header';
 import CardComponent from './goodtimes/Card';
-import { Container, Content } from 'native-base'
+import { State } from './../reduxStore/index';
+import { 
+  getUserSession,
+  getProfileState,
+  getUserName,
+  createAccountSilently,
+  logout,
+  silentLogin,
+} from './../reduxStore/profile/profile.store';
+import { store } from './../reduxStore/configureStore';
+import { withNavigation } from 'react-navigation';
 
-export class Goodtimes extends Component {
+
+
+interface Props{
+    navigation: any,
+    silentLogin: (state: any)=> void;
+}
+
+export class Goodtimes extends Component<Props, State> {
+
+    constructor(props: Props){
+        super(props);
+    }
+
+    async componentDidMount(){
+    
+        let profileState = store.getState().profile;
+       
+        if (profileState.userSession !== undefined){
+            // try silent login
+            let loggedin = await this.props.silentLogin(profileState);
+        } else{
+            // or redirect to profile page
+            this.props.navigation.navigate('Profile');
+        }
+  
+    }   
 
     render() {
         return (
@@ -39,12 +74,18 @@ export class Goodtimes extends Component {
     }
 }
 
-const mapStateToProps = (state: any) => ({
-
+// Global State
+const mapStateToProps: any = (state: State) => ({
+    userSession: getUserSession(state.profile),
+    getProfileState: getProfileState(state.profile),
+    getUserName: getUserName(state.profile)
 })
-
+// Actions to dispatch
 const mapDispatchToProps = {
-
+    createAccountSilently:  createAccountSilently,
+    logout: logout,
+    silentLogin: silentLogin
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Goodtimes)
+// @ts-ignore
+export default connect(mapStateToProps, mapDispatchToProps)( (withNavigation(Goodtimes)) )

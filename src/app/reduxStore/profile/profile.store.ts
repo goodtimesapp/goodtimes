@@ -41,7 +41,6 @@ export const initialState: State = {
 export enum ActionTypes {
     CREATE_ACCOUNT_SILENTLY = '[PROFILE] CREATE_BLOCKCHAIN_IDENTITY', //  create backup phrase then login silenty with avatar and user chosen name
     SILENT_LOGIN = '[PROFILE] SILENTLOGIN', // login with saved backup phrase
-    BLOCKSTACK_LOGIN = '[PROFILE] BLOCKSTACKLOGIN', // normal flow
     LOGOUT = '[PROFILE] LOGOUT', // logot
     PROFILE_ACTION_STARTED = '[PROFILE] PROFILE_ACTION_STARTED',
     PROFILE_ACTION_SUCCEEDED = '[PROFILE] PROFILE_ACTION_SUCCEEDED',
@@ -80,13 +79,18 @@ export function silentLogin(state: State) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
-            
+      
             let userSession = makeUserSession(state.privateKey, state.publicKey, state.username, state.profileJSON.decodedToken.payload.claim);
             window.userSession = userSession;
             configureRadiks(userSession);
             let blockstackUser = await User.createWithCurrentUser();
             let payload = {
-                userSession: userSession
+                ...state,
+                userSession: userSession,
+                publicKey: state.publicKey,
+                privateKey: state.privateKey,
+                username: state.username,
+                profileJSON: state.profileJSON
             }
             dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
         } catch (e) {
@@ -96,19 +100,6 @@ export function silentLogin(state: State) {
     }
 }
 
-export function blockstackLogin() {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            // @ts-ignore
-            const payload = 'login with blockstack RN'
-            dispatch(succeeded(payload, ActionTypes.BLOCKSTACK_LOGIN));
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e, ActionTypes.BLOCKSTACK_LOGIN));
-        }
-    }
-}
 
 export function logout() {
     return async (dispatch: any) => {
@@ -168,23 +159,14 @@ export function reducers(state: State = initialState, action: any) {
             return action.payload
         }
 
-        case ActionTypes.BLOCKSTACK_LOGIN: {
-            return {
-                ...state,
-                profile: action.payload
-            }
+        case ActionTypes.SILENT_LOGIN: {
+            return action.payload
         }
+        
 
         case ActionTypes.LOGOUT: {
             return  { 
 
-            }
-        }
-
-        case ActionTypes.SILENT_LOGIN: {
-            return {
-                ...state,
-                userSession: action.payload.userSession
             }
         }
 

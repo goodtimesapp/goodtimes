@@ -9,10 +9,9 @@ window.radiks = require('./../../radiks/src/index');
 window.EncryptedMessage = EncryptedMessage;
 
 interface Props {
-    userSession: any;
+    getUserName: any
 }
 interface State {
-    username: string,
     text: string
 }
 
@@ -21,7 +20,6 @@ export default class Radiks extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-           username: this.props.userSession.loadUserData().username,
            text: ''
         }
     }
@@ -34,7 +32,7 @@ export default class Radiks extends Component<Props, State> {
         // @ts-ignore
         let message = new Message({
           content: text || this.rando().toString(),
-          createdBy: this.state.username,
+          createdBy: this.props.getUserName,
           votes: []
         });
         let resp = await message.save();
@@ -45,7 +43,7 @@ export default class Radiks extends Component<Props, State> {
         // @ts-ignore
         let m = new EncryptedMessage({
             content: 'from samsung',
-            createdBy: this.state.username,
+            createdBy: this.props.getUserName,
             votes: [], 
             category: 'phone',
             userGroupId: ''
@@ -120,7 +118,7 @@ export default class Radiks extends Component<Props, State> {
                 <TextInput
                     style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                     onChangeText={ text => this.onTextChange(text) }
-                    placeholder={this.state.username}
+                    placeholder={this.props.getUserName}
                     />
                 <Button title="Submit" onPress={ ()=> this.radiksPutMessage(this.state.text) } ></Button>
 

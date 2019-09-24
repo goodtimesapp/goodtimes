@@ -15,6 +15,7 @@ import * as blockstack from 'blockstack';
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
 import { configure } from './../radiks/src/index';
+import * as bitcoinjs from 'bitcoinjs-lib';
 
 export const initWallet = async () => {
 
@@ -109,19 +110,7 @@ export const createBlockchainIdentity = async (
     let browserPublicKey = identityKeypairs[0].address;
     let browserPrivateKey = identityKeypairs[0].key;
     let browserKeyID = identityKeypairs[0].keyID;
-    let api = {
-        gaiaHubConfig: {
-            url_prefix: 'https://gaia.blockstack.org/hub/'
-        },
-        gaiaHubUrl: 'https://hub.blockstack.org'
-    }
-    let profileJSON = makeProfileJSON(DEFAULT_PROFILE, { key: browserPrivateKey, keyID: browserKeyID }, api);
-    let profile = (JSON.parse(profileJSON))[0];
-    profile.decodedToken.payload.claim.image = [{
-        '@type': 'ImageObject',
-        'contentUrl': avatarUrl,
-        'name': 'avatar'    
-    }]
+    let profile = makeNewProfile(browserPrivateKey, browserPublicKey, avatarUrl, username);
     let userSession = makeUserSession(browserPrivateKey, browserPublicKey, username, profile.decodedToken.payload.claim);
     let profileResp = saveProfileJSON(userSession, [profile]);
     // use identity 1 for this first app keypair
@@ -136,4 +125,27 @@ export const createBlockchainIdentity = async (
         username: username,
         profileResp: profileResp
     }
+}
+
+
+export function getPublicKeyFromPrivate(privateKey: string) {
+    const keyPair = bitcoinjs.ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+    return keyPair.publicKey.toString('hex')
+}
+
+export function makeNewProfile(privateKey: string, publicKey: string, avatarUrl: string, username: string){
+    let api = {
+        gaiaHubConfig: {
+            url_prefix: 'https://gaia.blockstack.org/hub/'
+        },
+        gaiaHubUrl: 'https://hub.blockstack.org'
+    }
+    let profileJSON = makeProfileJSON(DEFAULT_PROFILE, { key: privateKey, keyID: publicKey}, api);
+    let profile = (JSON.parse(profileJSON))[0];
+    profile.decodedToken.payload.claim.image = [{
+        '@type': 'ImageObject',
+        'contentUrl': avatarUrl,
+        'name': 'avatar'    
+    }]
+    return profile;                              
 }

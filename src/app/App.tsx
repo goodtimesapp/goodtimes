@@ -24,6 +24,9 @@ export default class App extends Component<Props, State> {
     super(props);
     window.SecureStorage = SecureStorage;
     window.AsyncStorage = AsyncStorage;
+    window.blockstack = require('blockstack');
+    window.blockstackRN = require('react-native-blockstack');
+    window.store = store;
   }
  
 
