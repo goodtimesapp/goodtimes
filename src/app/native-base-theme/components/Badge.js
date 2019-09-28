@@ -6,7 +6,7 @@ import { PLATFORM } from './../variables/commonColor';
 export default (variables /* : * */ = variable) => {
   const badgeTheme = {
     '.primary': {
-      backgroundColor: variables.buttonPrimaryBg
+      backgroundColor: '#4FC3F7' //variables.buttonPrimaryBg
     },
     '.warning': {
       backgroundColor: variables.buttonWarningBg
@@ -18,7 +18,7 @@ export default (variables /* : * */ = variable) => {
       backgroundColor: variables.buttonSuccessBg
     },
     '.danger': {
-      backgroundColor: variables.buttonDangerBg
+      backgroundColor:  '#F06292' //variables.buttonDangerBg
     },
     'NativeBase.Text': {
       color: variables.badgeColor,

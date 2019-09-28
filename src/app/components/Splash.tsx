@@ -94,10 +94,10 @@ export class Splash extends React.Component<Props, State> {
     end={{ x: 0.1, y: 1 }}>
       <View>
         {/* <Image source={ require('./../assets/plasticoinclogo.png') } /> */}
-        <Text style={[styles.text, {color: 'grey'}]}>Goodtimes</Text>
+        <Text style={[styles.text, {color: '#78909C'}]}>Goodtimes</Text>
         <Text/>
         <Text/>
-        <Text style={[styles.text, {color: 'grey'}]}>The social app for where you're at [privacy included]</Text>
+        <Text style={[styles.text, {color: '#78909C'}]}>The social app for where you're at [privacy included]</Text>
       </View>
   </LinearGradient>;
 

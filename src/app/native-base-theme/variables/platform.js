@@ -133,7 +133,8 @@ export default {
   checkboxTextShadowRadius: 0,
 
   // Color
-  brandPrimary: platform === PLATFORM.IOS ? '#007aff' : '#3F51B5',
+  // brandPrimary: platform === PLATFORM.IOS ? '#007aff' : '#3F51B5',
+  brandPrimary: platform === PLATFORM.IOS ? '#64B5F6' : '#64B5F6',
   brandInfo: '#62B1F6',
   brandSuccess: '#5cb85c',
   brandDanger: '#d9534f',

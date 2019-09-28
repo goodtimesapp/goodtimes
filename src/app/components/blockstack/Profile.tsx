@@ -115,7 +115,7 @@ export default class Profile extends Component<Props, State> {
                  </Text>
                 <Text />
 
-                <Content style={{ backgroundColor: 'grey', height: 1 }} />
+                <Content style={{ backgroundColor: '#78909C', height: 1 }} />
 
                 <Text />
                 <Text />
@@ -143,7 +143,7 @@ export default class Profile extends Component<Props, State> {
 
                 <Text />
                 <Text />
-                <Content style={{ backgroundColor: 'grey', height: 1 }} />
+                <Content style={{ backgroundColor: '#78909C', height: 1 }} />
                 <Text />
                 <Text />
 
@@ -153,7 +153,7 @@ export default class Profile extends Component<Props, State> {
 
                 <Text />
                 <Text />
-                <Content style={{ backgroundColor: 'grey', height: 1 }} />
+                <Content style={{ backgroundColor: '#78909C', height: 1 }} />
                 <Text />
                 <Text />
 

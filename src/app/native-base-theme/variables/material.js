@@ -161,11 +161,11 @@ export default {
   footerPaddingBottom: 0,
 
   // FooterTab
-  tabBarTextColor: 'grey',
+  tabBarTextColor: '#78909C',
   tabBarTextSize: 11,
   activeTab: 'white',
-  sTabBarActiveTextColor: 'grey',
-  tabBarActiveTextColor: 'grey',
+  sTabBarActiveTextColor: '#78909C',
+  tabBarActiveTextColor: '#78909C',
   tabActiveBgColor: 'white',
 
   // Header

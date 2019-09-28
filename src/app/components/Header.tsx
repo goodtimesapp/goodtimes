@@ -54,19 +54,19 @@ class HeaderComponent extends Component<Props, State> {
             <Header >
                 <Left >
                     <Button transparent onPress={ () => this.push('Camera')  } >
-                        <Icon name='camera' style={{color: 'grey'}} />
+                        <Icon primary name='camera' style={{color: '#4FC3F7'}} />
                     </Button>
                 </Left>
                 <Body>
                     <View>
-                        <Image style={{width: 32, height: 32}} source={ require('./../assets/LOGO.png') } />
+                        <Image style={{width: 32, height: 32}} source={ require('./../assets/goodtimes.png') } />
                     </View>
                 </Body>
                 
                 <Right>
                     <Button transparent onPress={ () => this.openDrawer()  } style={{marginTop:10}}>
-                        <Badge style={{ position: 'absolute' }}><Text>2</Text></Badge>
-                        <Icon name='chatboxes' style={{color: 'grey'}} />
+                        <Badge danger style={{ position: 'absolute'  }}><Text>2</Text></Badge>
+                        <Icon name='chatboxes' style={{color: '#78909C'}} />
                     </Button>
                 </Right>
             </Header>

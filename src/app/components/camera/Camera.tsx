@@ -51,7 +51,13 @@ class Camera extends Component<Props, State> {
         onRequestClose={() => this.back()}
       >
         <View style={styles.container}>
-          <Fab
+
+         <TouchableOpacity onPress={ ()=> this.back() } style={styles.back}>
+               <Icon name="arrow-back" style={{ fontSize: 50, color: 'grey' }} />
+            </TouchableOpacity>
+     
+
+          {/* <Fab
             active={true}
             direction="up"
             containerStyle={{}}
@@ -59,7 +65,7 @@ class Camera extends Component<Props, State> {
             position="topLeft"
             onPress={() => this.back() }>
             <Icon name="arrow-back" style={{ fontSize: 20, color: 'black' }} />
-          </Fab>
+          </Fab> */}
           <RNCamera
             ref={ref => {
               this.camera = ref;
@@ -82,7 +88,7 @@ class Camera extends Component<Props, State> {
           >
           </RNCamera>
 
-            <Fab
+            {/* <Fab
               active={true}
               direction="up"
               containerStyle={{ right: '43%' }}
@@ -90,7 +96,13 @@ class Camera extends Component<Props, State> {
               position="bottomRight"
               onPress={this.takePicture.bind(this)}>
               <Icon name="camera" style={{ fontSize: 20, color: 'black' }} />
-            </Fab>
+            </Fab> */}
+
+          
+            <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.btn}>
+               <Icon name="camera" style={{ fontSize: 50, color: 'white' }} />
+            </TouchableOpacity>
+     
         </View>
       </Modal>
     );
@@ -99,7 +111,7 @@ class Camera extends Component<Props, State> {
   takePicture = async () => {
     if (this.camera) {
       const options = { 
-        quality: 0.8, 
+        quality: 0.6, 
         base64: true,
         fixOrientation: true 
       };
@@ -184,5 +196,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignSelf: 'center',
     margin: 20,
+  },
+  btn: {
+    position: 'absolute',
+    justifyContent: 'center', 
+    alignItems: 'center',
+    left: 0, 
+    right: 0, 
+    bottom: 12, 
+    backgroundColor: 'rgba(52, 52, 52, 0.1)',
+    borderRadius: 70,
+    
+  },
+  back: {
+    position: 'absolute',
+    top: 10,
+    justifyContent: 'center', 
+    alignItems: 'center',
+    left: 0,
   },
 });

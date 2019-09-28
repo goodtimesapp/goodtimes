@@ -68,11 +68,11 @@ export class Chat extends React.Component<Props, State> {
         <Header>
           <Left >
             <Button transparent onPress={() => this.closeDrawer()} >
-              <Icon name='arrow-back' style={{ color: 'grey' }} />
+              <Icon name='arrow-back' style={{ color: '#78909C' }} />
             </Button>
           </Left>
           <Body>
-            <Title style={{color: 'grey'}}>J Fitty</Title>
+            <Title style={{color: '#78909C'}}>J Fitty</Title>
           </Body>
           <Right>
             <Thumbnail small source={{uri: 'https://media.bizj.us/view/img/10820856/jimfitterling*750xx771-1028-11-0.png'}} />

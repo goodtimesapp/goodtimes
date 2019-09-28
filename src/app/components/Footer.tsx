@@ -23,7 +23,7 @@ class FooterComponent extends Component<Props, State> {
         <FooterTab>
           <Button active badge vertical
             onPress={() => this.props.navigation.navigate('Goodtimes')}>
-            <Badge><Text>51</Text></Badge>
+            <Badge danger><Text>51</Text></Badge>
             <Icon name='happy' />
             <Text>Goodtimes</Text>
           </Button>
