@@ -47,6 +47,7 @@
 		6774844ADA0F4BD39AE6E4C8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6E6789282F4945989307A6DF /* SimpleLineIcons.ttf */; };
 		B57ABFEE45E540E5A4143E87 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C09A8F5B05EB409AA92CA32B /* Zocial.ttf */; };
 		FA9D9A92B6BD4155A961C250 /* libRNAppTour.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19AA10308DA540F186C41835 /* libRNAppTour.a */; };
+		4037AD4695664CB98B05049B /* libRNPhotoEditor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A497EB00136B4F2A9F4DFEFB /* libRNPhotoEditor.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -371,6 +372,8 @@
 		C09A8F5B05EB409AA92CA32B /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		6872249935F94384B4A061F2 /* RNAppTour.xcodeproj */ = {isa = PBXFileReference; name = "RNAppTour.xcodeproj"; path = "../node_modules/react-native-app-tour/ios/RNAppTour.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		19AA10308DA540F186C41835 /* libRNAppTour.a */ = {isa = PBXFileReference; name = "libRNAppTour.a"; path = "libRNAppTour.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		44DE81B0A95448608902B9A9 /* RNPhotoEditor.xcodeproj */ = {isa = PBXFileReference; name = "RNPhotoEditor.xcodeproj"; path = "../node_modules/react-native-photo-editor/ios/RNPhotoEditor.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		A497EB00136B4F2A9F4DFEFB /* libRNPhotoEditor.a */ = {isa = PBXFileReference; name = "libRNPhotoEditor.a"; path = "libRNPhotoEditor.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -404,6 +407,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				8ACF3C7BB35D4A47A8B6D915 /* Pods_example_sdk_module.framework in Frameworks */,
 				FA9D9A92B6BD4155A961C250 /* libRNAppTour.a in Frameworks */,
+				4037AD4695664CB98B05049B /* libRNPhotoEditor.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,6 +597,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				6872249935F94384B4A061F2 /* RNAppTour.xcodeproj */,
+				44DE81B0A95448608902B9A9 /* RNPhotoEditor.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1254,10 +1259,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-app-tour\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-editor\ios",
 				);
 			};
 			name = Debug;
@@ -1281,10 +1288,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-app-tour\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-editor\ios",
 				);
 			};
 			name = Release;
@@ -1312,6 +1321,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-app-tour\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-editor\ios",
 				);
 			};
 			name = Debug;
@@ -1337,6 +1347,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-app-tour\ios",
+					"$(SRCROOT)\..\node_modules\react-native-photo-editor\ios",
 				);
 			};
 			name = Release;

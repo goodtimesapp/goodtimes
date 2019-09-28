@@ -14,6 +14,7 @@ import Splash from './Splash';
 import Bar from './../components/bottombar/bar';
 import ExpandPage from './ExpandPage';
 import Goodtimes from './Goodtimes';
+import ImageEditor from './image/ImageEditor';
 const { width, height } = Dimensions.get('screen');
 
 
@@ -33,6 +34,12 @@ const MainNavigator = createStackNavigator(
         },
         Camera: { 
             screen: Camera,
+            navigationOptions: {
+                header: null,
+            },
+        },
+        ImageEditor: { 
+            screen: ImageEditor,
             navigationOptions: {
                 header: null,
             },

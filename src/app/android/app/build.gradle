@@ -119,6 +119,7 @@ android {
         }
         resValue "string", "build_config_package", "org.blockstack.android.sample"
         missingDimensionStrategy 'react-native-camera', 'general'
+        renderscriptSupportModeEnabled true
     }
     splits {
         abi {
@@ -153,6 +154,9 @@ android {
 }
 
 dependencies {
+    implementation project(':rn-fetch-blob')
+    implementation project(':react-native-fs')
+    implementation project(':react-native-photo-editor')
     implementation project(':react-native-geolocation-service')
     implementation project(':react-native-svg')
     implementation project(':react-native-app-tour')

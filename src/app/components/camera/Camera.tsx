@@ -11,7 +11,7 @@ import { withNavigation } from 'react-navigation';
 
 interface Props {
   createLocation: (location: Location) => void;
-  navigation: any
+  navigation: any;
 }
 
 interface State {
@@ -53,7 +53,7 @@ class Camera extends Component<Props, State> {
             }}
             style={styles.preview}
             type={RNCamera.Constants.Type.back}
-            flashMode={RNCamera.Constants.FlashMode.on}
+            flashMode={RNCamera.Constants.FlashMode.auto}
             androidCameraPermissionOptions={{
               title: 'Permission to use camera',
               message: 'We need your permission to use your camera',
@@ -66,12 +66,7 @@ class Camera extends Component<Props, State> {
               buttonPositive: 'Ok',
               buttonNegative: 'Cancel',
             }}
-            onGoogleVisionBarcodesDetected={({ barcodes }) => {
-              console.log(barcodes);
-            }}
-            onBarCodeRead={this.handleBarCodeRead}
           >
-            <BarcodeMask />
           </RNCamera>
           <View>
             <Fab
@@ -92,22 +87,31 @@ class Camera extends Component<Props, State> {
 
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true };
+      const options = { 
+        quality: 0.8, 
+        base64: true,
+        fixOrientation: true 
+      };
       const data = await this.camera.takePictureAsync(options);
-      Geolocation.getCurrentPosition(location => {
-        console.log(location)
-        let coords = `[${location.coords.latitude},${location.coords.longitude}]`;
-        let loc: Location = {
-          description: 'a bin location',
-          tag: 'bin',
-          externalId: uuidv4(),
-          type: 'circle',
-          radius: '50',
-          coordinates: coords
-        }
-        this.props.createLocation(loc);
-        this.back();
+      this.props.navigation.navigate('ImageEditor', {
+        imageUrl: data.uri.replace('file://', ''),
+        blob: data.base64
       });
+
+      // Geolocation.getCurrentPosition(location => {
+      //   console.log(location)
+      //   let coords = `[${location.coords.latitude},${location.coords.longitude}]`;
+      //   let loc: Location = {
+      //     description: 'a bin location',
+      //     tag: 'bin',
+      //     externalId: uuidv4(),
+      //     type: 'circle',
+      //     radius: '50',
+      //     coordinates: coords
+      //   }
+      //   this.props.createLocation(loc);
+      //   this.back();
+      // });
     }
   };
 
