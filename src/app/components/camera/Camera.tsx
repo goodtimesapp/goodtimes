@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, TouchableOpacity, View, Alert, Modal } from 'react-native';
+import { AppRegistry, StyleSheet, Text, TouchableOpacity, View, Alert, Modal, Button } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import BarcodeMask from 'react-native-barcode-mask';
 import { Location } from './../../models/Location';
@@ -7,15 +7,26 @@ import uuidv4 from 'uuid/v4';
 import Geolocation from '@react-native-community/geolocation';
 import { Icon, Fab } from 'native-base';
 import { withNavigation } from 'react-navigation';
+declare let window: any;
+import RNFetchBlob from 'rn-fetch-blob';
+import { connect } from 'react-redux';
+import { getBase64, setBase64 } from './../../reduxStore/global/global.store';
+import { State as ReduxState } from './../../reduxStore/index';
+// @ts-ignore
+import { RNPhotoEditor } from 'react-native-photo-editor'
 
 
 interface Props {
   createLocation: (location: Location) => void;
   navigation: any;
+  getBase64: any;
+  setBase64: (base64:string) => void;
 }
 
 interface State {
-  visible: boolean
+  visible: boolean,
+  imageUrl: any;
+  base64: string;
 }
 
 class Camera extends Component<Props, State> {
@@ -23,7 +34,9 @@ class Camera extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      visible: true
+      visible: true,
+      imageUrl: '',
+      base64: '',
     }
   }
 
@@ -68,7 +81,7 @@ class Camera extends Component<Props, State> {
             }}
           >
           </RNCamera>
-          <View>
+
             <Fab
               active={true}
               direction="up"
@@ -78,8 +91,6 @@ class Camera extends Component<Props, State> {
               onPress={this.takePicture.bind(this)}>
               <Icon name="camera" style={{ fontSize: 20, color: 'black' }} />
             </Fab>
-
-          </View>
         </View>
       </Modal>
     );
@@ -93,9 +104,21 @@ class Camera extends Component<Props, State> {
         fixOrientation: true 
       };
       const data = await this.camera.takePictureAsync(options);
-      this.props.navigation.navigate('ImageEditor', {
-        imageUrl: data.uri.replace('file://', ''),
-        blob: data.base64
+      let  imageUrl =data.uri.replace('file://', '')
+     
+
+      RNPhotoEditor.Edit({
+        path: imageUrl,
+        onDone: () => {
+            console.log('on done', imageUrl);
+            this.back();
+            RNFetchBlob.fs.readFile(imageUrl, 'base64').then( (base64) =>{
+                let r = this.props.setBase64(base64);
+            }); 
+        },
+        onCancel: () => {
+            console.log('on cancel')
+        }
       });
 
       // Geolocation.getCurrentPosition(location => {
@@ -120,7 +143,7 @@ class Camera extends Component<Props, State> {
       this.setState({
         visible: false
       });
-      this.props.navigation.navigate('Markers');
+      this.props.navigation.navigate('Goodtimes');
     }
   }
 
@@ -130,8 +153,17 @@ class Camera extends Component<Props, State> {
   }
 }
 
-// @ts-ignore
-export default withNavigation(Camera);
+const mapStateToProps = (state: ReduxState) => ({
+  getBase64: getBase64(state.global)
+})
+
+const mapDispatchToProps = {
+  setBase64: setBase64
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(Camera))
+
+
 
 const styles = StyleSheet.create({
   container: {

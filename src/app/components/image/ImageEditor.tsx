@@ -4,6 +4,10 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { withNavigation } from 'react-navigation';
 declare let window: any;
+import RNFetchBlob from 'rn-fetch-blob';
+import { connect } from 'react-redux';
+import { getBase64, setBase64 } from './../../reduxStore/global/global.store';
+import { State as ReduxState } from './../../reduxStore/index';
 
 interface Props{
     navigation: any;
@@ -13,9 +17,12 @@ interface Props{
     onDone?:  () => void;
     path: string;
     stickers?: Array<string>;
+    getBase64: any;
+    setBase64: (base64:string) => void;
 }
 interface State{
     imageUrl: any;
+    base64: string;
 }
 
 export class ImageEditor extends Component<Props, State> {
@@ -25,19 +32,18 @@ export class ImageEditor extends Component<Props, State> {
 
     }
 
-    
-  
-    componentDidUpdate(){
+    componentDidLoad(){
         let imageUrl = this.props.navigation.getParam('imageUrl');
-        let blob = this.props.navigation.getParam('blob');
         RNPhotoEditor.Edit({
             path: imageUrl,
-            onDone: (d:any) => {
+            onDone: () => {
                 console.log('on done', imageUrl);
-                window.imageUrl = imageUrl;
-                this.props.navigation.navigate('Goodtimes', {
-                    imageUrl: 'file://' + imageUrl
+                
+                RNFetchBlob.fs.readFile(imageUrl, 'base64').then( (base64) =>{
+                    let r = this.props.setBase64(base64);
+                    this.props.navigation.pop(2);
                 });
+                
             },
             onCancel: () => {
                 console.log('on cancel')
@@ -50,7 +56,7 @@ export class ImageEditor extends Component<Props, State> {
     render() {
         return (
             <View style={styles.container}>
-               
+              
             </View>
         )
     }
@@ -65,5 +71,13 @@ const styles = StyleSheet.create({
     }
 })
 
-// @ts-ignore
-export default withNavigation(ImageEditor);
+
+const mapStateToProps = (state: ReduxState) => ({
+    getBase64: getBase64(state.global)
+})
+
+const mapDispatchToProps = {
+    setBase64: setBase64
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(ImageEditor))
