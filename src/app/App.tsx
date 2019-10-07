@@ -13,6 +13,11 @@ declare let window: any;
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as bitcoinjs from 'bitcoinjs-lib';
+import * as bip39 from 'bip39';
+// @ts-ignore
+import * as bitcoin from 'react-native-bitcoinjs-lib';
+import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils';
 
 export interface Props { }
 interface State { }
@@ -26,6 +31,10 @@ export default class App extends Component<Props, State> {
     window.AsyncStorage = AsyncStorage;
     window.blockstack = require('blockstack');
     window.blockstackRN = require('react-native-blockstack');
+    window.bitcoinjs = bitcoinjs;
+    window.bitcoin = bitcoin;
+    window.getBlockchainIdentities = getBlockchainIdentities;
+    window.bip39 = bip39;
     window.store = store;
   }
  

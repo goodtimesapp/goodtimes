@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView , Image} from 'react-native'
+import { View, Text, ScrollView , Image, FlatList} from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Header from './Header';
@@ -13,16 +13,22 @@ import {
   logout,
   silentLogin,
 } from './../reduxStore/profile/profile.store';
+import { posts, getPosts } from './../reduxStore/posts/posts.store';
 import { getBase64, selectBase64 } from './../reduxStore/global/global.store';
 import { store } from './../reduxStore/configureStore';
 import { withNavigation } from 'react-navigation';
+import { PostsPage } from './posts/Index';
 declare let window: any;
+import { Post } from './../models/Post';
+import Comment from './../models/Comment';
 
 
 interface Props{
     navigation: any,
     silentLogin: (state: any)=> void;
     selectBase64: () => string;
+    posts: Array<Post>;
+    getPosts: (filter: any)=> void;
 }
 
 export class Goodtimes extends Component<Props, State> {
@@ -42,36 +48,41 @@ export class Goodtimes extends Component<Props, State> {
             // or redirect to profile page
             this.props.navigation.navigate('Profile');
         }
+
+       
+        this.props.getPosts({sort: '-createdAt'});
+        
+        
   
     }   
 
     render() {
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <Header />
-                <ScrollView>
-
-                   
-                    
-                    <CardComponent 
-                        likes={19} 
-                        avatar='https://media.bizj.us/view/img/10820856/jimfitterling*750xx771-1028-11-0.png' 
-                        image={'data:image/jpg;base64,' + this.props.selectBase64   }
-                        name='Jim'
-                        summary='&nbsp;Ea do Lorem occaecat laborum do. Minim ullamco ipsum minim eiusmod dolore cupidatat magna exercitation amet proident qui. Est do irure magna dolor adipisicing do quis labore excepteur. Commodo veniam dolore cupidatat nulla consectetur do nostrud ea cupidatat ullamco labore. Consequat ullamco nulla ullamco minim.'
+                { this.props.posts 
+                        ? <FlatList 
+                            data={this.props.posts}
+                            extraData={this.props}
+                            keyExtractor={item  => item._id}
+                            renderItem={({ item }) => 
+                                <CardComponent 
+                                    likes={11} 
+                                    avatar={`https://goodtimes-server.herokuapp.com/api/avatar/${item.attrs.createdBy}`} 
+                                    image={ item.attrs.image   }
+                                    name={item.attrs.createdBy} 
+                                    summary={item.attrs.description}
+                                    createdAt=''
+                                />
+                                            
+                            }
+                                            
                     />
-                    <CardComponent 
-                        likes={3} 
-                        avatar='https://banter-pub.imgix.net/users/nicktee.id' 
-                        image='https://images.unsplash.com/photo-1556909190-eccf4a8bf97a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80'
-                        name='Nick'
-                        summary='&nbsp;Ea do Lorem occaecat laborum do. Minim ullamco ipsum minim eiusmod dolore cupidatat magna exercitation amet proident qui. Est do irure magna dolor adipisicing do quis labore excepteur. Commodo veniam dolore cupidatat nulla consectetur do nostrud ea cupidatat ullamco labore. Consequat ullamco nulla ullamco minim.'
-                    />
-                   <Text/>
-                <Text/>
-                <Text/>
-                <Text/>
-                </ScrollView>
+                        
+                            
+                        
+                    : <Text>Fetching Posts...</Text> 
+                 }
                 
             </View>
         )
@@ -83,13 +94,15 @@ const mapStateToProps: any = (state: State) => ({
     userSession: getUserSession(state.profile),
     getProfileState: getProfileState(state.profile),
     getUserName: getUserName(state.profile),
-    selectBase64: selectBase64(state.global)
+    selectBase64: selectBase64(state.global),
+    posts: posts(state.posts),
 })
 // Actions to dispatch
 const mapDispatchToProps = {
     createAccountSilently:  createAccountSilently,
     logout: logout,
-    silentLogin: silentLogin
+    silentLogin: silentLogin,
+    getPosts: getPosts
 }
 
 // @ts-ignore

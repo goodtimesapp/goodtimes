@@ -8,6 +8,8 @@ import {
 } from "react-native";
 
 import { Card, CardItem, Thumbnail, Body, Left, Right, Button, Icon } from 'native-base'
+import FitImage from 'react-native-fit-image';
+
 
 interface Props {
   likes: number;
@@ -15,6 +17,7 @@ interface Props {
   name: string;
   avatar: string;
   summary: string;
+  createdAt: string;
 }
 
 interface State{
@@ -38,14 +41,12 @@ class CardComponent extends Component<Props, State> {
           <Left>
             <Thumbnail source={{ uri: this.props.avatar }} />
             <Body>
-              <Text>Varun </Text>
-              <Text note>Jan 15, 2018</Text>
+              <Text note>{this.props.createdAt}</Text>
             </Body>
           </Left>
         </CardItem>
         <CardItem cardBody>
-
-          <Image source={{ uri: this.props.image }} style={{ height: 200, width: null, flex: 1 }} />
+            <FitImage source={{ uri: this.props.image }} style={{  borderRadius: 20 }} />
         </CardItem>
         <CardItem style={{ padding: 8 }}>
           <Left>

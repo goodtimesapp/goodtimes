@@ -146,7 +146,7 @@ export default class Blockstack extends Component<Props, State> {
       identityKeypairs
     } = getBlockchainIdentities(masterKeychain, identitiesToGenerate)
 
-    debugger;
+ 
 
     //3) get jwt by creating user session
     console.log(backupPhrase);
@@ -449,7 +449,7 @@ export default class Blockstack extends Component<Props, State> {
         let d = await SecureStorage.getItem('GROUP_MEMBERSHIPS_STORAGE_KEY');
         console.log("GROUP_MEMBERSHIPS_STORAGE_KEY", d)
 
-        debugger;
+      
         this.configInitialAppSession(userData);
         this.configureRadiks();
         await User.createWithCurrentUser();

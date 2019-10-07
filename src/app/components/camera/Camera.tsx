@@ -123,9 +123,12 @@ class Camera extends Component<Props, State> {
         path: imageUrl,
         onDone: () => {
             console.log('on done', imageUrl);
-            this.back();
+            this.setState({
+              visible: false
+            });
             RNFetchBlob.fs.readFile(imageUrl, 'base64').then( (base64) =>{
                 let r = this.props.setBase64(base64);
+                this.props.navigation.navigate('Post', { base64Photo: 'data:image/jpg;base64,' + base64 });
             }); 
         },
         onCancel: () => {

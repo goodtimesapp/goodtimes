@@ -12,7 +12,7 @@ import {
     TouchableOpacity
 } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import { Fab, Icon, Button, Container, Content } from 'native-base';
+import { Fab, Icon, Button, Container, Content, Item } from 'native-base';
 import MapViewDirections from 'react-native-maps-directions';
 // @ts-ignore
 import { GOOGLE_MAPS_APIKEY } from 'react-native-dotenv';
@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import { Location } from './../../models/Location';
 import HeaderComponent from './../Header';
 import Amount from '../plasticoin/Amount';
+import { rando } from './../../utils/profile'
 
 const Images = [
     { uri: "https://www.aviewoncities.com/img/chicago/kveus8442b.jpg" },
@@ -139,7 +140,7 @@ export default class Markers extends Component<Props, State> {
             });
     }
 
-    _keyExtractor = (item: any, index: any) => item.title;
+    _keyExtractor = (item: any, index: any) => item.title + rando().toString();
 
     toggleSelected = (item: any) => {
         let items = this.state.markers;
@@ -284,6 +285,7 @@ export default class Markers extends Component<Props, State> {
                         {this.state.markers.map((marker: any, index: any) => (
                             <TouchableHighlight
                                 underlayColor='white'
+                                key={index}
                                 onPress={() => {
                                     Alert.alert(
                                         'Plastic Pickup',

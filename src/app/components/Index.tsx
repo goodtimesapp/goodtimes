@@ -16,6 +16,8 @@ import ExpandPage from './ExpandPage';
 import Goodtimes from './Goodtimes';
 import ImageEditor from './image/ImageEditor';
 const { width, height } = Dimensions.get('screen');
+import { PostsPage } from './posts/Index';
+
 
 
 const MainNavigator = createStackNavigator(
@@ -37,6 +39,9 @@ const MainNavigator = createStackNavigator(
             navigationOptions: {
                 header: null,
             },
+        },
+        Post: { 
+            screen: PostsPage,
         },
         ImageEditor: { 
             screen: ImageEditor,
