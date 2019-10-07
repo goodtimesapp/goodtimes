@@ -117,7 +117,13 @@ export function reducers(state: State = initialState, action: any) {
         }
 
         case ActionTypes.PUT_POST: {
-            return state;
+           
+            let merged = { 
+                ...state,
+                posts: [...state.posts , action.payload]
+            }
+            
+            return merged;
         }
         
 

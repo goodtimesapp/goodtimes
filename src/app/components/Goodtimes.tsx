@@ -60,7 +60,8 @@ export class Goodtimes extends Component<Props, State> {
         return (
             <View style={{flex: 1}}>
                 <Header />
-                { this.props.posts 
+                { 
+                    this.props.posts 
                         ? <FlatList 
                             data={this.props.posts}
                             extraData={this.props}
@@ -73,17 +74,11 @@ export class Goodtimes extends Component<Props, State> {
                                     name={item.attrs.createdBy} 
                                     summary={item.attrs.description}
                                     createdAt=''
-                                />
-                                            
+                                />               
                             }
-                                            
-                    />
-                        
-                            
-                        
-                    : <Text>Fetching Posts...</Text> 
-                 }
-                
+                        />  
+                        : <Text>Fetching Posts...</Text> 
+                }
             </View>
         )
     }
