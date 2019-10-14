@@ -4,6 +4,7 @@ import * as fromTabs from './tabs/reducers/reduce.tabs.reducers';
 import * as fromProfile from './profile/profile.store';
 import * as fromGlobal from './global/global.store';
 import * as fromPosts from './posts/posts.store';
+import * as fromWebsockets from './websockets/websockets.store';
 
 /*
  * This is the root state of the app
@@ -14,7 +15,8 @@ export interface State {
     tabs: fromTabs.State,
     profile: fromProfile.State,
     global: fromGlobal.State,
-    posts: fromPosts.State
+    posts: fromPosts.State,
+    websockets: fromWebsockets.State
 }
 
 /*
@@ -26,6 +28,7 @@ export const initialState: State = {
   profile: fromProfile.initialState,
   global: fromGlobal.initialState,
   posts: fromPosts.initialState,
+  websockets: fromWebsockets.initialState
 }
 
 /*
@@ -37,5 +40,6 @@ export const reducer = combineReducers<State>({
   tabs: fromTabs.reducer,
   profile: fromProfile.reducers,
   global: fromGlobal.reducers,
-  posts: fromPosts.reducers
+  posts: fromPosts.reducers,
+  websockets: fromWebsockets.reducers
 })

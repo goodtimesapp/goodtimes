@@ -69,6 +69,30 @@ module.exports = function(plop) {
     }
   });
 
+  plop.setGenerator('Store', {
+    description: 'Create new store with redux',
+    prompts: [
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Store name:'
+      },
+      {
+        type: 'directory',
+        name: 'directory',
+        message: 'Directory:',
+        basePath: process.cwd()
+      }
+    ],
+    actions: data => {
+      let { spec, directory } = data;
+      storename = data.name;     
+      const actions = [
+        addFileByTplExt(directory, storename + '.store.ts', 'redux/store.tpl'),
+      ];
+      return actions;    
+    }
+  });
   
 
 };
@@ -98,10 +122,9 @@ function addFileByTpl({ directory, componentName, tpl, type, verb }) {
   return { type: 'add', skipIfExists: true, path, templateFile };
 }
 
-function addFileByTplExt({ directory, folderName, file }) {
-  const templateFile = `./templates/${file}.tpl`;
-  const typescriptFile = `{{\'dashCase\' name}}.${file}`;
-  const path = `${process.cwd()}/${directory}/${folderName}/${typescriptFile}`;
+function addFileByTplExt(directory, fileName, tpl) {
+  const templateFile = `./ploptemplates/${tpl}`;
+  const path = `${process.cwd()}/${directory}/${fileName}`;
   return { type: 'add', skipIfExists: true, path, templateFile };
 }
 

@@ -11,7 +11,6 @@ const composeEnhancers = composeWithDevTools({
     // Specify here name, actionsBlacklist, actionsCreators and other options
 });
 
-
 const persistConfig = {
     key: 'root',
     storage

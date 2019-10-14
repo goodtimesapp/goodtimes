@@ -8,7 +8,7 @@ import theme from './native-base-theme/variables/material.js';
 import getTheme from './native-base-theme/components';
 import { PersistGate } from 'redux-persist/integration/react'
 import Index from './components/Index';
-import { View, TouchableOpacity, Text } from 'react-native'
+import { View, TouchableOpacity, Text, AppState, AppStateStatus } from 'react-native'
 declare let window: any;
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
@@ -17,13 +17,17 @@ import * as bitcoinjs from 'bitcoinjs-lib';
 import * as bip39 from 'bip39';
 // @ts-ignore
 import * as bitcoin from 'react-native-bitcoinjs-lib';
+// @ts-ignore
 import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils';
 
 export interface Props { }
-interface State { }
+interface State { 
+  
+}
 export const BLOCKSTACK_STATE_VERSION_KEY = 'BLOCKSTACK_STATE_VERSION'
 
 export default class App extends Component<Props, State> {
+
 
   constructor(props: Props){
     super(props);
@@ -37,8 +41,8 @@ export default class App extends Component<Props, State> {
     window.bip39 = bip39;
     window.store = store;
   }
- 
 
+  
   render (){
     return (
       <StyleProvider style={getTheme(theme)}>

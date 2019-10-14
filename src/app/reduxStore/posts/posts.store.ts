@@ -19,6 +19,7 @@ export enum ActionTypes {
     GET_POST = '[POSTS] GET_POST',
     PUT_POST = '[POSTS] PUT_POST', 
     DELETE_POST = '[POSTS] DELETE_POST',
+    ADD_POST_FROM_WEBSOCKET = '[POSTS] ADD_POST_FROM_WEBSOCKET',
     POSTS_ACTION_STARTED = '[POSTS] POSTS_ACTION_STARTED',
     POSTS_ACTION_SUCCEEDED = '[POSTS] POSTS_ACTION_SUCCEEDED',
     POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED'
@@ -52,6 +53,18 @@ export function putPost(post: Post) {
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.PUT_POST));
+        }
+    }
+}
+
+export function addPostFromWebSocket(post: any) {
+    return async (dispatch: any) => {
+        try {
+            let payload = post;
+            dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.ADD_POST_FROM_WEBSOCKET));
         }
     }
 }
@@ -116,8 +129,23 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
-        case ActionTypes.PUT_POST: {
-            return state;
+        case ActionTypes.PUT_POST : {
+            let clone = [...state.posts];
+            clone.unshift(action.payload);
+            return {
+                ...state,
+                posts: clone
+            }
+        }
+
+        case ActionTypes.ADD_POST_FROM_WEBSOCKET : {
+            return {
+                ...state,
+                posts: [
+                    ...state.posts,
+                    action.payload
+                ]
+            }
         }
         
 
