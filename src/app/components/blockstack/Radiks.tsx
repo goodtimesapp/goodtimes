@@ -24,7 +24,7 @@ export default class Radiks extends Component<Props, State> {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
        
     }
 

@@ -58,13 +58,15 @@ export default class Maps extends Component<Props, State> {
     }
 
 
-    async componentWillMount() {
+    componentWillMount() {
         this.startRadar();
         this.getCurrentLocation();
-        let geos = await this.getGeoFences();
-        this.setState({
-            datas: geos.geofences
+        this.getGeoFences().then( (geos) =>{
+            this.setState({
+                datas: geos.geofences
+            });
         });
+        
     }
 
     getCurrentLocation = () =>{

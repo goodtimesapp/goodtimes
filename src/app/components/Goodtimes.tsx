@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Image, FlatList, AppState, AppStateStatus, ShadowPropTypesIOS } from 'react-native'
+import { View, Text, ScrollView, Image, FlatList, AppState,  RefreshControl } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Header from './Header';
@@ -30,50 +30,63 @@ import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 
 interface Props {
     navigation: any,
-    silentLogin: (state: any) => void;
+    silentLogin: (state: any) => Promise<any>;
     selectBase64: () => string;
     posts: Array<Post>;
-    getPosts: (filter: any) => void;
+    getPosts: (filter: any) =>  Promise<any>;
     websockets: any;
     setupWebsockets: (ws: any) => void;
 }
 
 interface State {
-
+    refreshing: boolean
 }
 
 export class Goodtimes extends Component<Props, State> {
 
+    
+
     constructor(props: Props) {
         super(props);
+        this.state = {
+            refreshing: false
+        }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
 
         let profileState = store.getState().profile;
 
-        if (_.isEmpty(profileState.userSession)) {
-            this.props.navigation.navigate('Profile');
-        } else {
+        // if (_.isEmpty(profileState.userSession)) {
+        //     this.props.navigation.navigate('Profile');
+        // } else {
             // try silent login
-            let loggedin = await this.props.silentLogin(profileState);
+            try{
+                this.props.silentLogin(profileState).then( (loggedin) => {
+                
+                    // @ts-ignore
+                    window.ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
+        
+                    this.props.getPosts({ sort: '-createdAt' })
+                    
+                    this.props.setupWebsockets(window.ws);
+        
+                    // listen for AppState background/foreground changes
+                    // AppState.addEventListener('change', this._handleAppStateChange);
+                });
+            } catch (e){
+                this.props.navigation.navigate('Profile');
+            }
+            
 
-            this.props.getPosts({ sort: '-createdAt' });
+            
 
-            // @ts-ignore
-            window.ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
-
-            this.props.setupWebsockets(window.ws);
-
-            // listen for AppState background/foreground changes
-            // AppState.addEventListener('change', this._handleAppStateChange);
-
-        }
+        //}
 
     }
 
     componentWillUnmount() {
-        AppState.removeEventListener('change', this._handleAppStateChange);
+        // AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
     _handleAppStateChange = (nextAppState: any) => {
@@ -98,6 +111,23 @@ export class Goodtimes extends Component<Props, State> {
 
     };
 
+    onRefresh  = async () =>{
+        this.setState({
+            refreshing: true
+        });
+    
+        await this.props.getPosts({ sort: '-createdAt' })
+
+
+
+        setTimeout( ()=>{
+
+            this.setState({
+                refreshing: false
+            });
+        }, 500 )  
+
+    }
 
     render() {
         return (
@@ -119,9 +149,10 @@ export class Goodtimes extends Component<Props, State> {
                             />
 
                         }
-
+                        refreshControl={
+                            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+                        }
                     />
-
 
 
                     : <Text>Fetching Posts...</Text>
