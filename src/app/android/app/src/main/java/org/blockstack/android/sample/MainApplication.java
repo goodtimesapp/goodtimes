@@ -92,7 +92,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
 
-    long size = 50L * 1024L * 1024L; // 50 MB
+    long size = 999L * 1024L * 1024L; // 999 MB
     com.facebook.react.modules.storage.ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
 
   }
