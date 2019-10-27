@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ScrollView } from 'react-native';
-import { Button, Text, Input, Content, Item, Container } from 'native-base';
+import { Button, Text, Input, Content, Item, Container, Accordion } from 'native-base';
 import { rando, makeUserSession, makeProfileJSON , getPublicKeyFromPrivate, makeNewProfile} from '../../utils/profile';
 // @ts-ignore
 import RNBlockstackSdk from "react-native-blockstack";
@@ -22,7 +22,8 @@ interface Props {
 
 interface State {
     username: string,
-    avatar: string
+    avatar: string,
+    profileData: any
 }
 
 
@@ -32,7 +33,11 @@ export default class Profile extends Component<Props, State> {
         super(props);
         this.state = {
             username: 'good' + rando() + '.id.blockstack',
-            avatar: 'https://gaia.blockstack.org/hub/17xxYBCvxwrwKtAna4bubsxGCMCcVNAgyw/avatar-0'
+            avatar: 'https://gaia.blockstack.org/hub/17xxYBCvxwrwKtAna4bubsxGCMCcVNAgyw/avatar-0',
+            profileData: [{
+                title: "UserData",
+                content: JSON.stringify(this.props.userSession)
+            }]
         }
     }
     
@@ -98,6 +103,15 @@ export default class Profile extends Component<Props, State> {
         let signInResult = await RNBlockstackSdk.signIn();
     }
 
+    componentDidUpdate(data: any){
+        console.log('componentDidUpdate =>', data);
+        if (this.props.userSession !== data.userSession){
+            this.setState({
+                profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
+            });
+        }
+    }
+
 
     render() {
         return (
@@ -160,10 +174,20 @@ export default class Profile extends Component<Props, State> {
                 <Text>Profile</Text>
                 <Text />
                 <Text>User Session</Text>
-                <Text>{JSON.stringify(this.props.userSession)}</Text>
+                
+                    <Accordion
+                        dataArray={this.state.profileData}
+                        icon="add"
+                        expandedIcon="remove"
+                        iconStyle={{ color: "green" }}
+                        expandedIconStyle={{ color: "red" }}
+                    />
+                
+                
+                {/* <Text>{JSON.stringify(this.props.userSession)}</Text>
                 <Text />
                 <Text>Profile State</Text>
-                <Text>{JSON.stringify(this.props.getProfileState)}</Text>
+                <Text>{JSON.stringify(this.props.getProfileState)}</Text> */}
 
                 <Text />
                 <Text />
