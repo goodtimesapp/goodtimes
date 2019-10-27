@@ -4,16 +4,18 @@ import thunk from 'redux-thunk';
 import { State, reducer, initialState } from './index';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import FilesystemStorage from 'redux-persist-filesystem-storage'
 
 
 const composeEnhancers = composeWithDevTools({
     // Specify here name, actionsBlacklist, actionsCreators and other options
 });
 
+
 const persistConfig = {
     key: 'root',
-    storage
+    storage: FilesystemStorage,
+    debug: true
 }  
 const persistedReducer = persistReducer(persistConfig, reducer);
 
@@ -21,9 +23,9 @@ const persistedReducer = persistReducer(persistConfig, reducer);
  * We're giving State interface to create store
  * store is type of State defined in our reducers
  */
-const store = createStore<any, any, any, any>(
+const store = createStore(
     persistedReducer, 
-    initialState, 
+    undefined, 
     composeEnhancers(
         applyMiddleware(thunk)
     )
