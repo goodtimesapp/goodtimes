@@ -27,6 +27,8 @@ interface State {
   visible: boolean,
   imageUrl: any;
   base64: string;
+  mirrorMode: boolean;
+  cameraType: string;
 }
 
 class Camera extends Component<Props, State> {
@@ -37,6 +39,8 @@ class Camera extends Component<Props, State> {
       visible: true,
       imageUrl: '',
       base64: '',
+      cameraType: 'back',
+      mirrorMode: false
     }
   }
 
@@ -52,10 +56,10 @@ class Camera extends Component<Props, State> {
       >
         <View style={styles.container}>
 
-         <TouchableOpacity onPress={ ()=> this.back() } style={styles.back}>
-               <Icon name="arrow-back" style={{ fontSize: 50, color: 'grey' }} />
-            </TouchableOpacity>
+        
      
+      
+         
 
           {/* <Fab
             active={true}
@@ -71,7 +75,8 @@ class Camera extends Component<Props, State> {
               this.camera = ref;
             }}
             style={styles.preview}
-            type={RNCamera.Constants.Type.back}
+            mirrorImage={this.state.mirrorMode}
+            type={this.state.cameraType}
             flashMode={RNCamera.Constants.FlashMode.auto}
             androidCameraPermissionOptions={{
               title: 'Permission to use camera',
@@ -98,14 +103,31 @@ class Camera extends Component<Props, State> {
               <Icon name="camera" style={{ fontSize: 20, color: 'black' }} />
             </Fab> */}
 
-          
-            <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.btn}>
+            <TouchableOpacity onPress={ ()=> this.back() } style={styles.back}>
+               <Icon name="arrow-back" style={{ fontSize: 50, color: 'white' }} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ ()=> this.toggleCamera() } style={styles.cameraToggle}>
+               <Icon name="refresh" style={{ fontSize: 50, color: 'white' }} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ () => this.takePicture.bind(this) } style={styles.btn}>
                <Icon name="camera" style={{ fontSize: 50, color: 'white' }} />
             </TouchableOpacity>
      
         </View>
       </Modal>
     );
+  }
+
+  toggleCamera(){
+    if (this.state.cameraType == 'front'){
+        this.setState({
+          cameraType: 'back'
+        })
+    } else{
+      this.setState({
+        cameraType: 'front'
+      })
+    }
   }
 
   takePicture = async () => {
@@ -211,11 +233,24 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     
   },
+  cameraToggle:{
+    position: 'absolute',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    right: 10, 
+    top: 10, 
+    backgroundColor: 'rgba(52, 52, 52, 0.1)',
+    borderRadius: 50,
+    padding: 8
+  },
   back: {
     position: 'absolute',
     top: 10,
     justifyContent: 'center', 
     alignItems: 'center',
-    left: 0,
+    left: 10,
+    backgroundColor: 'rgba(52, 52, 52, 0.1)',
+    borderRadius: 50,
+    padding: 8
   },
 });

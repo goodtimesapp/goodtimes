@@ -108,7 +108,8 @@ export function logout() {
             await SecureStorage.removeItem('backupPhrase');
             await SecureStorage.removeItem('GROUP_MEMBERSHIPS_STORAGE_KEY');
             await SecureStorage.removeItem('username');
-            const result = 'logout with Blockstack RN or clear Secure Storage'
+            const result = 'logout with Blockstack RN or clear Secure Storage';
+            await AsyncStorage.removeItem('hasSeenIntro');
             // todo if 200 then pass success with no payload {}
             // else dispatch error
             dispatch(succeeded(result, ActionTypes.LOGOUT));

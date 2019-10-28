@@ -28,7 +28,7 @@ export default class Tab extends Component<Props, State> {
     render(){
         return (
         
-            <TouchableOpacity style={this.styles.tab} onPress={(e) => this.props.slide(( this.props.x ))}  >
+            <TouchableOpacity style={this.styles.tab} onPress={ (e) => this.props.slide(( this.props.x ))}  >
                 <View >
                     <Icon style={this.styles.text} name={this.props.icon} />
                     {

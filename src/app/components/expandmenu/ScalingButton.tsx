@@ -43,7 +43,7 @@ const ScalingButton = (props:any) => {
 	});
 
 	return (
-		<TouchableWithoutFeedback onPress={onPress}>
+		<TouchableWithoutFeedback onPress={ ()=> onPress}>
 			<Animated.View style={[ 
 				props.noDefaultStyles ? styles.default_button : styles.button, 
 				props.styles ? props.styles.button : '',

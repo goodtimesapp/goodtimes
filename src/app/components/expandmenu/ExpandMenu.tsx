@@ -93,7 +93,7 @@ export default class ExpandMenu extends Component<Props, State> {
           {
             !this.state.menu_expanded &&
             <View style={[this.styles.tip_menu ]}>
-                <TouchableOpacity onPress={this.openMenu.bind(this)} style={{flex: 1}}>
+                <TouchableOpacity onPress={ ()=> this.openMenu.bind(this)} style={{flex: 1}}>
                   <View>
                     {this.props.menuView}
                   </View>
@@ -104,7 +104,7 @@ export default class ExpandMenu extends Component<Props, State> {
           {
             this.state.menu_expanded &&
             <View style={{flexDirection: 'column'}}>
-              <ScalingButton onPress={this.hideMenu.bind(this)} noDefaultStyles={true}>
+              <ScalingButton onPress={ ()=> this.hideMenu.bind(this)} noDefaultStyles={true}>
                 <Icon style={{ paddingTop: 16, fontSize: 44, color: 'white', marginBottom: 0 }}  name="close-circle-outline" />
               </ScalingButton>
               <View>

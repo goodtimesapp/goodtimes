@@ -10,6 +10,7 @@ import {
 } from './../../reduxStore/profile/profile.store';
 import Profile from './Profile'
 import Radiks from './Radiks'
+import LoginSplash from './LoginSplash';
 
 // Global State
 const mapStateToProps: any = (state: State) => ({
@@ -27,3 +28,4 @@ const mapDispatchToProps = {
 
 export let ProfilePage = connect<any, any, any>(mapStateToProps, mapDispatchToProps)(Profile);
 export let RadiksPage = connect<any, any, any>(mapStateToProps, mapDispatchToProps)(Radiks);
+export let LoginSplashPage = connect<any, any, any>(mapStateToProps, mapDispatchToProps)(LoginSplash);
