@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Image, FlatList, AppState,  RefreshControl } from 'react-native'
+import { View, Text, ScrollView, Image, FlatList, AppState,  RefreshControl, ActivityIndicator } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Header from './Header';
@@ -39,7 +39,8 @@ interface Props {
 }
 
 interface State {
-    refreshing: boolean
+    refreshing: boolean,
+    isLoading: boolean
 }
 
 export class Goodtimes extends Component<Props, State> {
@@ -49,7 +50,8 @@ export class Goodtimes extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            refreshing: false
+            refreshing: false,
+            isLoading: true
         }
     }
 
@@ -118,8 +120,6 @@ export class Goodtimes extends Component<Props, State> {
     
         await this.props.getPosts({ sort: '-createdAt' })
 
-
-
         setTimeout( ()=>{
 
             this.setState({
@@ -133,7 +133,8 @@ export class Goodtimes extends Component<Props, State> {
         return (
             <View style={{ flex: 1 }}>
                 <Header />
-                {this.props.posts
+
+                { this.props.posts
                     ? <FlatList
                         data={this.props.posts}
                         extraData={this.props}
@@ -157,6 +158,8 @@ export class Goodtimes extends Component<Props, State> {
 
                     : <Text>Fetching Posts...</Text>
                 }
+
+               
 
             </View>
         )

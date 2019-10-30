@@ -32,11 +32,11 @@ export class Splash extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
-    this.setState({
-      showIntro: false,
-      visible: false
-    });
-    // await this.checkIfUserHasSeenIntro();
+    // this.setState({
+    //   showIntro: false,
+    //   visible: false
+    // });
+    await this.checkIfUserHasSeenIntro();
   }
 
   async checkIfUserHasSeenIntro() {
@@ -62,6 +62,12 @@ export class Splash extends React.Component<Props, State> {
       AsyncStorage.setItem('hasSeenIntro', 'false');
       // do nothing continue to intro page
     }
+  }
+
+  closeSplashModal(){
+    this.setState({
+      visible: false
+    });
   }
 
 
@@ -134,7 +140,7 @@ export class Splash extends React.Component<Props, State> {
           
           {
             item.login
-              ? <LoginSplashPage checkIfUserHasSeenIntro={this.checkIfUserHasSeenIntro.bind(this)}></LoginSplashPage>
+              ? <LoginSplashPage closeSplashModal={this.closeSplashModal.bind(this)}></LoginSplashPage>
               : null
           }
         </View>

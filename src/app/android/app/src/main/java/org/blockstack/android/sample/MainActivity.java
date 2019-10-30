@@ -16,6 +16,7 @@ import org.blockstack.reactnative.RNBlockstackSdkModule;
 
 import javax.annotation.Nullable;
 
+
 public class MainActivity extends ReactActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();

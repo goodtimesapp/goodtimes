@@ -180,6 +180,7 @@ dependencies {
     implementation 'io.radar:sdk:2.1.+'
     implementation project(':react-native-maps')
     compile project(':react-native-vector-icons')
+    compile project(':react-native-blockstack')
 }
 
 // Run this once to be able to run the application with BUCK

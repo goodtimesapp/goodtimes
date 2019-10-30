@@ -35,7 +35,6 @@ import io.radar.sdk.Radar;
 import com.oblador.vectoricons.VectorIconsPackage;
 
 
-
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView } from 'react-native';
+import { ScrollView, ActivityIndicator, View } from 'react-native';
 import { Button, Text, Input, Content, Item, Container, Accordion } from 'native-base';
 import { rando, makeUserSession, makeProfileJSON , getPublicKeyFromPrivate, makeNewProfile} from '../../utils/profile';
 // @ts-ignore
@@ -21,13 +21,14 @@ interface Props {
     logout: () => void;
     silentLogin: () => void;
     navigation: any,
-    checkIfUserHasSeenIntro: () => Promise<any>;
+    closeSplashModal: any
 }
 
 interface State {
     username: string,
     avatar: string,
-    profileData: any
+    profileData: any,
+    isLoading: boolean
 }
 
 
@@ -43,12 +44,16 @@ class LoginSplash extends Component<Props, State> {
                 title: "UserData",
                 content: JSON.stringify(this.props.userSession)
             }],
+            isLoading: false
         }
     }
     
   
 
     async loginWithBlockstack(){
+
+        this.setLoader(true); 
+
         var app = this;
         var pendingAuth = false;
         let result;
@@ -117,15 +122,37 @@ class LoginSplash extends Component<Props, State> {
             this.setState({
                 profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
             });
-           
+            this.props.closeSplashModal();
             this.props.navigation.navigate('Index');
         }
     }
 
 
+    setLoader(isLoading){
+        this.setState({
+            isLoading: isLoading
+        })
+    }
+
+
+    createAccount(){
+        this.setLoader(true); 
+        this.props.createAccountSilently(this.state.username, this.state.avatar)
+    }
+
     render() {
         return (
             <ScrollView style={{ padding: 16, width: '100%', marginTop: 20}}>
+               
+               {
+                    this.state.isLoading
+                    ? <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', zIndex: 200}}>
+                        <ActivityIndicator size="large" color="#64B5F6" />
+                      </View>
+                    : null   
+               } 
+                               
+                
                 <Button bordered rounded danger onPress={() => this.loginWithBlockstack() }>
                     <Text style={{ width: '100%', alignContent: 'center'}}>Login / Signup</Text>
                 </Button>
@@ -133,7 +160,7 @@ class LoginSplash extends Component<Props, State> {
                 <Text />
                 <Text style={{color: 'white'}}>Or</Text>
                 <Text />
-                <Button transparent bordered rounded danger onPress={() => this.props.createAccountSilently(this.state.username, this.state.avatar)}>
+                <Button transparent bordered rounded danger onPress={() =>  this.createAccount() }>
                     <Text>Continue as guest</Text>
                 </Button>
             </ScrollView>
