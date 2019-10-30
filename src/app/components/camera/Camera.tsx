@@ -109,7 +109,7 @@ class Camera extends Component<Props, State> {
             <TouchableOpacity onPress={ ()=> this.toggleCamera() } style={styles.cameraToggle}>
                <Icon name="refresh" style={{ fontSize: 50, color: 'white' }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={ () => this.takePicture.bind(this) } style={styles.btn}>
+            <TouchableOpacity onPress={ this.takePicture.bind(this) } style={styles.btn}>
                <Icon name="camera" style={{ fontSize: 50, color: 'white' }} />
             </TouchableOpacity>
      
