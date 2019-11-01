@@ -11,6 +11,7 @@ import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '
 import {RadiksPage} from './Index';
 import { withNavigation } from 'react-navigation';
 import {Splash} from './../Splash';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 interface Props {
@@ -128,7 +129,7 @@ class LoginSplash extends Component<Props, State> {
     }
 
 
-    setLoader(isLoading){
+    setLoader(isLoading:any){
         this.setState({
             isLoading: isLoading
         })
@@ -136,6 +137,7 @@ class LoginSplash extends Component<Props, State> {
 
 
     createAccount(){
+        
         this.setLoader(true); 
         this.props.createAccountSilently(this.state.username, this.state.avatar)
     }
@@ -160,8 +162,14 @@ class LoginSplash extends Component<Props, State> {
                 <Text />
                 <Text style={{color: 'white'}}>Or</Text>
                 <Text />
+                <Item rounded style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+                    <Input style={{color: 'white'}} onEndEditing={ (e: any)=>{
+                        AsyncStorage.setItem('tempId', e.nativeEvent.text);
+                    }} />
+                </Item>
+                <Text />
                 <Button transparent bordered rounded danger onPress={() =>  this.createAccount() }>
-                    <Text>Continue as guest</Text>
+                    <Text style={{color: 'white'}}>Continue as guest</Text>
                 </Button>
             </ScrollView>
         )

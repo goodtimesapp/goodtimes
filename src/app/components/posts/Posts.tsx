@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Button, Text, TextInput } from 'react-native';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
+import AsyncStorage from "@react-native-community/async-storage";
 
 interface Props {
     posts: Array<Post>,
@@ -28,12 +29,15 @@ export default class PostComponent extends Component<Props, State>{
         
     }
 
-    putPost() {
+    async putPost() {
+
+
+        let uid = await AsyncStorage.getItem('tempId')  || 'nicktee.id';
 
         let p: Post = new Post({
             description: this.state.desc,
             image: this.props.navigation.getParam('base64Photo'),
-            createdBy: 'nicktee.id',
+            createdBy: uid,
             likes: 2
         });
       

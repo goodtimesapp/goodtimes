@@ -22,8 +22,8 @@
     "androidPre:debugReduxproxy": "adb reverse tcp:8083 tcp:8083",
     "androidPre:radiksProxy": "adb reverse tcp:5000 tcp:5000",
     "android:start": "react-native run-android",
-    "android:debugwin": "cd /c/Users/u402046/Downloads/rn-debugger-windows-x64 && start react-native-debugger.exe",
-    "1android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app"
+    "1android:debugwin": "cd /c/Users/u402046/Downloads/rn-debugger-windows-x64 && start react-native-debugger.exe",
+    "android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",

@@ -6,6 +6,7 @@ import { withNavigation } from 'react-navigation';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 import Message from './../../models/Message';
+import AsyncStorage from "@react-native-community/async-storage";
 
 
 interface Props {
@@ -43,6 +44,24 @@ export class Chat extends React.Component<Props, State> {
       ]
     });
     this.setupWebSocket();
+
+    AsyncStorage.getItem('tempId').then( (id)=>{
+      this.setState({
+        messages: [
+          {
+            _id: 1,
+            text: "welcome to the chatroom",
+            createdAt: new Date(),
+            user: {
+              _id: 1,
+              name: id,
+              avatar: `https://ui-avatars.com/api/?name=${id}`
+            }
+          }
+        ]
+      })
+    } )
+
   }
 
   onSend(messages = []) {
@@ -72,10 +91,10 @@ export class Chat extends React.Component<Props, State> {
             </Button>
           </Left>
           <Body>
-            <Title style={{color: '#78909C'}}>J Fitty</Title>
+            <Title style={{color: '#78909C'}}>Chat Room</Title>
           </Body>
           <Right>
-            <Thumbnail small source={{uri: 'https://media.bizj.us/view/img/10820856/jimfitterling*750xx771-1028-11-0.png'}} />
+            {/* <Thumbnail small source={{uri: 'https://media.bizj.us/view/img/10820856/jimfitterling*750xx771-1028-11-0.png'}} /> */}
           </Right>
           {/* <Body style={{ marginTop: -10 }}>
                     <View>

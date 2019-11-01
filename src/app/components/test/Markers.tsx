@@ -34,7 +34,7 @@ const ASPECT_RATIO = width / height;
 const CARD_HEIGHT = height / 4;
 const CARD_WIDTH = CARD_HEIGHT - 50;
 const origin = { latitude: 41.958582, longitude: -87.668744 };
-const destination = { latitude: 34.001409, longitude: -118.478107 };
+const destination = { latitude: 41.958582, longitude: -87.66874467 };
 
 interface Props {
     locations: Location[]
@@ -229,7 +229,7 @@ export default class Markers extends Component<Props, State> {
                         })}
 
 
-                        <MapViewDirections
+                        {/* <MapViewDirections
                             origin={origin}
                             // waypoints={null}
                             destination={destination}
@@ -256,7 +256,7 @@ export default class Markers extends Component<Props, State> {
                             onError={(errorMessage) => {
                                 // console.log('GOT AN ERROR');
                             }}
-                        />
+                        /> */}
 
 
                     </MapView>

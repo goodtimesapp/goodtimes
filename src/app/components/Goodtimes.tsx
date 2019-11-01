@@ -142,7 +142,7 @@ export class Goodtimes extends Component<Props, State> {
                         renderItem={({ item }) =>
                             <CardComponent
                                 likes={11}
-                                avatar={`https://goodtimes-server.herokuapp.com/api/avatar/${item.attrs.createdBy}`}
+                                avatar={ `https://ui-avatars.com/api/?name=${item.attrs.createdBy}` }
                                 image={item.attrs.image}
                                 name={item.attrs.createdBy}
                                 summary={item.attrs.description}
