@@ -14,6 +14,7 @@ import Splash from './Splash';
 import Bar from './../components/bottombar/bar';
 import ExpandPage from './ExpandPage';
 import Goodtimes from './Goodtimes';
+import DiscoverFeed from './discover/DiscoverFeed';
 import ImageEditor from './image/ImageEditor';
 const { width, height } = Dimensions.get('screen');
 import { PostsPage } from './posts/Index';
@@ -63,6 +64,12 @@ const MainNavigator = createStackNavigator(
         },
         ExpandPage: { 
             screen: ExpandPage,
+            navigationOptions: {
+                header: null
+            },
+        },
+        DiscoverFeed :{ 
+            screen: DiscoverFeed,
             navigationOptions: {
                 header: null
             },

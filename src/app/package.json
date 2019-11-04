@@ -114,7 +114,7 @@
     "@types/jest": "^24.0.16",
     "@types/node-sass": "^4.11.0",
     "@types/react": "^16.8.24",
-    "@types/react-native": "^0.60.2",
+    "@types/react-native": "^0.60.22",
     "@types/react-test-renderer": "^16.8.3",
     "@types/redux-logger": "^3.0.7",
     "babel-jest": "^24.8.0",

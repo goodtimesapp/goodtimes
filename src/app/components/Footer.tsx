@@ -25,12 +25,16 @@ class FooterComponent extends Component<Props, State> {
             onPress={() => this.props.navigation.navigate('Goodtimes')}>
             <Badge danger><Text>51</Text></Badge>
             <Icon name='happy' />
-            <Text>Goodtimes</Text>
+            <Text>Here</Text>
           </Button>
           <Button 
-            onPress={() => this.props.navigation.navigate('Markers')}>
-            <Icon active name='navigate' />
+            onPress={() => this.props.navigation.navigate('DiscoverFeed')}>
+            <Icon active name='md-boat' />
             <Text>Discover</Text>
+          </Button>
+          <Button onPress={() => this.props.navigation.navigate('Markers')}>
+            <Icon name='md-people' />
+            <Text>Friends</Text>
           </Button>
           <Button onPress={() => this.props.navigation.navigate('Profile')}>
             <Icon name='person' />
