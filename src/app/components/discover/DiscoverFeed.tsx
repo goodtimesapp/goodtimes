@@ -14,10 +14,11 @@ import Comment from './../../models/Comment';
 import _ from 'underscore';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
-
 import { Card, CardItem, Thumbnail, Body, Left, Right, Button, Icon } from 'native-base'
 import FitImage from 'react-native-fit-image';
-
+import theme from '@theme/variables/commonColor.js';
+// @ts-ignore
+import { GOOGLE_MAPS_APIKEY } from 'react-native-dotenv';
 
 
 interface Props {
@@ -32,9 +33,8 @@ interface State {
 
 export class DiscoverFeed extends Component<Props, State> {
 
-    
-
-    constructor(props: Props) {
+  
+    constructor(props: Props) {      
         super(props);
         this.state = {
             refreshing: false,
@@ -49,7 +49,7 @@ export class DiscoverFeed extends Component<Props, State> {
                     }
                 },
                 {
-                    _id: 1,
+                    _id: 2,
                     attrs: {
                         createdBy: 'nicktee.id',
                         image: '',
@@ -101,11 +101,25 @@ export class DiscoverFeed extends Component<Props, State> {
                           <Left>
                             <Thumbnail source={{ uri: 'https://ui-avatars.com/api/?name=Nick%20Theile'}} />
                             <Body>
-                              <Text>Starbucks - 3 mins ago</Text>
+                             <View style={{flex:1 , flexDirection: 'row',alignItems: 'center'}}>
+                                <View style={{backgroundColor: theme.brandDark, height: 28, paddingBottom: 4,  paddingTop: 4, paddingLeft: 8, paddingRight: 8, borderRadius: 14, alignItems: 'center'}}>
+                                  <Text style={{color: 'white', fontSize: 16}}>
+                                    Starbucks <Icon name="md-cafe" style={{color: 'white', fontSize: 16}}  /> 
+                                  </Text>
+                                </View>
+                                <Text style={{fontSize: 16}}> 3 mins ago</Text>
+                              </View>
                             </Body>
                           </Left>
                           <Right>
-                          <Thumbnail source={{ uri: 'https://maps.googleapis.com/maps/api/staticmap?center=1601%20W%20Irving%20Park%20Rd,%20Chicago,%20IL%2060613&zoom=16&size=120x120&key=AIzaSyB36iGojlUc1mflgt1_wUzVupy4yTTtfOE'}} />
+                            <View style={{flex: 1}}>
+                              <Thumbnail source={{ uri: `https://maps.googleapis.com/maps/api/staticmap?center=1601%20W%20Irving%20Park%20Rd,%20Chicago,%20IL%2060613&zoom=16&size=120x120&key=${GOOGLE_MAPS_APIKEY}`}} />
+                              <View style={{backgroundColor: theme.brandInfo , height: 16, width: 70, position: 'absolute', bottom: -1, left: -6, padding: 1, borderRadius: 10, alignItems: 'center'}}>
+                                  <Text style={{color: 'white', fontSize: 10}}>
+                                    3 min <Icon name="md-walk" style={{color: 'white', fontSize: 10}}  />
+                                  </Text>
+                              </View>
+                            </View>
                           </Right>
                         </CardItem>
                         <CardItem cardBody>
@@ -135,9 +149,9 @@ export class DiscoverFeed extends Component<Props, State> {
                           <Body>
                             <Text>
                               <Text style={{ fontWeight: "900" }}>
-                                  Nick 
+                                  Nick &nbsp;
                                 </Text>
-                              Textefsdlkvmfkls  nefklmfe
+                              At Starbucks drinking a coffee working on my novel! Come over and lets brainstorm :) 
                             </Text>
                           </Body>
                         </CardItem>

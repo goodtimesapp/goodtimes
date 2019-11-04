@@ -5,7 +5,8 @@ module.exports = {
       "module-resolver",
       {
         "alias": {
-          "@utils": "./utils"
+          "@utils": "./utils",
+          "@theme": ["./native-base-theme"]
         }
       }
     ]
