@@ -13,12 +13,14 @@ import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
 import _ from 'underscore';
 // @ts-ignore
-import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
+import { GOODTIMES_RADIKS_SERVER, GOOGLE_MAPS_APIKEY, GOOGLE_MAPS_ENDPOINT } from 'react-native-dotenv';
 import { Card, CardItem, Thumbnail, Body, Left, Right, Button, Icon } from 'native-base'
 import FitImage from 'react-native-fit-image';
+// @ts-ignore
 import theme from '@theme/variables/commonColor.js';
 // @ts-ignore
-import { GOOGLE_MAPS_APIKEY } from 'react-native-dotenv';
+import { getCurrentLocation, whereami } from './../../utils/location-utils';
+import { isTSAnyKeyword } from '@babel/types';
 
 
 interface Props {
@@ -28,7 +30,8 @@ interface Props {
 interface State {
     refreshing: boolean,
     isLoading: boolean,
-    posts: any
+    posts: any,
+    nearByPlaces: any
 }
 
 export class DiscoverFeed extends Component<Props, State> {
@@ -56,13 +59,24 @@ export class DiscoverFeed extends Component<Props, State> {
                         description: 'desc'
                     }
                 }
-            ]
+            ],
+            nearByPlaces: null
         }
     }
 
     componentDidMount() {
+        this.getPlacesNearMe();
+    }
 
+    getPlacesNearMe(){
+      getCurrentLocation().then( async (location: any) =>{
+        let placesJSON: any = await whereami(location, 50);
 
+        let places = await placesJSON.json();
+        this.setState({
+          nearByPlaces: places
+        })
+      })
     }
 
 
@@ -88,14 +102,14 @@ export class DiscoverFeed extends Component<Props, State> {
             <View style={{ flex: 1 }}>
                 <Header />
 
-                { this.state.posts
+                { this.state.nearByPlaces
                     ? <FlatList
-                        data={this.state.posts}
-                        keyExtractor={ (item: any) => item._id}
+                        data={this.state.nearByPlaces.results}
+                        initialNumToRender={2}
+                        keyExtractor={ (item: any) => item.id}
                         renderItem={({ item }) =>
                            
-                       
-
+                    
                         <Card style={{ width: '100%', marginLeft: 0 }}>
                         <CardItem style={{ width: '100%' }}>
                           <Left>
@@ -105,7 +119,7 @@ export class DiscoverFeed extends Component<Props, State> {
                                 <View style={{backgroundColor: theme.brandDark, height: 28, paddingBottom: 4,  paddingTop: 4, paddingLeft: 8, paddingRight: 8, borderRadius: 14, alignItems: 'center'}}>
                                   <TouchableOpacity>
                                     <Text style={{color: 'white', fontSize: 16}}>
-                                      Starbucks <Icon name="md-cafe" style={{color: 'white', fontSize: 16}}  /> 
+                                      {item.name} <Icon name="md-cafe" style={{color: 'white', fontSize: 16}}  /> 
                                     </Text>
                                   </TouchableOpacity>                                  
                                 </View>
@@ -116,7 +130,7 @@ export class DiscoverFeed extends Component<Props, State> {
                           <Right>
                             <View style={{flex: 1}}>
                               <TouchableOpacity>
-                                <Thumbnail source={{ uri: `https://maps.googleapis.com/maps/api/staticmap?center=1601%20W%20Irving%20Park%20Rd,%20Chicago,%20IL%2060613&zoom=16&size=120x120&key=${GOOGLE_MAPS_APIKEY}`}} />
+                                <Thumbnail source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/staticmap?center=${item.geometry.location.lat},${item.geometry.location.lng}&zoom=16&size=120x120&key=${GOOGLE_MAPS_APIKEY}`}} />
                                 <View style={{backgroundColor: theme.brandInfo , height: 16, width: 70, position: 'absolute', bottom: -1, left: -6, padding: 1, borderRadius: 10, alignItems: 'center'}}>
                                     <Text style={{color: 'white', fontSize: 10}}>
                                       3 min <Icon name="md-walk" style={{color: 'white', fontSize: 10}}  />
@@ -127,7 +141,12 @@ export class DiscoverFeed extends Component<Props, State> {
                           </Right>
                         </CardItem>
                         <CardItem cardBody>
-                            <FitImage source={{ uri: 'https://images.unsplash.com/photo-1520552626357-c2f0f963d4bb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80' }} style={{  borderRadius: 20 }} />
+                          {
+                            item.photos
+                            ? <FitImage source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${GOOGLE_MAPS_APIKEY}` }} style={{  borderRadius: 20 }} />
+                            : <FitImage source={{ uri: 'https://images.unsplash.com/photo-1520552626357-c2f0f963d4bb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80' }} style={{  borderRadius: 20 }} />
+                          }
+                            
                         </CardItem>
                         <CardItem style={{ padding: 8 }}>
                           <Left>
@@ -167,7 +186,7 @@ export class DiscoverFeed extends Component<Props, State> {
                     />
 
 
-                    : <Text>Fetching Posts...</Text>
+                    : <Text style={{alignItems: 'center'}}>Fetching Place...</Text>
                 }
 
             </View>

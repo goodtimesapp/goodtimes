@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import io.radar.sdk.Radar;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 
 
 public class MainApplication extends Application implements ReactApplication {
@@ -71,7 +72,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNRadarPackage(),
             new MapsPackage(),
             new RNBlockstackSdkPackage(),
-              new VectorIconsPackage()
+              new VectorIconsPackage(),
+              new RNPermissionsPackage()
       );
     }
 

@@ -76,6 +76,7 @@
     "react-native-maps": "https://github.com/react-native-community/react-native-maps.git",
     "react-native-maps-directions": "^1.7.0",
     "react-native-parallax-scroll-view": "^0.21.3",
+    "react-native-permissions": "^2.0.3",
     "react-native-photo-editor": "0.0.7",
     "react-native-radar": "^2.1.8",
     "react-native-randombytes": "^3.5.3",

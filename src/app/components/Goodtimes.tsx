@@ -138,6 +138,7 @@ export class Goodtimes extends Component<Props, State> {
                     ? <FlatList
                         data={this.props.posts}
                         extraData={this.props}
+                        initialNumToRender={2}
                         keyExtractor={item => item._id}
                         renderItem={({ item }) =>
                             <CardComponent
