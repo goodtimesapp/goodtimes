@@ -83,7 +83,7 @@ export class Chat extends React.Component<Props, State> {
 
   render() {
     return (
-      <Container>
+      <Container >
         <Header>
           <Left >
             <Button transparent onPress={() => this.closeDrawer()} >
@@ -109,14 +109,16 @@ export class Chat extends React.Component<Props, State> {
                     </Button>
                 </Right> */}
         </Header>
-        <GiftedChat
-          messages={this.state.messages}
-          showUserAvatar={true}
-          showAvatarForEveryMessage={true}
-          user={{
-            _id: 1
-          }}
-          onSend={messages => this.onSend(messages)}></GiftedChat>
+          <GiftedChat
+            messages={this.state.messages}
+            showUserAvatar={true}
+            showAvatarForEveryMessage={true}
+            user={{
+              _id: 1
+            }}
+            onSend={messages => this.onSend(messages)}
+            
+            ></GiftedChat>
       </Container>
     )
   }
