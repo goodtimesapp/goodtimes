@@ -116,7 +116,7 @@ const DrawerRight = createDrawerNavigator({
     drawerPosition: 'right',
     drawerType: "slide",
     contentComponent: (props:any) => (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='always'>
           <SafeAreaView style={{flex: 1}} forceInset={{ top: 'always', horizontal: 'never' }}>
             <Chat />
           </SafeAreaView>

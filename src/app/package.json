@@ -23,7 +23,9 @@
     "androidPre:radiksProxy": "adb reverse tcp:5000 tcp:5000",
     "android:start": "react-native run-android",
     "1android:debugwin": "cd /c/tools/ReactNativeDebugger && start react-native-debugger.exe",
-    "android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app"
+    "android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app",
+    "apk": "cd android && ./gradlew assembleRelease",
+    "apk:run": "react-native run-android --variant=release"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
