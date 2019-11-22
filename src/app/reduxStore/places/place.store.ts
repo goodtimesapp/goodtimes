@@ -41,7 +41,13 @@ export function getPlace(json: any, authToken: any){
                     // (repeat until the key expires)
                 // (y) get the key from an admin or from the central server (if empty place)
 
+
+            ///
+            /// Place Admin Key Exchange
+            ///
             
+            // a key reqest comes from the websocket
+
             let payload = '';
             dispatch(succeeded(payload, ActionTypes.GET_PLACE));
         } catch(e) {

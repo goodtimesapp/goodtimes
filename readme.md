@@ -3,6 +3,52 @@ Goodtimes
 
 The social app for where you're at! :dark_sunglasses:  [privacy included] :lock::lock::lock: 
 
+Promotes healthy connections. Join now, connect in real life and get your headspace back! 
+
+Make Goodtimes 🤙
+
+
+Problem with social networks today
+----------------------------------
+- Dunbars law states that a person can only maintain 150 social relationships. 
+- Why do people have thousands of followers on social media, most of whom they have never met?
+- Why do people constantly compare themselves to others? (like counts, how many vactions a "friend" goes on etc...)
+- This can lead to depression, isolation, anxiety, and fear of missing out.
+- Many people live in the past on social media...maybe that is becuase the past is never deleted.
+
+
+Solution
+---------
+Go out and live real life for today!
+
+Problem
+--------
+- Maybe you are shy
+- Maybe you are new to town
+- Maybe you simply need change
+- Maybe you need an ice breaker
+- Maybe you don't know where to go
+- Maybe you have a hobby but can't find anybody that shares your interest
+
+Goodtimes Features
+------------------
+ - 🎗 Build healthy social relationships at the places you visit the most
+ - 🏡 Built around local communities
+- Make friends, old and new
+- Discover local people and places with similar interests
+- Go to a place, engage socailly with a digital ice breaker
+
+Use Cases
+---------
+- Particiate in a local group chat --> then chat in real life
+- Like a photo at the coffee shop your are at --> then discuss it in real life with the photographer
+- Share a file with everybody ar a meetup
+
+Easy, Low Friction
+-----------
+- You don't to search and add people, if you are near them you can communicate...just like in real life 👌
+
+
 
 Setup and Install (Android)
 -----------------------------
