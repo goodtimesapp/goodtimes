@@ -37,6 +37,8 @@ Goodtimes Features
 - Make friends, old and new
 - Discover local people and places with similar interests
 - Go to a place, engage socailly with a digital ice breaker
+- Everything is deleted at the end of each day (don't worry your media and pictures are safe in your own storage bucket, only for your eyes 👀to see)
+- We don't track you. In fact, it's end to end encrypted and you are the only one with the key.
 
 Use Cases
 ---------
