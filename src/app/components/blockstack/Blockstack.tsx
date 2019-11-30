@@ -13,7 +13,7 @@ import Message from './../../models/Message';
 import { List, ListItem, Left, Right, Icon, Container, Content } from 'native-base';
 import HeaderComponent from "../Header";
 // @ts-ignore
-import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 // @ts-ignore
 import * as bitcoin from 'react-native-bitcoinjs-lib';
 import * as blockstack from 'blockstack';
@@ -534,7 +534,7 @@ export default class Blockstack extends Component<Props, State> {
   configureRadiks() {
 
     configure({
-      apiServer: `https://${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
+      apiServer: `${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
       userSession: this.state.usession
     });
     console.log('configure radiks', RNBlockstackSdk);
@@ -614,7 +614,7 @@ export default class Blockstack extends Component<Props, State> {
     console.log('setting up websocket....');
 
     // @ts-ignore
-    var ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
+    var ws = new WebSocket(`${GOODTIMES_RADIKS_WEBSOCKET}/radiks/stream`);
     ws.onopen = () => {
       // connection opened
       ws.send('something'); // send a message

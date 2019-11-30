@@ -2,20 +2,33 @@ import { createSelector } from 'reselect';
 // @ts-ignore
 const API_ENDPOINT = '';
 import { UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
+import Message from './../../models/Message';
 
 
 //#region state
 export interface State {
-    place: string
+    place: string,
+    placeId: string,
+    key: string,
+    websocket: any
 }
 export const initialState: State = {
-    place: ''
+    place: '',
+    placeId: '',
+    key: '',
+    websocket: null
 }
 //#endregion state
 
 //#region actions
-export enum ActionTypes{
+export enum ActionTypes {
+    SETUP_WEBSOCKET = "[PLACE] Setup websocket",
+    REQUEST_KEY = "[PLACE] Request a room key ",
+    GET_PLACE_DATA = "[PLACE] GET PLACE DATA",
     GET_PLACE = "[PLACE] GET PLACE",
+    GET_PLACE_KEY = "[PLACE] GET PLACE KEY",
     PUT_PLACE = "[PLACE] PUT PLACE",
     POST_PLACE = "[PLACE] POST  PLACE",
     DELETE_PLACE = "[PLACE] DELETE PLACE",
@@ -24,43 +37,101 @@ export enum ActionTypes{
     PLACE_ACTION_FAILED = "[PLACE] PLACE Action FAILED",
 }
 
-export function getPlace(json: any, authToken: any){
+
+export function setupWebsocket(placeId: string) {
     return async (dispatch: any) => {
         dispatch(started());
-        try{
-            
-            ///
-            /// Place Key Algorithm
-            ///
+        try {
+            // @ts-ignore
+            let wsEndpoint = `${GOODTIMES_RADIKS_WEBSOCKET}/place/${placeId}`;
+            // @ts-ignore
+            let ws = new WebSocket(wsEndpoint);
+            ws.onopen = () => {
+                // connection opened
+                console.log(`websocket opened to ${wsEndpoint}`);
+                // ws.send('something'); // send a message
+            };
+            ws.onmessage = (e: any) => {
+                // a message was received
+                console.log(`[MSG_RECIEVED from ${placeId}]`, e.data);
+                try {
+                    let data = JSON.parse(e.data);
+                    let modelType = data.radiksType;
+                    switch (modelType) {
+                        case "Message":
+                            console.log('message recieved from ' , data);
+                        default:
+                            return;
+                    }
+                } catch (e) { }
+            };
+            dispatch(succeeded(ws, ActionTypes.SETUP_WEBSOCKET));
+        } catch (e) {
+            dispatch(failed(e));
+        }
+    };
+}
 
-            // does the place have an unexpired group key yet? (keys expire every 24 hours)
-                // (n) then, you are the admin and create group key 
-                    // as people enter the place give them the admin key (just in case you leave), i.e gossip the key around
-                    // if everybody leaves the place then temporarily give the key to the central server
-                    // then the next person to enter the place gets control of the admin key to gossip (deleted from central server)
-                    // (repeat until the key expires)
-                // (y) get the key from an admin or from the central server (if empty place)
+// requestKey
+export function requestKey(json: any, authToken: any) {
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
 
+            // open two ws
 
-            ///
-            /// Place Admin Key Exchange
-            ///
-            
-            // a key reqest comes from the websocket
+            // 1 key reciever key ws /place/placeId/publickey 
+
+            // listen for key "ReceiveKey" websocket message
+
+            // 2 data ws /place/placeId
+
+            let keyResp = await fetch(`${API_ENDPOINT}`, {
+                "method": "GET",
+                "headers": {
+                    "accept": "application/json",
+                    "authorization": "Bearer " + authToken,
+                    "content-type": "application/json"
+                },
+                "body": JSON.stringify(json)
+            });
+            // Room key algo
+            // @todo proof of presxense - likilhood rank based on reputation and bluetooth. server passes back key if you are most likley there
+            // locationClaim, placeId, userId
+
+            // https://goodtimes-server.herokuapp.com/place/placeId
+
 
             let payload = '';
             dispatch(succeeded(payload, ActionTypes.GET_PLACE));
-        } catch(e) {
+        } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
         }
     }
 }
 
-export function putPlace(json: any, authToken: any){
+// getPlaceData
+
+
+export function getPlace(json: any, authToken: any) {
     return async (dispatch: any) => {
         dispatch(started());
-        try{
+        try {
+
+            let payload = '';
+            dispatch(succeeded(payload, ActionTypes.GET_PLACE));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e));
+        }
+    }
+}
+
+export function putPlace(json: any, authToken: any) {
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
             fetch(`${API_ENDPOINT}`, {
                 "method": "PUT",
                 "headers": {
@@ -70,21 +141,21 @@ export function putPlace(json: any, authToken: any){
                 },
                 "body": JSON.stringify(json)
             })
-            .then(response => response.json())
-            .then(payload => {
-                dispatch(succeeded(payload, ActionTypes.PUT_PLACE));
-            });
-        } catch(e) {
+                .then(response => response.json())
+                .then(payload => {
+                    dispatch(succeeded(payload, ActionTypes.PUT_PLACE));
+                });
+        } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
         }
     }
 }
 
-export function postPlace(json: any, authToken: any){
+export function postPlace(json: any, authToken: any) {
     return async (dispatch: any) => {
         dispatch(started());
-        try{
+        try {
             fetch(`${API_ENDPOINT}`, {
                 "method": "POST",
                 "headers": {
@@ -94,21 +165,21 @@ export function postPlace(json: any, authToken: any){
                 },
                 "body": JSON.stringify(json)
             })
-            .then(response => response.json())
-            .then(payload => {
-                dispatch(succeeded(payload, ActionTypes.POST_PLACE));
-            });
-        } catch(e) {
+                .then(response => response.json())
+                .then(payload => {
+                    dispatch(succeeded(payload, ActionTypes.POST_PLACE));
+                });
+        } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
         }
     }
 }
 
-export function deletePlace(json: any, authToken: any){
+export function deletePlace(json: any, authToken: any) {
     return async (dispatch: any) => {
         dispatch(started());
-        try{
+        try {
             fetch(`${API_ENDPOINT}`, {
                 "method": "DELETE",
                 "headers": {
@@ -118,11 +189,11 @@ export function deletePlace(json: any, authToken: any){
                 },
                 "body": JSON.stringify(json)
             })
-            .then(response => response.json())
-            .then(payload => {
-                dispatch(succeeded(payload, ActionTypes.DELETE_PLACE));
-            });
-        } catch(e) {
+                .then(response => response.json())
+                .then(payload => {
+                    dispatch(succeeded(payload, ActionTypes.DELETE_PLACE));
+                });
+        } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
         }
@@ -158,10 +229,18 @@ export function failed(error: any) {
 //#endregion actions
 
 //#region reducers
-export function reducers(state: State = initialState, action: any){
-    
-    switch(action.type){
-        
+export function reducers(state: State = initialState, action: any) {
+
+    switch (action.type) {
+
+
+        case ActionTypes.SETUP_WEBSOCKET: {
+            return {
+                ...state,
+                websocket: action.payload
+            }
+        }
+
         case ActionTypes.GET_PLACE: {
             return {
                 ...state,
@@ -193,5 +272,6 @@ export function reducers(state: State = initialState, action: any){
 //#endregion reducers
 
 //#region selectors
-export const placeState = createSelector( (state: State) => state, state => state );
+export const placeState = createSelector((state: State) => state, state => state);
+export const websocket = createSelector((state: State) => state, state => state.websocket);
 //#endregion selectors

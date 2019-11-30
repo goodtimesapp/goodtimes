@@ -88,7 +88,7 @@ export const saveProfileJSON = async (userSession: any, profileJSON: any) => {
 
 export function configureRadiks(userSession: any) {
     configure({
-        apiServer: `https://${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
+        apiServer: `${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
         userSession: userSession
     });
 }

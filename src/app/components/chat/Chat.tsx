@@ -4,7 +4,7 @@ import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { Container, View, Content, Header, Icon, Left, Button, Body, Right, Badge, Title, Thumbnail } from "native-base";
 import { withNavigation } from 'react-navigation';
 // @ts-ignore
-import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import Message from './../../models/Message';
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -129,7 +129,7 @@ export class Chat extends React.Component<Props, State> {
     console.log('setting up websocket....');
 
     // @ts-ignore
-    var ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
+    var ws = new WebSocket(`${GOODTIMES_RADIKS_WEBSOCKET}/radiks/stream`);
     ws.onopen = () => {
       // connection opened
       // ws.send('something'); // send a message

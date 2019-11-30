@@ -2,6 +2,8 @@ import axios, {AxiosInstance} from "axios";
 import { API, accessDenied, apiError, apiStart, apiEnd } from './../reduxStore/common/api';
 import * as moment from 'moment';
 import { store } from './../reduxStore/configureStore';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 
 // redux customa API middleware 
 // https://blog.logrocket.com/data-fetching-in-redux-apps-a-100-correct-approach-4d26e21750fc/
@@ -26,7 +28,7 @@ const websocketMiddleware = ({ dispatch }: any) => (next: any) => async (action:
   }
 
   // @ts-ignore
-  const ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
+  const ws = new WebSocket(`${GOODTIMES_RADIKS_WEBSOCKET}/radiks/stream`);
 
   console.log('setting up websocket....');
 

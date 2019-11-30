@@ -24,8 +24,7 @@ import { Post } from './../models/Post';
 import Comment from './../models/Comment';
 import _ from 'underscore';
 // @ts-ignore
-import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
-
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 
 
 interface Props {
@@ -67,7 +66,7 @@ export class Goodtimes extends Component<Props, State> {
                 this.props.silentLogin(profileState).then( (loggedin) => {
                 
                     // @ts-ignore
-                    window.ws = new WebSocket(`wss://${GOODTIMES_RADIKS_SERVER}/radiks/stream`);
+                    window.ws = new WebSocket(`${GOODTIMES_RADIKS_WEBSOCKET}/radiks/stream`);
         
                     this.props.getPosts({ sort: '-createdAt' })
                     

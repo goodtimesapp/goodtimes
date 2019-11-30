@@ -110,6 +110,18 @@ export default class Radiks extends Component<Props, State> {
         })
     }
 
+    async GenGroupKeyPutCentral(){
+
+        let placeId = "1234";
+        const key = "place_" + placeId;
+
+        let group = await this.createRadiksGroup(key);
+        const value = { group: group };
+        await Central.save(key, value);
+        const result = await Central.get(key);
+        console.log('created central', result);
+    }
+
     render() {
         return (
             <ScrollView>
@@ -121,6 +133,8 @@ export default class Radiks extends Component<Props, State> {
                     placeholder={this.props.getUserName}
                     />
                 <Button title="Submit" onPress={ ()=> this.radiksPutMessage(this.state.text) } ></Button>
+
+                <Button title="GenGroupKeyPutCentral" onPress={ ()=> this.GenGroupKeyPutCentral() } ></Button>
 
             </ScrollView>
         )

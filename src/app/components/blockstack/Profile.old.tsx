@@ -207,7 +207,7 @@ export default class Profile extends Component<Props, State> {
 
     configureRadiks(userSession: any) {
         configure({
-          apiServer: `https://${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
+          apiServer: `${GOODTIMES_RADIKS_SERVER}`,  //'https://blockusign-radiks.azurewebsites.net', // 'http://localhost:1260'
           userSession: userSession
         });   
     }

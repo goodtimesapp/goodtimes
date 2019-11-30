@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import Header from './../Header';
 import CardComponent from './../goodtimes/Card';
 import { State as ReduxState } from './../../reduxStore/index';
-
 import { store } from './../../reduxStore/configureStore';
 import { withNavigation } from 'react-navigation';
 declare let window: any;
@@ -21,10 +20,16 @@ import theme from '@theme/variables/commonColor.js';
 // @ts-ignore
 import { getCurrentLocation, whereami } from './../../utils/location-utils';
 import { isTSAnyKeyword } from '@babel/types';
+import { 
+  websocket,
+  placeState,
+  setupWebsocket
+} from './../../reduxStore/places/place.store';
 
 
 interface Props {
-    navigation: any
+    navigation: any,
+    setupWebsocket: (placeId: string) => void
 }
 
 interface State {
@@ -129,7 +134,7 @@ export class DiscoverFeed extends Component<Props, State> {
                           </Left>
                           <Right>
                             <View style={{flex: 1}}>
-                              <TouchableOpacity>
+                              <TouchableOpacity onPress={ ()=> { this.props.setupWebsocket(item.place_id) } } >
                                 <Thumbnail source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/staticmap?center=${item.geometry.location.lat},${item.geometry.location.lng}&zoom=16&size=120x120&key=${GOOGLE_MAPS_APIKEY}`}} />
                                 <View style={{backgroundColor: theme.brandInfo , height: 16, width: 70, position: 'absolute', bottom: -1, left: -6, padding: 1, borderRadius: 10, alignItems: 'center'}}>
                                     <Text style={{color: 'white', fontSize: 10}}>
@@ -202,7 +207,7 @@ const mapStateToProps: any = (state: ReduxState) => ({
 })
 // Actions to dispatch
 const mapDispatchToProps = {
-
+  setupWebsocket: setupWebsocket
 }
 
 // @ts-ignore
