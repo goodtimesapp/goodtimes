@@ -5,13 +5,15 @@ import {
   putPost,
   getPosts
 } from './../../reduxStore/posts/posts.store';
+import { placeState } from './../../reduxStore/places/place.store';
 
 import PostComponent from './Posts';
+import { stat } from 'fs';
 
 // Global State
 const mapStateToProps: any = (state: State) => ({
   posts: posts(state.posts),
-  
+  placeState: placeState(state.places)
 })
 
 // Actions to dispatch

@@ -2,9 +2,8 @@ import { createSelector } from 'reselect';
 // @ts-ignore
 const API_ENDPOINT = '';
 import { UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
-// @ts-ignore
-import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
-import Message from './../../models/Message';
+import { setupWebsockets } from './../websockets/websockets.store';
+import { getPosts } from './../posts/posts.store';
 
 
 //#region state
@@ -24,8 +23,8 @@ export const initialState: State = {
 
 //#region actions
 export enum ActionTypes {
-    SETUP_WEBSOCKET = "[PLACE] Setup websocket",
     REQUEST_KEY = "[PLACE] Request a room key ",
+    SET_PLACE_ID = "[PLACE] Set place id",
     GET_PLACE_DATA = "[PLACE] GET PLACE DATA",
     GET_PLACE = "[PLACE] GET PLACE",
     GET_PLACE_KEY = "[PLACE] GET PLACE KEY",
@@ -35,41 +34,6 @@ export enum ActionTypes {
     PLACE_ACTION_STARTED = "[PLACE] PLACE Action STARTED",
     PLACE_ACTION_SUCCEEDED = "[PLACE] PLACE Action SUCEEDED",
     PLACE_ACTION_FAILED = "[PLACE] PLACE Action FAILED",
-}
-
-
-export function setupWebsocket(placeId: string) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            // @ts-ignore
-            let wsEndpoint = `${GOODTIMES_RADIKS_WEBSOCKET}/place/${placeId}`;
-            // @ts-ignore
-            let ws = new WebSocket(wsEndpoint);
-            ws.onopen = () => {
-                // connection opened
-                console.log(`websocket opened to ${wsEndpoint}`);
-                // ws.send('something'); // send a message
-            };
-            ws.onmessage = (e: any) => {
-                // a message was received
-                console.log(`[MSG_RECIEVED from ${placeId}]`, e.data);
-                try {
-                    let data = JSON.parse(e.data);
-                    let modelType = data.radiksType;
-                    switch (modelType) {
-                        case "Message":
-                            console.log('message recieved from ' , data);
-                        default:
-                            return;
-                    }
-                } catch (e) { }
-            };
-            dispatch(succeeded(ws, ActionTypes.SETUP_WEBSOCKET));
-        } catch (e) {
-            dispatch(failed(e));
-        }
-    };
 }
 
 // requestKey
@@ -111,9 +75,16 @@ export function requestKey(json: any, authToken: any) {
     }
 }
 
+export function setPlaceId(placeId: string) {
+    return async (dispatch: any) => {
+        dispatch(setupWebsockets(placeId));
+        dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
+        dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
+    }
+}
+
+
 // getPlaceData
-
-
 export function getPlace(json: any, authToken: any) {
     return async (dispatch: any) => {
         dispatch(started());
@@ -234,17 +205,16 @@ export function reducers(state: State = initialState, action: any) {
     switch (action.type) {
 
 
-        case ActionTypes.SETUP_WEBSOCKET: {
-            return {
-                ...state,
-                websocket: action.payload
-            }
-        }
-
         case ActionTypes.GET_PLACE: {
             return {
                 ...state,
                 workflowId: action.payload
+            }
+        }
+        case ActionTypes.SET_PLACE_ID: {
+            return {
+                ...state,
+                placeId: action.payload
             }
         }
         case ActionTypes.PUT_PLACE: {

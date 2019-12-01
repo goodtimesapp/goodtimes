@@ -15,7 +15,8 @@ const composeEnhancers = composeWithDevTools({
 const persistConfig = {
     key: 'root',
     storage: FilesystemStorage,
-    debug: true
+    debug: true,
+    blacklist: ['websockets'] // do not persist websockets because they are references to a JS object, we cannot JSON stringify refs
 }  
 const persistedReducer = persistReducer(persistConfig, reducer);
 

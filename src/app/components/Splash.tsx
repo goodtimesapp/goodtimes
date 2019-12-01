@@ -47,7 +47,7 @@ export class Splash extends React.Component<Props, State> {
           this.setState({
             visible: false
           });
-          this.back("Index");
+          this.back("DiscoverFeed");
         }, 100)
       } else {
         this.setState({

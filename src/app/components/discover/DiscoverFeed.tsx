@@ -23,13 +23,13 @@ import { isTSAnyKeyword } from '@babel/types';
 import { 
   websocket,
   placeState,
-  setupWebsocket
+  setPlaceId
 } from './../../reduxStore/places/place.store';
 
 
 interface Props {
     navigation: any,
-    setupWebsocket: (placeId: string) => void
+    setPlaceId: (placeId: string) => void
 }
 
 interface State {
@@ -102,6 +102,11 @@ export class DiscoverFeed extends Component<Props, State> {
 
     }
 
+    navPlace(place_id: string){
+      this.props.setPlaceId(place_id); 
+      this.props.navigation.navigate('Goodtimes') 
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -116,73 +121,78 @@ export class DiscoverFeed extends Component<Props, State> {
                            
                     
                         <Card style={{ width: '100%', marginLeft: 0 }}>
-                        <CardItem style={{ width: '100%' }}>
-                          <Left>
-                            <Thumbnail source={{ uri: 'https://ui-avatars.com/api/?name=Nick%20Theile'}} />
-                            <Body>
-                             <View style={{flex:1 , flexDirection: 'row',alignItems: 'center'}}>
-                                <View style={{backgroundColor: theme.brandDark, height: 28, paddingBottom: 4,  paddingTop: 4, paddingLeft: 8, paddingRight: 8, borderRadius: 14, alignItems: 'center'}}>
-                                  <TouchableOpacity>
-                                    <Text style={{color: 'white', fontSize: 16}}>
-                                      {item.name} <Icon name="md-cafe" style={{color: 'white', fontSize: 16}}  /> 
-                                    </Text>
-                                  </TouchableOpacity>                                  
-                                </View>
-                                <Text style={{fontSize: 16}}> 3 mins ago</Text>
-                              </View>
-                            </Body>
-                          </Left>
-                          <Right>
-                            <View style={{flex: 1}}>
-                              <TouchableOpacity onPress={ ()=> { this.props.setupWebsocket(item.place_id) } } >
-                                <Thumbnail source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/staticmap?center=${item.geometry.location.lat},${item.geometry.location.lng}&zoom=16&size=120x120&key=${GOOGLE_MAPS_APIKEY}`}} />
-                                <View style={{backgroundColor: theme.brandInfo , height: 16, width: 70, position: 'absolute', bottom: -1, left: -6, padding: 1, borderRadius: 10, alignItems: 'center'}}>
-                                    <Text style={{color: 'white', fontSize: 10}}>
-                                      3 min <Icon name="md-walk" style={{color: 'white', fontSize: 10}}  />
-                                    </Text>
-                                </View>
+                          <CardItem style={{ width: '100%' }}>
+                            <Left>
+                              <Thumbnail source={{ uri: 'https://ui-avatars.com/api/?name=Nick%20Theile'}} />
+                              <TouchableOpacity onPress={ ()=> { this.navPlace(item.place_id) } } >
+                              <Body>
+                                  
+                                    <View style={{backgroundColor: theme.brandDark, height: 28, paddingBottom: 4,  paddingTop: 4, paddingLeft: 8, paddingRight: 8, borderRadius: 14, alignItems: 'center'}}>
+                                        <View>
+                                          <Text style={{color: 'white', fontSize: 16}}>
+                                            {item.name} <Icon name="md-cafe" style={{color: 'white', fontSize: 16}}  /> 
+                                          </Text>
+                                        </View>
+                                        <View>
+                                          <Text style={{fontSize: 14}}> 3 mins ago</Text>
+                                        </View>                                      
+                                    </View>
+                                    
+                                  
+                              </Body>
                               </TouchableOpacity>
-                            </View>
-                          </Right>
-                        </CardItem>
-                        <CardItem cardBody>
-                          {
-                            item.photos
-                            ? <FitImage source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${GOOGLE_MAPS_APIKEY}` }} style={{  borderRadius: 20 }} />
-                            : <FitImage source={{ uri: 'https://images.unsplash.com/photo-1520552626357-c2f0f963d4bb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80' }} style={{  borderRadius: 20 }} />
-                          }
-                            
-                        </CardItem>
-                        <CardItem style={{ padding: 8 }}>
-                          <Left>
-                            <TouchableOpacity style={{margin: 8}} onPress={ ()=>{
-                             
+                            </Left>
+                            <Right>
+                              <View style={{flex: 1}}>
+                                <TouchableOpacity onPress={ ()=> {  } } >
+                                  <Thumbnail source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/staticmap?center=${item.geometry.location.lat},${item.geometry.location.lng}&zoom=16&size=120x120&key=${GOOGLE_MAPS_APIKEY}`}} />
+                                  <View style={{backgroundColor: theme.brandInfo , height: 16, width: 70, position: 'absolute', bottom: -1, left: -6, padding: 1, borderRadius: 10, alignItems: 'center'}}>
+                                      <Text style={{color: 'white', fontSize: 10}}>
+                                        3 min <Icon name="md-walk" style={{color: 'white', fontSize: 10}}  />
+                                      </Text>
+                                  </View>
+                                </TouchableOpacity>
+                              </View>
+                            </Right>
+                          </CardItem>
+                          <CardItem cardBody>
+                            {
+                              item.photos
+                              ? <FitImage source={{ uri: `${GOOGLE_MAPS_ENDPOINT}/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${GOOGLE_MAPS_APIKEY}` }} style={{  borderRadius: 20 }} />
+                              : <FitImage source={{ uri: 'https://images.unsplash.com/photo-1520552626357-c2f0f963d4bb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80' }} style={{  borderRadius: 20 }} />
+                            }
                               
-                            }} >
-                              <Icon type='FontAwesome' name='heart-o' style={{ fontSize: 30}} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{margin: 8}}>
-                              <Icon type='FontAwesome' name="comment-o" style={{ fontSize: 30, color: 'black' }} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{margin: 8}}>
-                              <Icon type='FontAwesome' name="paper-plane-o" style={{ fontSize: 30, color: 'black' }} />
-                            </TouchableOpacity>
-                          </Left>
-                        </CardItem>
-                
-                        <CardItem style={{ height: 20 }}>
-                          <Text>12 likes</Text>
-                        </CardItem>
-                        <CardItem>
-                          <Body>
-                            <Text>
-                              <Text style={{ fontWeight: "900" }}>
-                                  Nick &nbsp;
-                                </Text>
-                              At Starbucks drinking a coffee working on my novel! Come over and lets brainstorm :) 
-                            </Text>
-                          </Body>
-                        </CardItem>
+                          </CardItem>
+                          <CardItem style={{ padding: 8 }}>
+                            <Left>
+                              <TouchableOpacity style={{margin: 8}} onPress={ ()=>{
+                              
+                                
+                              }} >
+                                <Icon type='FontAwesome' name='heart-o' style={{ fontSize: 30}} />
+                              </TouchableOpacity>
+                              <TouchableOpacity style={{margin: 8}}>
+                                <Icon type='FontAwesome' name="comment-o" style={{ fontSize: 30, color: 'black' }} />
+                              </TouchableOpacity>
+                              <TouchableOpacity style={{margin: 8}}>
+                                <Icon type='FontAwesome' name="paper-plane-o" style={{ fontSize: 30, color: 'black' }} />
+                              </TouchableOpacity>
+                            </Left>
+                          </CardItem>
+                  
+                          <CardItem style={{ height: 20 }}>
+                            <Text>12 likes</Text>
+                          </CardItem>
+                          <CardItem>
+                            <Body>
+                              <Text>
+                                <Text style={{ fontWeight: "900" }}>
+                                    Nick &nbsp;
+                                  </Text>
+                                At Starbucks drinking a coffee working on my novel! Come over and lets brainstorm :) 
+                              </Text>
+                            </Body>
+                          </CardItem>
                       </Card>
                         }
                         refreshControl={
@@ -207,7 +217,7 @@ const mapStateToProps: any = (state: ReduxState) => ({
 })
 // Actions to dispatch
 const mapDispatchToProps = {
-  setupWebsocket: setupWebsocket
+  setPlaceId: setPlaceId
 }
 
 // @ts-ignore

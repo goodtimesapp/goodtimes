@@ -2,6 +2,9 @@ import { createSelector } from 'reselect';
 import { API, accessDenied, apiError, apiStart, apiEnd } from './../common/api';
 import { store } from './../configureStore';
 import { addPostFromWebSocket } from './../posts/posts.store';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
+import Message from './../../models/Message';
 
 //#region state
 export interface State {
@@ -32,19 +35,23 @@ export enum ActionTypes {
 }
 
 
-export function setupWebsockets(ws: any) {
+export function setupWebsockets(placeId: string) {
     return async (dispatch: any) => {
         try {
             
+            let wsEndpoint = `${GOODTIMES_RADIKS_WEBSOCKET}/place/${placeId}`;
+            // @ts-ignore
+            let ws = new WebSocket(wsEndpoint);
+            console.log(`Setup Websocket for place ${placeId}`)
             
             ws.onopen = () => {
-                // connection opened
+                console.log(`connection opened for place ${placeId}`)
                 // ws.send('something'); // send a message
             };
 
             ws.onmessage = (e: any) => {
                 // a message was received
-                console.log('[WEBSOCKET ONMESSAGE] ', e.data);
+                console.log(`[WEBSOCKET ONMESSAGE from place ${placeId}] `, e.data);
                 try {
                     let data = JSON.parse(e.data);
                     let modelType = data.radiksType;
@@ -79,7 +86,7 @@ export function setupWebsockets(ws: any) {
                 dispatch(apiEnd(''));
             };
 
-            dispatch(succeeded('', ActionTypes.SETUP_WEBSOCKETS))
+            dispatch(succeeded(ws, ActionTypes.SETUP_WEBSOCKETS))
 
         } catch (e) {
             console.log('error', e)
@@ -88,52 +95,11 @@ export function setupWebsockets(ws: any) {
     }
 }
 
-export function closeWebsockets() {
+export function closeWebsockets(ws: any) {
     return async (dispatch: any) => {
-
         try {
-
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
-
-
-export function getWebsocket() {
-
-}
-
-export function putWebsockets(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
-
-export function postWebsockets(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
-
-export function deleteWebsockets(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-           
+            ws.close();
+            dispatch(succeeded('', ActionTypes.CLOSE_WEBSOCKETS))
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
@@ -174,6 +140,13 @@ export function reducers(state: State = initialState, action: any) {
 
     switch (action.type) {
         case ActionTypes.SETUP_WEBSOCKETS: {
+            
+            // close old websocket
+            if (state.websocket){
+                console.log('closing websocket')
+                state.websocket.close();
+            }
+
             return {
                 ...state,
                 websocket: action.payload
@@ -197,28 +170,10 @@ export function reducers(state: State = initialState, action: any) {
                 ]
             }
         }
-        case ActionTypes.GET_WEBSOCKETS: {
+        case ActionTypes.CLOSE_WEBSOCKETS: {
             return {
                 ...state,
-                workflowId: action.payload
-            }
-        }
-        case ActionTypes.PUT_WEBSOCKETS: {
-            return {
-                ...state,
-                error: action.payload
-            }
-        }
-        case ActionTypes.POST_WEBSOCKETS: {
-            return {
-                ...state,
-                error: action.payload
-            }
-        }
-        case ActionTypes.DELETE_WEBSOCKETS: {
-            return {
-                ...state,
-                error: action.payload
+                websocket: null
             }
         }
         default:

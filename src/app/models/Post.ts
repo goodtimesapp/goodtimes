@@ -1,6 +1,6 @@
 // @ts-ignore
 import Model from './../radiks/src/model';
-import { number, any } from 'prop-types';
+import { number, any, string } from 'prop-types';
 import Comment from './Comment';
 
 export let posts: any;
@@ -24,6 +24,10 @@ export  class Post extends Model {
     likes: {
       type: number,
       decrypted: true,
+    },
+    placeId :{
+      type: string,
+      decrypted: true
     }
   };
 

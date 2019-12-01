@@ -34,7 +34,7 @@ interface Props {
     posts: Array<Post>;
     getPosts: (filter: any) =>  Promise<any>;
     websockets: any;
-    setupWebsockets: (ws: any) => void;
+    setupWebsockets: (placeId: string) => void;
 }
 
 interface State {
@@ -57,6 +57,7 @@ export class Goodtimes extends Component<Props, State> {
     componentDidMount() {
 
         let profileState = store.getState().profile;
+        
 
         // if (_.isEmpty(profileState.userSession)) {
         //     this.props.navigation.navigate('Profile');
@@ -65,12 +66,8 @@ export class Goodtimes extends Component<Props, State> {
             try{
                 this.props.silentLogin(profileState).then( (loggedin) => {
                 
-                    // @ts-ignore
-                    window.ws = new WebSocket(`${GOODTIMES_RADIKS_WEBSOCKET}/radiks/stream`);
-        
-                    this.props.getPosts({ sort: '-createdAt' })
-                    
-                    this.props.setupWebsockets(window.ws);
+                   
+                    this.props.getPosts({ sort: '-createdAt', placeId: store.getState().places.placeId }) 
         
                     // listen for AppState background/foreground changes
                     // AppState.addEventListener('change', this._handleAppStateChange);
@@ -88,6 +85,10 @@ export class Goodtimes extends Component<Props, State> {
 
     componentWillUnmount() {
         // AppState.removeEventListener('change', this._handleAppStateChange);
+    }
+
+    componentDidUpdate(){
+        console.log('componentDidUpdate');
     }
 
     _handleAppStateChange = (nextAppState: any) => {
@@ -117,7 +118,7 @@ export class Goodtimes extends Component<Props, State> {
             refreshing: true
         });
     
-        await this.props.getPosts({ sort: '-createdAt' })
+        await this.props.getPosts({ sort: '-createdAt' , placeId: store.getState().places.placeId })
 
         setTimeout( ()=>{
 

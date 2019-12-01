@@ -3,6 +3,7 @@ import { View, Button, Text, TextInput } from 'react-native';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
 import AsyncStorage from "@react-native-community/async-storage";
+import { State as PlaceState } from './../../reduxStore/places/place.store';
 
 interface Props {
     posts: Array<Post>,
@@ -10,6 +11,7 @@ interface Props {
     getPosts: (filter: any) => void,
     base64Photo: any,
     navigation: any;
+    placeState: PlaceState;
 }
 
 interface State {
@@ -38,7 +40,8 @@ export default class PostComponent extends Component<Props, State>{
             description: this.state.desc,
             image: this.props.navigation.getParam('base64Photo'),
             createdBy: uid,
-            likes: 2
+            likes: 2,
+            placeId: this.props.placeState.placeId
         });
       
         this.props.putPost(p);
