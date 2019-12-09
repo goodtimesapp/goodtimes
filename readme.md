@@ -1,7 +1,20 @@
 Goodtimes
 ---------------------
 
-The social app for where you're at! :dark_sunglasses:  [privacy included] :lock::lock::lock: 
+The healthy social network for where you at! Foster local communities. Live your best real life with the people closest to you! :dark_sunglasses:  [privacy included] :lock::lock::lock: 
+
+- Make new friends in your neighborhood
+- Discovery cool places and people based on photos and chat
+- Connect with local businesses
+- Help your local community thrive
+- Share media at meetups
+- Make Goodtimes
+
+Today social networks prevent us from living our best real life and can cause some serious mental health issue! We stay at home constantly checking status updates, likes and compring ourselves to other people's perfect, fake version of themselves.
+
+Goodtimes is the inverse of that! It fosters healthy real life relationships. The social feeds are deleted each day and you are only allowed to join a social feed if you are physically in the location. 
+
+When I joined MySpace and Facebook back in the mid 2000s the social network was second to real life. I met everone on my doom room floor from Facebook, then set the app down and did not use it. We interfaceed socailly in real life, no app needed. It was simply used to break the ice and find friends with similar interests. 
 
 Promotes healthy connections. Join now, connect in real life and get your headspace back! 
 
