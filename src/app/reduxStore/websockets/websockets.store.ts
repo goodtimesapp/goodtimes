@@ -6,6 +6,7 @@ import { addPostFromWebSocket } from './../posts/posts.store';
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import Message from './../../models/Message';
 
+
 //#region state
 export interface State {
     websocket: any,
@@ -39,6 +40,9 @@ export function setupWebsockets(placeId: string) {
     return async (dispatch: any) => {
         try {
             
+           
+
+
             let wsEndpoint = `${GOODTIMES_RADIKS_WEBSOCKET}/place/${placeId}`;
             // @ts-ignore
             let ws = new WebSocket(wsEndpoint);

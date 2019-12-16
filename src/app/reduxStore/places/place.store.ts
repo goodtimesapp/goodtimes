@@ -3,8 +3,9 @@ import { createSelector } from 'reselect';
 const API_ENDPOINT = '';
 import { UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
 import { setupWebsockets } from './../websockets/websockets.store';
-import { getPosts } from './../posts/posts.store';
-
+import { getCurrentLocation } from './../../utils/location-utils';
+// @ts-ignore
+import Geohash from 'latlon-geohash';
 
 //#region state
 export interface State {
@@ -77,9 +78,27 @@ export function requestKey(json: any, authToken: any) {
 
 export function setPlaceId(placeId: string) {
     return async (dispatch: any) => {
-        dispatch(setupWebsockets(placeId));
-        dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
-        dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
+
+
+
+        // 1) Create geohash for your location
+        getCurrentLocation().then( async (location: any) =>{
+
+
+            const geohash = Geohash.encode(location.latitude, location.longitude, 4); // 1 = whole earch , 9 = exact location, 4 is about the size of a large city like Chicago
+            console.log('Created geohash', geohash);
+
+
+            dispatch(setupWebsockets(placeId));
+            dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
+            dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
+
+        });
+        // 2) open up a websocker for the place
+
+
+
+       
     }
 }
 
