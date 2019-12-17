@@ -18,6 +18,8 @@ import DiscoverFeed from './discover/DiscoverFeed';
 import ImageEditor from './image/ImageEditor';
 const { width, height } = Dimensions.get('screen');
 import { PostsPage } from './posts/Index';
+import { LocalChat } from './chat/LocalChat';
+import Maps from './test/Maps';
 
 
 
@@ -74,9 +76,21 @@ const MainNavigator = createStackNavigator(
                 header: null
             },
         },
+        LocalChat :{ 
+            screen: LocalChat,
+            navigationOptions: {
+                header: null
+            },
+        },
+        Maps :{ 
+            screen: Maps,
+            navigationOptions: {
+                header: null
+            },
+        },
     },
     {
-        initialRouteName: "Splash"
+        initialRouteName: "Maps"
     }
 );
 
@@ -124,6 +138,6 @@ const DrawerRight = createDrawerNavigator({
     )
 })
 
-export default createAppContainer(DrawerRight);
+export default createAppContainer(MainNavigator);
 
 

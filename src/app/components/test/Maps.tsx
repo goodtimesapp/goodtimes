@@ -8,6 +8,7 @@ import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import { Container, Header, Content, Card, CardItem, Text, Icon, Right, List, Body, Thumbnail } from 'native-base';
 // @ts-ignore
 import { RADAR_KEY_API } from 'react-native-dotenv';
+import { LocalChat } from './../chat/LocalChat';
 
 const LATITUDE_DELTA = 0.009;
 const LONGITUDE_DELTA = 0.009;
@@ -183,29 +184,31 @@ export default class Maps extends Component<Props, State> {
                 <ParallaxScrollView
                     backgroundColor="transparent"
                     contentBackgroundColor="transparent"
-                    parallaxHeaderHeight={550}
+                    parallaxHeaderHeight={400}
                     renderForeground={() => (
-                        <View style={{ height: 550, flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: this.state.paddingTop }}>
+                        <View style={{ height: 400, flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: this.state.paddingTop }}>
                             <MapView
                                 showsUserLocation
                                 showsMyLocationButton
                                 provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                                 style={styles.map}
                                 region={this.getMapRegion()}
-                                onMapReady={this._onMapReady}>
+                                onMapReady={this._onMapReady}
+                                customMapStyle={customStyle}
+                                >
                                     <Marker coordinate={this.getMapRegion()} />
                             </MapView>
                         </View>
                     )}>
 
                     <View style={{
-                        backgroundColor: '#ECEFF1',
-                        borderRadius: 25
+                        backgroundColor: "#344155"
                     }}>
 
+                        
+                        <LocalChat navigation={null}></LocalChat>
 
-
-                        <Container style={{
+                        {/* <Container style={{
                             marginTop: 16,
                             marginBottom: 16,
                             backgroundColor: '#ECEFF1',
@@ -259,10 +262,10 @@ export default class Maps extends Component<Props, State> {
                             {/* <Button
                                 title="Go to Social"
                                 onPress={() => navigate('Social', { name: 'Jane' })}
-                            /> */}
+                            /> 
 
 
-                        </Container>
+                        </Container>*/}
 
 
 
@@ -309,3 +312,166 @@ const styles = StyleSheet.create({
     }
 });
 
+
+const customStyle = [
+    {
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#2c333d',
+        },
+      ],
+    },
+    {
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#746855',
+        },
+      ],
+    },
+    {
+      elementType: 'labels.text.stroke',
+      stylers: [
+        {
+          color: '#242f3e',
+        },
+      ],
+    },
+    {
+      featureType: 'administrative.locality',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#d59563',
+        },
+      ],
+    },
+    {
+      featureType: 'poi',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#d59563',
+        },
+      ],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#263c3f',
+        },
+      ],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#6b9a76',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#38414e',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'geometry.stroke',
+      stylers: [
+        {
+          color: '#212a37',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#9ca5b3',
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#746855',
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.stroke',
+      stylers: [
+        {
+          color: '#1f2835',
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#f3d19c',
+        },
+      ],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#2f3948',
+        },
+      ],
+    },
+    {
+      featureType: 'transit.station',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#d59563',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#17263c',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#515c6d',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'labels.text.stroke',
+      stylers: [
+        {
+          color: '#17263c',
+        },
+      ],
+    },
+  ];
+  
