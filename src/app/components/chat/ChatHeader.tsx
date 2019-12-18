@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Image, Alert, StyleSheet } from 'react-native'
+import { Text, Image, Alert, StyleSheet, Switch, TouchableOpacity, ScrollView  } from 'react-native'
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { Container, View, Content, Header, Icon, Left, Button, Body, Right, Badge, Title, Thumbnail } from "native-base";
 import { withNavigation } from 'react-navigation';
@@ -8,7 +8,7 @@ import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-nativ
 import Message from './../../models/Message';
 import AsyncStorage from "@react-native-community/async-storage";
 import { human, iOSUIKit } from 'react-native-typography';
-import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
+
 
 
 interface Props {
@@ -26,16 +26,69 @@ export class ChatHeader extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={{ flexDirection: 'row', display: 'flex', marginBottom: 16, width: '100%', paddingLeft: 12, paddingRight: 12, paddingTop: 12 }}>
-                 <Button rounded light style={{alignSelf: 'flex-start'}}>
-                    <Icon name='arrow-back' />
-                </Button>
-                <View  style={{flexGrow: 1, marginLeft: 18, marginRight: 18, backgroundColor:  "#283447", height: 52, borderRadius: 26}}>
-                    
+            <View style={{ flexDirection: 'row', 
+                display: 'flex', 
+                marginBottom: 16, 
+                width: '100%', 
+                paddingLeft: 12, 
+                paddingRight: 12, 
+                paddingTop: 12,
+                alignItems: 'center',
+                alignContent: 'center',
+                flex: 1
+            }}>
+                <TouchableOpacity 
+                    onPress={ ()=> { Alert.alert('hi') } }
+                    style={{
+                        height: 32, 
+                        width: 32, 
+                        backgroundColor:  "#283447", 
+                        borderRadius: 16,
+                        borderColor: "#77849b",
+                        borderWidth: 1,
+                        justifyContent: 'space-evenly',
+                        alignItems: 'center',
+                }}>
+                    <Icon style={{color: "#77849b", fontSize: 18}} name="md-person" ></Icon>
+                </TouchableOpacity>
+                <View  style={{
+                    marginLeft: 40, 
+                    marginRight: 40, 
+                    width: 75, 
+                    backgroundColor:  "#283447", 
+                    height: 32, 
+                    borderRadius: 16,
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                    borderColor: "#77849b",
+                    borderWidth: 1
+                }}>
+                   <TouchableOpacity>
+                           <Icon style={[{ color: "#ff5230" }]}
+                           name="settings"></Icon>
+                   </TouchableOpacity>
+                   <Text style={[human.body, { color: "#77849b" }]}>
+                        Go Online
+                    </Text>
+                    <Switch
+                     onTintColor="#93423b"
+                     thumbTintColor="#ff5230"
+                     value={true} />
                 </View>
-                <Button rounded light style={{alignSelf: 'flex-end'}}>
-                    <Icon name='arrow-back' />
-                </Button>
+                <TouchableOpacity style={{
+                    height: 32, 
+                    width: 32, 
+                    backgroundColor:  "#283447", 
+                    borderRadius: 16,
+                    borderColor: "#77849b",
+                    borderWidth: 1,
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
+                }}>
+                    <Icon style={{color: "#77849b", fontSize: 18}} name="md-chatboxes" ></Icon>
+                </TouchableOpacity>
             </View>
         )
     }

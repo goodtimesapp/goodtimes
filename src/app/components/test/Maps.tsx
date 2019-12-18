@@ -11,6 +11,7 @@ import { RADAR_KEY_API } from 'react-native-dotenv';
 import { LocalChat } from './../chat/LocalChat';
 import { getCurrentLocation, whereami } from './../../utils/location-utils';
 import { ChatHeader } from './../chat/ChatHeader';
+import { ChatFooter } from './../chat/ChatFooter';
 
 const LATITUDE_DELTA = 0.009;
 const LONGITUDE_DELTA = 0.009;
@@ -124,7 +125,10 @@ export default class Maps extends Component<Props, State> {
   render() {
 
     return (
+      
+      <View style={{flex:1,  flexDirection: 'row'}}>
       <ParallaxScrollView
+       style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
         backgroundColor="transparent"
         contentBackgroundColor="#283447"
         parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
@@ -134,9 +138,6 @@ export default class Maps extends Component<Props, State> {
       
         renderForeground={() => (
           <View key="parallax-header"  style={[styles.parallaxHeader, { height: PARALLAX_HEADER_HEIGHT, flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: this.state.paddingTop }]}>
-
-            
-            
 
             <MapView
               showsUserLocation
@@ -177,15 +178,15 @@ export default class Maps extends Component<Props, State> {
             </MapView>
           </View>
         )}
+
+
         
           
         renderFixedHeader={() => (
-          <View key="fixed-header" style={styles.fixedSection}>
-           <ChatHeader navigation={null}></ChatHeader>
-          </View> 
+            <View key="fixed-header" style={styles.fixedSection}>
+              <ChatHeader navigation={null}></ChatHeader>
+            </View> 
         )}
-
-        
         
         >
 
@@ -258,7 +259,27 @@ export default class Maps extends Component<Props, State> {
 
 
         </View>
-      </ParallaxScrollView>      
+
+
+      </ParallaxScrollView>    
+
+
+
+
+      <View style={{
+          backgroundColor: "rgba(15.7,20.4,27.8,0.7)",
+          height: 70,
+          width: "100%",
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          alignSelf: 'center',
+          marginBottom: 0
+        }}>
+            <ChatFooter navigation={null} ></ChatFooter>
+        </View>
+
+      </View>  
     );
 
   }
@@ -313,6 +334,15 @@ const styles = StyleSheet.create({
   fixedSection: {
     position: 'absolute',
     top: 0,
+    left: 0,
+    zIndex: 2,
+    width: '100%',
+    height: STICKY_HEADER_HEIGHT,
+    backgroundColor: "transparent"
+  },
+  fixedFooter: {
+    position: 'absolute',
+    bottom: 0,
     left: 0,
     zIndex: 2,
     width: '100%',

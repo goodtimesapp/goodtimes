@@ -134,13 +134,19 @@ export default {
 
   // Color
   // brandPrimary: platform === PLATFORM.IOS ? '#007aff' : '#3F51B5',
-  brandPrimary: platform === PLATFORM.IOS ? '#64B5F6' : '#64B5F6',
-  brandInfo: '#62B1F6',
-  brandSuccess: '#5cb85c',
-  brandDanger: '#F06292',
+  // brandInfo: '#62B1F6',
+  // brandSuccess: '#5cb85c',
+  // brandDanger: '#d9534f',
+  // brandWarning: '#f0ad4e',
+  // brandDark: '#000',
+  // brandLight: '#f4f4f4',
+  brandPrimary: platform === PLATFORM.IOS ? '#8BC34A' : '#8BC34A',
+  brandInfo: '#388E3C',
+  brandSuccess: '#388E3C',
+  brandDanger: '#d9534f',
   brandWarning: '#f0ad4e',
-  brandDark: '#000',
-  brandLight: '#f4f4f4',
+  brandDark: '#333333',
+  brandLight: '#fff',
 
   // Container
   containerBgColor: '#fff',
@@ -185,22 +191,35 @@ export default {
     return this.fontSizeBase * 1.4;
   },
 
-  // Footer
-  footerHeight: 55,
-  footerDefaultBg: platform === PLATFORM.IOS ? '#F8F8F8' : '#3F51B5',
-  footerPaddingBottom: 0,
+  // // Footer
+  // footerHeight: 55,
+  // footerDefaultBg: platform === PLATFORM.IOS ? '#F8F8F8' : '#3F51B5',
+  // footerPaddingBottom: 0,
 
-  // FooterTab
-  tabBarTextColor: platform === PLATFORM.IOS ? '#6b6b6b' : '#b3c7f9',
-  tabBarTextSize: platform === PLATFORM.IOS ? 14 : 11,
-  activeTab: platform === PLATFORM.IOS ? '#007aff' : '#fff',
-  sTabBarActiveTextColor: '#007aff',
-  tabBarActiveTextColor: platform === PLATFORM.IOS ? '#007aff' : '#fff',
-  tabActiveBgColor: platform === PLATFORM.IOS ? '#cde1f9' : '#3F51B5',
+  // // FooterTab
+  // tabBarTextColor: platform === PLATFORM.IOS ? '#6b6b6b' : '#b3c7f9',
+  // tabBarTextSize: platform === PLATFORM.IOS ? 14 : 11,
+  // activeTab: platform === PLATFORM.IOS ? '#007aff' : '#fff',
+  // sTabBarActiveTextColor: '#007aff',
+  // tabBarActiveTextColor: platform === PLATFORM.IOS ? '#007aff' : '#fff',
+  // tabActiveBgColor: platform === PLATFORM.IOS ? '#cde1f9' : '#3F51B5',
+
+    // Footer
+    footerHeight: 55,
+    footerDefaultBg: platform === PLATFORM.IOS ? 'white' : 'white',
+    footerPaddingBottom: 0,
+  
+    // FooterTab
+    tabBarTextColor: platform === PLATFORM.IOS ? '#388E3C' : '#388E3C',
+    tabBarTextSize: platform === PLATFORM.IOS ? 14 : 11,
+    activeTab: platform === PLATFORM.IOS ? '#007aff' : '#fff',
+    sTabBarActiveTextColor: '#333333',
+    tabBarActiveTextColor: platform === PLATFORM.IOS ? '#333333' : '#333333',
+    tabActiveBgColor: platform === PLATFORM.IOS ? 'transparent' : 'transparent',
 
   // Header
   toolbarBtnColor: platform === PLATFORM.IOS ? '#007aff' : '#fff',
-  toolbarDefaultBg: platform === PLATFORM.IOS ? '#F8F8F8' : '#3F51B5',
+  toolbarDefaultBg: platform === PLATFORM.IOS ? 'white' : 'white',
   toolbarHeight: platform === PLATFORM.IOS ? 64 : 56,
   toolbarSearchIconSize: platform === PLATFORM.IOS ? 20 : 23,
   toolbarInputColor: platform === PLATFORM.IOS ? '#CECDD2' : '#fff',

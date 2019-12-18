@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import { Provider } from 'react-redux';
 import { store, persistor } from './reduxStore/configureStore';
-import { StyleProvider } from "native-base";
-// @ts-ignore
-import theme from './native-base-theme/variables/material.js';
-// @ts-ignore
-import getTheme from './native-base-theme/components';
 import { PersistGate } from 'redux-persist/integration/react'
 import Index from './components/Index';
 import { SafeAreaView } from 'react-native'
@@ -19,6 +14,12 @@ import * as bip39 from 'bip39';
 import * as bitcoin from 'react-native-bitcoinjs-lib';
 // @ts-ignore
 import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils';
+
+import { StyleProvider } from "native-base";
+// @ts-ignore
+import getTheme from './native-base-theme/components';
+// @ts-ignore
+import platform from './native-base-theme/variables/platform';
 
 export interface Props { }
 interface State { 
@@ -46,7 +47,7 @@ export default class App extends Component<Props, State> {
   render (){
     return (
       
-      <StyleProvider style={getTheme(theme)}>
+      <StyleProvider style={getTheme(platform)}>
         <Provider store={store} >
           <PersistGate loading={null} persistor={persistor}>
             <SafeAreaView style={{flex:1}}>
