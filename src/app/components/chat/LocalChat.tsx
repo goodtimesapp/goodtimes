@@ -9,6 +9,7 @@ import Message from './../../models/Message';
 import AsyncStorage from "@react-native-community/async-storage";
 import { human, iOSUIKit } from 'react-native-typography';
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
+import { ChatItem } from "./ChatItem";
 
 
 interface Props {
@@ -70,7 +71,7 @@ export class LocalChat extends React.Component<Props, State> {
 
       }} >
 
-        <View style={{ backgroundColor: "#3b475c", height: 6, width: 75, borderRadius: 3, alignSelf: 'center', marginBottom: 12 }}></View>
+        <View style={{ backgroundColor: "#ffffff", height: 7, width: 75, borderRadius: 3, alignSelf: 'center', marginBottom: 16 }}></View>
 
         <View style={{ paddingBottom: 36 }}>
           <View style={{ flexDirection: 'row' }}>
@@ -79,126 +80,30 @@ export class LocalChat extends React.Component<Props, State> {
             </TouchableOpacity>
             <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>The Local - Chat</Text>
           </View>
-
-
           <Text style={[human.title1, { color: "#ffffff", paddingTop: 2 }]}>Chicago, IL</Text>
         </View>
 
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', display: 'flex', marginBottom: 16 }}>
 
-          <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-            <Thumbnail source={{ uri: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg' }} style={{ height: 52, width: 52 }} />
-          </View>
+        <ChatItem
+          navigation={null}
+          image={"https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg"}
+          hashtag={"#poop"}
+          hashtagColor={"#ff991f"}
+          user={"Dude"}
+          time={"2 mins"}
+          content={"Lets do pull ups"}
+         />
 
-          <View style={{ flexGrow: 1, marginRight: 6  }}>
-            <TouchableOpacity onPress={() => { Alert.alert('pressed') }} style={{ backgroundColor: "#ff991f", borderRadius: 18, padding: 6, marginBottom: 6, alignSelf: 'flex-start' }}>
-              <Text style={[human.body, { color: "#ffffff", paddingBottom: 2 }]}>#coffee</Text>
-            </TouchableOpacity>
-            <View style={{ backgroundColor: "#344155", borderRadius: 12, paddingTop: 12, paddingBottom: 12, paddingRight: 8, paddingLeft: 8 }}>
-              <View style={{ flexDirection: 'row', flex: 1 }}>
-                <Text style={[iOSUIKit.bodyEmphasized, { color: "#4787db", paddingBottom: 2, paddingLeft: 6 }]}>Julia</Text>
-                <View>
-                  <Text style={[iOSUIKit.bodyEmphasized, { color: "#7e8ba2", paddingBottom: 2, paddingLeft: 6, alignSelf: 'flex-end' }]}>5 mins</Text>
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row', paddingBottom: 2, paddingLeft: 6 }}>
-                <Text style={[iOSUIKit.body, { color: "#7e8ba2", flex: 1, flexWrap: 'wrap' }]}>
-                  Who wants to go get coffee at Dollop?
-                  </Text>
-              </View>
-            </View>
-          </View>
-
-        </View>
-
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', display: 'flex', marginBottom: 16 }}>
-
-
-          <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-            <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/25/d6/5d/25d65d189c753c2efc2795fc75a83b7a.jpg' }} style={{ height: 52, width: 52 }} />
-          </View>
-
-          <View style={{ flexGrow: 1, marginRight: 6 }}>
-            <TouchableOpacity onPress={() => { Alert.alert('pressed') }} style={{ backgroundColor: "#4c9aff", borderRadius: 18, padding: 6, marginBottom: 6, alignSelf: 'flex-start' }}>
-              <Text style={[human.body, { color: "#ffffff", paddingBottom: 2 }]}>#guitar</Text>
-            </TouchableOpacity>
-            <View style={{ backgroundColor: "#344155", borderRadius: 12, paddingTop: 12, paddingBottom: 12, paddingRight: 8, paddingLeft: 8 }}>
-              <View style={{ flexDirection: 'row', flex: 1 }}>
-                <Text style={[iOSUIKit.bodyEmphasized, { color: "#4787db", paddingBottom: 2, paddingLeft: 6 }]}>Helen</Text>
-                <View>
-                  <Text style={[iOSUIKit.bodyEmphasized, { color: "#7e8ba2", paddingBottom: 2, paddingLeft: 6, alignSelf: 'flex-end' }]}>10 mins</Text>
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row', paddingBottom: 2, paddingLeft: 6 }}>
-                <Text style={[iOSUIKit.body, { color: "#7e8ba2", flex: 1, flexWrap: 'wrap' }]}>
-                  I doooooo!
-                  </Text>
-              </View>
-            </View>
-          </View>
-
-        </View>
-
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', display: 'flex', marginBottom: 24 }}>
-
-
-
-          <View style={{ flexGrow: 1, marginEnd: 16, marginLeft: 6 }}>
-            <TouchableOpacity onPress={() => { Alert.alert('pressed') }} style={{ backgroundColor: "#ff5230", borderRadius: 18, padding: 6, marginBottom: 6, alignSelf: 'flex-end' }}>
-              <Text style={[human.body, { color: "#ffffff", paddingBottom: 2 }]}>#me</Text>
-            </TouchableOpacity>
-            <View style={{ backgroundColor: "#344155", height: 94, borderRadius: 12 }}>
-            </View>
-          </View>
-
-
-          <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, alignSelf: 'flex-end' }}>
-            <Thumbnail source={{ uri: 'https://banter-pub.imgix.net/users/nicktee.id' }} style={{ height: 52, width: 52 }} />
-          </View>
-
-        </View>
-
-
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', display: 'flex', marginBottom: 24 }}>
-
-
-
-          <View style={{ flexGrow: 1, marginEnd: 16, marginLeft: 6 }}>
-            <TouchableOpacity onPress={() => { Alert.alert('pressed') }} style={{ backgroundColor: "#ff5230", borderRadius: 18, padding: 6, marginBottom: 6, alignSelf: 'flex-end' }}>
-              <Text style={[human.body, { color: "#ffffff", paddingBottom: 2 }]}>#me</Text>
-            </TouchableOpacity>
-            <View style={{ backgroundColor: "#344155", height: 94, borderRadius: 12 }}>
-            </View>
-          </View>
-
-
-          <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, alignSelf: 'flex-end' }}>
-            <Thumbnail source={{ uri: 'https://banter-pub.imgix.net/users/nicktee.id' }} style={{ height: 52, width: 52 }} />
-          </View>
-
-        </View>
-
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', display: 'flex', marginBottom: 24 }}>
-
-
-
-          <View style={{ flexGrow: 1, marginEnd: 16, marginLeft: 6 }}>
-            <TouchableOpacity onPress={() => { Alert.alert('pressed') }} style={{ backgroundColor: "#ff5230", borderRadius: 18, padding: 6, marginBottom: 6, alignSelf: 'flex-end' }}>
-              <Text style={[human.body, { color: "#ffffff", paddingBottom: 2 }]}>#me</Text>
-            </TouchableOpacity>
-            <View style={{ backgroundColor: "#344155", height: 94, borderRadius: 12 }}>
-            </View>
-          </View>
-
-
-          <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, alignSelf: 'flex-end' }}>
-            <Thumbnail source={{ uri: 'https://banter-pub.imgix.net/users/nicktee.id' }} style={{ height: 52, width: 52 }} />
-          </View>
-
-        </View>
-
-
-
+        <ChatItem
+          navigation={null}
+          image={"https://banter-pub.imgix.net/users/nicktee.id"}
+          hashtag={"#me"}
+          hashtagColor={"#4c9aff"}
+          user={"Nick"}
+          time={"4 mins"}
+          content={"that be me"}
+          pullRight={true}
+         />
 
       </ScrollView>
     )
