@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert } from 'react-native';
 // @ts-ignore
 import Radar from 'react-native-radar';
 import MapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
@@ -33,6 +33,7 @@ interface State {
   markers: any,
   marginBottom: any;
   circle: any;
+  isScrolling: boolean;
 }
 
 interface Props {
@@ -69,7 +70,8 @@ export default class Maps extends Component<Props, State> {
           longitude:  LONGITUDE + SPACE,
         },
         radius: 280,
-      }
+      },
+      isScrolling: false
     };
   }
 
@@ -135,6 +137,19 @@ export default class Maps extends Component<Props, State> {
         headerBackgroundColor="#283447"
         stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
         backgroundSpeed={10}
+
+        onChangeHeaderVisibility={ (isHeaderVisible:boolean)=> {
+          if (isHeaderVisible){
+            this.setState({
+              isScrolling: false
+            })
+          } else{
+            this.setState({
+              isScrolling: true
+            })
+          }
+          
+        } }
       
         renderForeground={() => (
           <View key="parallax-header"  style={[styles.parallaxHeader, { height: PARALLAX_HEADER_HEIGHT, flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: this.state.paddingTop }]}>
@@ -182,13 +197,21 @@ export default class Maps extends Component<Props, State> {
 
         
           
-        renderFixedHeader={() => (
-            <View key="fixed-header" style={styles.fixedSection}>
-              <ChatHeader navigation={null}></ChatHeader>
-            </View> 
-        )}
+        renderFixedHeader={() => {
+
+          if (!this.state.isScrolling){
+            return (
+              <View key="fixed-header" style={styles.fixedSection}>
+                <ChatHeader navigation={null}></ChatHeader>
+              </View> 
+            )
+          } else{
+            return null;
+          }
+         
+        }}
         
-        >
+    >
 
         <View style={{
           
@@ -274,7 +297,9 @@ export default class Maps extends Component<Props, State> {
           bottom: 0,
           left: 0,
           alignSelf: 'center',
-          marginBottom: 0
+          marginBottom: 0,
+          borderTopEndRadius: 16,
+          borderTopLeftRadius: 16
         }}>
             <ChatFooter navigation={null} ></ChatFooter>
         </View>

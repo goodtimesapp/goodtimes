@@ -63,7 +63,9 @@ export class ChatHeader extends React.Component<Props, State> {
                     alignItems: 'center',
                     justifyContent: 'space-evenly',
                     borderColor: "#77849b",
-                    borderWidth: 1
+                    borderWidth: 1,
+                    paddingTop: 4,
+                    paddingBottom: 4
                 }}>
                    <TouchableOpacity>
                            <Icon style={[{ color: "#ff5230" }]}
@@ -74,7 +76,7 @@ export class ChatHeader extends React.Component<Props, State> {
                     </Text>
                     <Switch
                      onTintColor="#93423b"
-                     thumbTintColor="#ff5230"
+                     thumbColor="#ff5230"
                      value={true} />
                 </View>
                 <TouchableOpacity style={{
