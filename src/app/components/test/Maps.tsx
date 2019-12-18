@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert } from 'react-native';
-// @ts-ignore
-import Radar from 'react-native-radar';
+import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
 // @ts-ignore
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -13,20 +11,22 @@ import { getCurrentLocation, whereami } from './../../utils/location-utils';
 import { ChatHeader } from './../chat/ChatHeader';
 import { ChatFooter } from './../chat/ChatFooter';
 
+const { width, height } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.009;
-const LONGITUDE_DELTA = 0.009;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const LATITUDE = 41.958351;
 const LONGITUDE = -87.668808;
 const SPACE = 0.001;
 const STICKY_HEADER_HEIGHT = 70;
 const window = Dimensions.get('window');
 const PARALLAX_HEADER_HEIGHT = 400;
+const LocalChatScrollView = Animated.createAnimatedComponent(LocalChat);
 
 interface State {
   latitude: any,
   longitude: any,
   location: any,
-  datas: any,
   test: any,
   error: any,
   paddingTop: any,
@@ -52,13 +52,6 @@ export default class Maps extends Component<Props, State> {
       latitude: LATITUDE,
       longitude: LONGITUDE,
       location: null,
-      datas: [
-        { tag: 'Starbucks' },
-        { tag: 'Meetup' },
-        { tag: 'Tiny Tap' },
-        { tag: 'Merch Mart' },
-        { tag: 'Work' }
-      ],
       test: true,
       error: null,
       paddingTop: 0,
@@ -122,7 +115,7 @@ export default class Maps extends Component<Props, State> {
       });
   }
 
-
+ 
 
   render() {
 
@@ -130,7 +123,7 @@ export default class Maps extends Component<Props, State> {
       
       <View style={{flex:1,  flexDirection: 'row'}}>
       <ParallaxScrollView
-       style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
+        style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
         backgroundColor="transparent"
         contentBackgroundColor="#283447"
         parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
@@ -152,7 +145,12 @@ export default class Maps extends Component<Props, State> {
         } }
       
         renderForeground={() => (
-          <View key="parallax-header"  style={[styles.parallaxHeader, { height: PARALLAX_HEADER_HEIGHT, flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: this.state.paddingTop }]}>
+          <View key="parallax-header"  style={[styles.parallaxHeader, { 
+            height: PARALLAX_HEADER_HEIGHT, 
+            flex: 1, 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            paddingTop: this.state.paddingTop }]}>
 
             <MapView
               showsUserLocation
@@ -161,8 +159,7 @@ export default class Maps extends Component<Props, State> {
               style={styles.map}
               region={this.getMapRegion()}
               onMapReady={this._onMapReady}
-              customMapStyle={mapStyle}
-            >
+              customMapStyle={mapStyle}>
               <Circle
                   center={this.state.circle.center}
                   radius={this.state.circle.radius}
@@ -174,8 +171,7 @@ export default class Maps extends Component<Props, State> {
               <Marker
                 title={"Julia"}
                 key={1}
-                coordinate={this.getMapRegion()}
-              >
+                coordinate={this.getMapRegion()}>
                 <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
                   <Thumbnail source={{ uri: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg' }} style={{ height: 52, width: 52 }} />
                 </View>
@@ -184,8 +180,7 @@ export default class Maps extends Component<Props, State> {
               <Marker
                 title={"Helen"}
                 key={2}
-                coordinate={this.getMapRegion(0.002, 0.002)}
-              >
+                coordinate={this.getMapRegion(0.002, 0.002)}>
                 <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
                   <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/25/d6/5d/25d65d189c753c2efc2795fc75a83b7a.jpg' }} style={{ height: 52, width: 52 }} />
                 </View>
@@ -194,9 +189,6 @@ export default class Maps extends Component<Props, State> {
           </View>
         )}
 
-
-        
-          
         renderFixedHeader={() => {
 
           if (!this.state.isScrolling){
@@ -210,84 +202,11 @@ export default class Maps extends Component<Props, State> {
           }
          
         }}
-        
-    >
-
-        <View style={{
-          
-        }}>
 
 
-          <LocalChat navigation={null}></LocalChat>
-
-          {/* <Container style={{
-                            marginTop: 16,
-                            marginBottom: 16,
-                            backgroundColor: '#ECEFF1',
-                        }}>
-                            <Text></Text>
-                            <ScrollView
-                                horizontal
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={styles.radioScrollView}>
-                                <List horizontal={true}
-                                    keyExtractor={( item: any, index: any) => 'key' + index}
-                                    dataArray={ this.state.datas } 
-                                    renderRow={data =>
-                                        
-                                        <View style={styles.card}>
-                                            <Thumbnail large source={{uri: 'https://gaia.blockstack.org/hub/17xxYBCvxwrwKtAna4bubsxGCMCcVNAgyw//avatar-0'}} />
-
-                                            <Text uppercase style={styles.text}>
-                                                {data.externalId || data.description}
-                                            </Text>
-                                        </View>
-                                    }
-                                >
-                                </List>
-                            </ScrollView>
-
-                            <Text>lat: {this.state.latitude}</Text>
-                            <Text>long: {this.state.longitude}</Text>
-                            <Text></Text>
-                            <Button
-                                onPress={this.start}
-                                title="Start"
-                                color="#841584"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                            <Text></Text>
-                            <Button
-                                onPress={this.stop}
-                                title="Stop"
-                                color="#841584"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
-                            <Text></Text>
-                            <Button
-                                onPress={this.trackOnce}
-                                title="Track Once"
-                                color="#841584"
-                                accessibilityLabel=""
-                            />
-
-                            {/* <Button
-                                title="Go to Social"
-                                onPress={() => navigate('Social', { name: 'Jane' })}
-                            /> 
-
-
-                        </Container>*/}
-
-
-
-        </View>
-
-
+      > 
+        <LocalChatScrollView navigation={null} /> 
       </ParallaxScrollView>    
-
-
-
 
       <View style={{
           backgroundColor: "rgba(15.7,20.4,27.8,0.7)",
@@ -299,8 +218,7 @@ export default class Maps extends Component<Props, State> {
           alignSelf: 'center',
           marginBottom: 0,
           borderTopEndRadius: 16,
-          borderTopLeftRadius: 16
-        }}>
+          borderTopLeftRadius: 16}}>
             <ChatFooter navigation={null} ></ChatFooter>
         </View>
 
@@ -308,8 +226,6 @@ export default class Maps extends Component<Props, State> {
     );
 
   }
-
-
 
 }
 
@@ -323,16 +239,6 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-  },
-  card: {
-    width: 100,
-    height: 100
-  },
-  radioScrollView: {
-
-  },
-  text: {
-
   },
   background: {
     position: 'absolute',

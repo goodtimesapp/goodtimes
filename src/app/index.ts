@@ -7,6 +7,7 @@ import { name as appName } from './app.json';
 
 YellowBox.ignoreWarnings([
     'Require cycle:',
+    'Switch:'
 ]);
 
 AppRegistry.registerComponent(appName, () => App);

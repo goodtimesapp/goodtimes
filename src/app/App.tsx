@@ -27,6 +27,7 @@ interface State {
 }
 export const BLOCKSTACK_STATE_VERSION_KEY = 'BLOCKSTACK_STATE_VERSION'
 
+
 export default class App extends Component<Props, State> {
 
 
