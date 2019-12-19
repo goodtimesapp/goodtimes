@@ -71,6 +71,7 @@ export class LocalChat extends React.Component<Props, State> {
           shadowOpacity: 0.8,
           shadowRadius: 2,
           elevation: 1,
+          paddingBottom: 76
 
         }} >
 

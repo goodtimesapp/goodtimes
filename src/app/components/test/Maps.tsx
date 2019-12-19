@@ -9,7 +9,9 @@ import { RADAR_KEY_API } from 'react-native-dotenv';
 import { LocalChat } from './../chat/LocalChat';
 import { getCurrentLocation, whereami } from './../../utils/location-utils';
 import { ChatHeader } from './../chat/ChatHeader';
+import { MapHeader } from './../chat/MapHeader';
 import { ChatFooter } from './../chat/ChatFooter';
+import { withNavigation } from 'react-navigation';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -33,14 +35,15 @@ interface State {
   markers: any,
   marginBottom: any;
   circle: any;
-  isScrolling: boolean;
+  isHeaderVisible: boolean;
+  firstScroll: boolean;
+  parallaxHeaderHeight: number;
 }
 
 interface Props {
-
+  navigation: any;
 }
-
-export default class Maps extends Component<Props, State> {
+class Maps extends Component<Props, State> {
 
   static navigationOptions = {
     title: 'GeoFence Social',
@@ -64,7 +67,9 @@ export default class Maps extends Component<Props, State> {
         },
         radius: 280,
       },
-      isScrolling: false
+      isHeaderVisible: false,
+      firstScroll: true,
+      parallaxHeaderHeight: PARALLAX_HEADER_HEIGHT
     };
   }
 
@@ -122,83 +127,103 @@ export default class Maps extends Component<Props, State> {
     return (
       
       <View style={{flex:1,  flexDirection: 'row'}}>
-      <ParallaxScrollView
+      <ParallaxScrollView 
+        ref="parallaxScrollView"
         style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
         backgroundColor="transparent"
         contentBackgroundColor="#283447"
-        parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
+        parallaxHeaderHeight={this.state.parallaxHeaderHeight}
         headerBackgroundColor="#283447"
         stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
         backgroundSpeed={10}
+        
 
         onChangeHeaderVisibility={ (isHeaderVisible:boolean)=> {
           if (isHeaderVisible){
             this.setState({
-              isScrolling: false
+              isHeaderVisible: false
             })
           } else{
             this.setState({
-              isScrolling: true
+              isHeaderVisible: true,
+              firstScroll: false
             })
-          }
-          
-        } }
+          } 
+        }}
       
-        renderForeground={() => (
-          <View key="parallax-header"  style={[styles.parallaxHeader, { 
-            height: PARALLAX_HEADER_HEIGHT, 
-            flex: 1, 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            paddingTop: this.state.paddingTop }]}>
-
-            <MapView
-              showsUserLocation
-              showsMyLocationButton
-              provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-              style={styles.map}
-              region={this.getMapRegion()}
-              onMapReady={this._onMapReady}
-              customMapStyle={mapStyle}>
-              <Circle
-                  center={this.state.circle.center}
-                  radius={this.state.circle.radius}
-                  fillColor="rgba(98, 31.8, 19.2, 0.3)"
-                  strokeColor="#fa5131"
-                  zIndex={2}
-                  strokeWidth={2}
-                />
-              <Marker
-                title={"Julia"}
-                key={1}
-                coordinate={this.getMapRegion()}>
-                <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-                  <Thumbnail source={{ uri: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg' }} style={{ height: 52, width: 52 }} />
-                </View>
-              </Marker>
-
-              <Marker
-                title={"Helen"}
-                key={2}
-                coordinate={this.getMapRegion(0.002, 0.002)}>
-                <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-                  <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/25/d6/5d/25d65d189c753c2efc2795fc75a83b7a.jpg' }} style={{ height: 52, width: 52 }} />
-                </View>
-              </Marker>
-            </MapView>
-          </View>
-        )}
+        renderForeground={() =>
+          {
+            return  (
+              <View key="parallax-header"  style={[styles.parallaxHeader, { 
+                height: this.state.parallaxHeaderHeight, 
+                flex: 1, 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                paddingTop: this.state.paddingTop }]}>
+    
+                <MapView
+                  showsUserLocation
+                  showsMyLocationButton
+                  provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+                  style={styles.map}
+                  region={this.getMapRegion()}
+                  onMapReady={this._onMapReady}
+                  customMapStyle={mapStyle}>
+                  <Circle
+                      center={this.state.circle.center}
+                      radius={this.state.circle.radius}
+                      fillColor="rgba(98, 31.8, 19.2, 0.3)"
+                      strokeColor="#fa5131"
+                      zIndex={2}
+                      strokeWidth={2}
+                    />
+                  <Marker
+                    title={"Julia"}
+                    key={1}
+                    coordinate={this.getMapRegion()}>
+                    <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
+                      <Thumbnail source={{ uri: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg' }} style={{ height: 52, width: 52 }} />
+                    </View>
+                  </Marker>
+    
+                  <Marker
+                    title={"Helen"}
+                    key={2}
+                    coordinate={this.getMapRegion(0.002, 0.002)}>
+                    <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
+                      <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/25/d6/5d/25d65d189c753c2efc2795fc75a83b7a.jpg' }} style={{ height: 52, width: 52 }} />
+                    </View>
+                  </Marker>
+                </MapView>
+              </View>
+            )
+          }
+         }
 
         renderFixedHeader={() => {
 
-          if (!this.state.isScrolling){
+          if (!this.state.isHeaderVisible){
             return (
               <View key="fixed-header" style={styles.fixedSection}>
-                <ChatHeader navigation={null}></ChatHeader>
+                <MapHeader navigation={null}></MapHeader>
               </View> 
             )
           } else{
-            return null;
+
+            // this.props.navigation.navigate('LocalChat');
+            return (
+              
+              <View key="fixed-header" style={[styles.fixedSection, {  backgroundColor: "rgba(15.7,20.4,27.8,0.7)"} ]}>
+                <ChatHeader 
+                  navigation={null} 
+                  onScrollToTop={ ()=> {
+                    // @ts-ignore
+                   this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 }) 
+                  }}
+
+                ></ChatHeader>
+              </View> 
+            );
           }
          
         }}
@@ -228,6 +253,8 @@ export default class Maps extends Component<Props, State> {
   }
 
 }
+
+export default withNavigation(Maps);
 
 const styles = StyleSheet.create({
   container: {

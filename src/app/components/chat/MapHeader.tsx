@@ -13,13 +13,12 @@ import { human, iOSUIKit } from 'react-native-typography';
 
 interface Props {
     navigation: any;
-      onScrollToTop: () => void;
 }
 interface State {
 
 }
 
-export class ChatHeader extends React.Component<Props, State> {
+export class MapHeader extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);        
@@ -27,8 +26,7 @@ export class ChatHeader extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={{ 
-                flexDirection: 'row', 
+            <View style={{ flexDirection: 'row', 
                 display: 'flex', 
                 marginBottom: 16, 
                 width: '100%', 
@@ -40,20 +38,18 @@ export class ChatHeader extends React.Component<Props, State> {
                 flex: 1
             }}>
                 <TouchableOpacity 
-                    onPress={ ()=> { 
-                        this.props.onScrollToTop();
-                    }}
+                    onPress={ ()=> { Alert.alert('hi') } }
                     style={{
                         height: 32, 
                         width: 32, 
-                        // backgroundColor:  "#283447", 
-                        // borderRadius: 16,
-                        // borderColor: "#77849b",
-                        // borderWidth: 1,
+                        backgroundColor:  "#283447", 
+                        borderRadius: 16,
+                        borderColor: "#77849b",
+                        borderWidth: 1,
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                 }}>
-                    <Icon style={{color: "#77849b", fontSize: 32}} name="md-arrow-round-back" ></Icon>
+                    <Icon style={{color: "#77849b", fontSize: 18}} name="md-person" ></Icon>
                 </TouchableOpacity>
                 <View  style={{
                     marginLeft: 40, 
@@ -71,19 +67,19 @@ export class ChatHeader extends React.Component<Props, State> {
                     paddingTop: 4,
                     paddingBottom: 4
                 }}>
-                   {/* <TouchableOpacity>
+                   <TouchableOpacity>
                            <Icon style={[{ color: "#ff5230" }]}
                            name="settings"></Icon>
-                   </TouchableOpacity> */}
+                   </TouchableOpacity>
                    <Text style={[human.body, { color: "#77849b" }]}>
-                        Chicago, IL
+                        Go Online
                     </Text>
-                    {/* <Switch
+                    <Switch
                      onTintColor="#93423b"
                      thumbColor="#ff5230"
-                     value={true} /> */}
+                     value={true} />
                 </View>
-                {/* <TouchableOpacity style={{
+                <TouchableOpacity style={{
                     height: 32, 
                     width: 32, 
                     backgroundColor:  "#283447", 
@@ -93,8 +89,8 @@ export class ChatHeader extends React.Component<Props, State> {
                     justifyContent: 'space-evenly',
                     alignItems: 'center',
                 }}>
-                    <Icon style={{color: "#77849b", fontSize: 18}} name="map" ></Icon>
-                </TouchableOpacity> */}
+                    <Icon style={{color: "#77849b", fontSize: 18}} name="md-chatboxes" ></Icon>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -117,4 +113,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withNavigation(ChatHeader)
+export default withNavigation(MapHeader)
