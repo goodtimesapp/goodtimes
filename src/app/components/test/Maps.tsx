@@ -12,7 +12,7 @@ import { ChatHeader } from './../chat/ChatHeader';
 import { MapHeader } from './../chat/MapHeader';
 import { ChatFooter } from './../chat/ChatFooter';
 import { withNavigation } from 'react-navigation';
-import { NewPost } from './../chat/NewPost';
+import { ShowBtn } from './../chat/ShowBtn';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -246,7 +246,7 @@ class Maps extends Component<Props, State> {
               alignItems: 'center',
               width: '100%'
             }}>
-              <NewPost text={"New Post"} navigation={null} />
+              <ShowBtn text={"Show New"} navigation={null} />
             </TouchableOpacity>
           : 
             null

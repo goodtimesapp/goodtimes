@@ -7,13 +7,14 @@ import { human, iOSUIKit } from 'react-native-typography';
 
 interface Props {
     navigation: any;
-    text: string
+    text: string;
+    onButtonPress: ()=> void;
 }
 interface State {
 
 }
 
-export class NewPost extends React.Component<Props, State> {
+export class ShowBtn extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);        
@@ -21,19 +22,21 @@ export class NewPost extends React.Component<Props, State> {
 
     render() {
         return (
-            <View style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                alignContent: 'center',
-                justifyContent: 'center',
-                flex: 1,
-                backgroundColor: '#ffffff',
-                paddingLeft: 8,
-                paddingRight: 8,
-                borderRadius: 26
+            <TouchableOpacity
+                onPress={()=>{this.props.onButtonPress()}} 
+                style={{ 
+                    display: 'flex', 
+                    alignItems: 'center',
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    flex: 1,
+                    backgroundColor: '#ffffff',
+                    paddingLeft: 8,
+                    paddingRight: 8,
+                    borderRadius: 26
             }}>
-                <Text  style={{fontSize: 14, color: "#283447", fontWeight: '600', marginBottom: 8, marginTop: 6}}>{this.props.text}</Text>
-            </View>
+                <Text style={{fontSize: 14, color: "#283447", fontWeight: '600', marginBottom: 8, marginTop: 6}}>{this.props.text}</Text>
+            </TouchableOpacity>
         )
     }
 }
@@ -55,4 +58,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withNavigation(NewPost)
+export default withNavigation(ShowBtn)
