@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
 // @ts-ignore
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -12,6 +12,7 @@ import { ChatHeader } from './../chat/ChatHeader';
 import { MapHeader } from './../chat/MapHeader';
 import { ChatFooter } from './../chat/ChatFooter';
 import { withNavigation } from 'react-navigation';
+import { NewPost } from './../chat/NewPost';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -38,6 +39,7 @@ interface State {
   isHeaderVisible: boolean;
   firstScroll: boolean;
   parallaxHeaderHeight: number;
+  hasNewPost: boolean;
 }
 
 interface Props {
@@ -63,20 +65,21 @@ class Maps extends Component<Props, State> {
       circle: {
         center: {
           latitude: LATITUDE + SPACE,
-          longitude:  LONGITUDE + SPACE,
+          longitude: LONGITUDE + SPACE,
         },
         radius: 280,
       },
       isHeaderVisible: false,
       firstScroll: true,
-      parallaxHeaderHeight: PARALLAX_HEADER_HEIGHT
+      parallaxHeaderHeight: PARALLAX_HEADER_HEIGHT,
+      hasNewPost: false
     };
   }
 
 
   componentWillMount() {
 
-    getCurrentLocation().then( async (location: any) =>{
+    getCurrentLocation().then(async (location: any) => {
       // const geohash = Geohash.encode(location.latitude, location.longitude, 4); 
       this.setState({
         latitude: location.latitude,
@@ -85,7 +88,7 @@ class Maps extends Component<Props, State> {
         circle: {
           center: {
             latitude: location.latitude + SPACE,
-            longitude:  location.longitude + SPACE,
+            longitude: location.longitude + SPACE,
           },
           radius: 325,
         }
@@ -111,7 +114,7 @@ class Maps extends Component<Props, State> {
     }
   };
 
- 
+
   _onMapReady = () => {
     this.setState({ marginBottom: 0 });
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
@@ -120,47 +123,47 @@ class Maps extends Component<Props, State> {
       });
   }
 
- 
+
 
   render() {
 
     return (
-      
-      <View style={{flex:1,  flexDirection: 'row'}}>
-      <ParallaxScrollView 
-        ref="parallaxScrollView"
-        style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
-        backgroundColor="transparent"
-        contentBackgroundColor="#283447"
-        parallaxHeaderHeight={this.state.parallaxHeaderHeight}
-        headerBackgroundColor="#283447"
-        stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
-        backgroundSpeed={10}
-        
 
-        onChangeHeaderVisibility={ (isHeaderVisible:boolean)=> {
-          if (isHeaderVisible){
-            this.setState({
-              isHeaderVisible: false
-            })
-          } else{
-            this.setState({
-              isHeaderVisible: true,
-              firstScroll: false
-            })
-          } 
-        }}
-      
-        renderForeground={() =>
-          {
-            return  (
-              <View key="parallax-header"  style={[styles.parallaxHeader, { 
-                height: this.state.parallaxHeaderHeight, 
-                flex: 1, 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                paddingTop: this.state.paddingTop }]}>
-    
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <ParallaxScrollView
+          ref="parallaxScrollView"
+          style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
+          backgroundColor="transparent"
+          contentBackgroundColor="#283447"
+          parallaxHeaderHeight={this.state.parallaxHeaderHeight}
+          headerBackgroundColor="#283447"
+          stickyHeaderHeight={STICKY_HEADER_HEIGHT}
+          backgroundSpeed={10}
+
+
+          onChangeHeaderVisibility={(isHeaderVisible: boolean) => {
+            if (isHeaderVisible) {
+              this.setState({
+                isHeaderVisible: false
+              })
+            } else {
+              this.setState({
+                isHeaderVisible: true,
+                firstScroll: false
+              })
+            }
+          }}
+
+          renderForeground={() => {
+            return (
+              <View key="parallax-header" style={[styles.parallaxHeader, {
+                height: this.state.parallaxHeaderHeight,
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingTop: this.state.paddingTop
+              }]}>
+
                 <MapView
                   showsUserLocation
                   showsMyLocationButton
@@ -170,13 +173,13 @@ class Maps extends Component<Props, State> {
                   onMapReady={this._onMapReady}
                   customMapStyle={mapStyle}>
                   <Circle
-                      center={this.state.circle.center}
-                      radius={this.state.circle.radius}
-                      fillColor="rgba(98, 31.8, 19.2, 0.3)"
-                      strokeColor="#fa5131"
-                      zIndex={2}
-                      strokeWidth={2}
-                    />
+                    center={this.state.circle.center}
+                    radius={this.state.circle.radius}
+                    fillColor="rgba(98, 31.8, 19.2, 0.3)"
+                    strokeColor="#fa5131"
+                    zIndex={2}
+                    strokeWidth={2}
+                  />
                   <Marker
                     title={"Julia"}
                     key={1}
@@ -185,7 +188,7 @@ class Maps extends Component<Props, State> {
                       <Thumbnail source={{ uri: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg' }} style={{ height: 52, width: 52 }} />
                     </View>
                   </Marker>
-    
+
                   <Marker
                     title={"Helen"}
                     key={2}
@@ -198,42 +201,59 @@ class Maps extends Component<Props, State> {
               </View>
             )
           }
-         }
-
-        renderFixedHeader={() => {
-
-          if (!this.state.isHeaderVisible){
-            return (
-              <View key="fixed-header" style={styles.fixedSection}>
-                <MapHeader navigation={null}></MapHeader>
-              </View> 
-            )
-          } else{
-
-            // this.props.navigation.navigate('LocalChat');
-            return (
-              
-              <View key="fixed-header" style={[styles.fixedSection, {  backgroundColor: "rgba(15.7,20.4,27.8,0.7)"} ]}>
-                <ChatHeader 
-                  navigation={null} 
-                  onScrollToTop={ ()=> {
-                    // @ts-ignore
-                   this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 }) 
-                  }}
-
-                ></ChatHeader>
-              </View> 
-            );
           }
-         
-        }}
+
+          renderFixedHeader={() => {
+
+            if (!this.state.isHeaderVisible) {
+              return (
+                <View key="fixed-header" style={styles.fixedSection}>
+                  <MapHeader navigation={null}></MapHeader>
+                </View>
+              )
+            } else {
+
+              // this.props.navigation.navigate('LocalChat');
+              return (
+                  <View key="fixed-header" style={[styles.fixedSection, { backgroundColor: "rgba(15.7,20.4,27.8,0.7)" }]}>
+                    <ChatHeader
+                      navigation={null}
+                      onScrollToTop={() => {
+                        // @ts-ignore
+                        this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 })
+                      }}
+                    ></ChatHeader>
+                  </View>
+              );
+            }
+
+          }}
+        >
+            <LocalChatScrollView navigation={null} />
+        </ParallaxScrollView>
 
 
-      > 
-        <LocalChatScrollView navigation={null} /> 
-      </ParallaxScrollView>    
 
-      <View style={{
+
+        {
+          this.state.hasNewPost
+          ?   
+            <TouchableOpacity style={{
+              position: 'absolute',
+              bottom: 80,
+              alignSelf: 'center',
+              marginBottom: 0,
+              alignItems: 'center',
+              width: '100%'
+            }}>
+              <NewPost text={"New Post"} navigation={null} />
+            </TouchableOpacity>
+          : 
+            null
+        } 
+
+      
+        <View style={{
           backgroundColor: "rgba(15.7,20.4,27.8,0.7)",
           height: 70,
           width: "100%",
@@ -243,11 +263,14 @@ class Maps extends Component<Props, State> {
           alignSelf: 'center',
           marginBottom: 0,
           borderTopEndRadius: 16,
-          borderTopLeftRadius: 16}}>
-            <ChatFooter navigation={null} ></ChatFooter>
+          borderTopLeftRadius: 16
+        }}>
+
+          <ChatFooter navigation={null} ></ChatFooter>
+
         </View>
 
-      </View>  
+      </View>
     );
 
   }
