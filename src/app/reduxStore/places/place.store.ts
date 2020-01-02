@@ -6,6 +6,8 @@ import { setupWebsockets } from './../websockets/websockets.store';
 import { getCurrentLocation } from './../../utils/location-utils';
 // @ts-ignore
 import Geohash from 'latlon-geohash';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 
 //#region state
 export interface State {
@@ -79,26 +81,33 @@ export function requestKey(json: any, authToken: any) {
 export function setPlaceId(placeId: string) {
     return async (dispatch: any) => {
 
-
-
         // 1) Create geohash for your location
         getCurrentLocation().then( async (location: any) =>{
 
+            // query the server to determine the geohash
+            // 1) start at the local location with 9 precision points, if there are more than 5 people then that is your id
+            // 2) zoom the map out to 8 and so forth until you are at 1
 
-            const geohash = Geohash.encode(location.latitude, location.longitude, 4); // 1 = whole earch , 9 = exact location, 4 is about the size of a large city like Chicago
-            console.log('Created geohash', geohash);
-
-
-            dispatch(setupWebsockets(placeId));
-            dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
-            dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
-
+            try {
+                let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/headcount/${location.latitude}/${location.longitude}`, {
+                    "method": "GET",
+                });
+                
+                let geoJson: any = await geoResp.json();
+                let geohash = geoJson.geohash;
+                let headcount = geoJson.count;
+                console.log('Created geohash', geohash, headcount);
+                // 2) open up a websocker for the place
+                dispatch(setupWebsockets(geohash));
+                dispatch(succeeded(geohash, ActionTypes.SET_PLACE_ID));
+                //dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
+            } catch (e) {
+                console.log('error', e)
+                dispatch(failed(e));
+            }
+    
         });
-        // 2) open up a websocker for the place
-
-
-
-       
+           
     }
 }
 

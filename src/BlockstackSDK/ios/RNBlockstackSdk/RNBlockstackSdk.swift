@@ -5,7 +5,6 @@
 //  Created by Shreyas Thiagaraj on 11/27/18.
 //  Copyright © 2018 Facebook. All rights reserved.
 //
-
 import Foundation
 import Blockstack
 
@@ -18,6 +17,10 @@ class RNBlockstackSdk: NSObject {
     private var config: [String: Any]?
     private var isLoaded = false
   
+    @objc static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+
     @objc public func isUserSignedIn(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(["signedIn": Blockstack.shared.isUserSignedIn()])
     }
@@ -37,7 +40,8 @@ class RNBlockstackSdk: NSObject {
     // TODO: Remove reliance on session config.
     @objc public func signIn(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         guard let config = self.config,
-            let redirectUrl = config["redirectUrl"] as? String,
+            let redirectUrlString = config["redirectUrl"] as? String,
+            let redirectURL = URL(string: redirectUrlString),
             let appDomainString = config["appDomain"] as? String,
             let appDomain = URL(string: appDomainString) else {
                 reject(self.defaultErrorCode, "Invalid session config", nil)
@@ -47,9 +51,9 @@ class RNBlockstackSdk: NSObject {
         if let manifestPath = config["manifestUrl"] as? String {
             manifestURI = URL(string: manifestPath)
         }
-        let scopes = config["scopes"] as? [String] ?? ["store_write"]
+      let scopes = (config["scopes"] as? [String] ?? ["store_write"]).compactMap { AuthScope.fromString($0) }
         // TODO: REJECT when cancelled or failed, and handle this in App.js
-        Blockstack.shared.signIn(redirectURI: redirectUrl, appDomain: appDomain, manifestURI: manifestURI, scopes: scopes) { authResult in
+      Blockstack.shared.signIn(redirectURI: redirectURL, appDomain: appDomain, manifestURI: manifestURI, scopes: scopes) { authResult in
             var error: Any = NSNull()
             let data: [String: Any]
             switch authResult {
@@ -126,7 +130,6 @@ class RNBlockstackSdk: NSObject {
         }
         
     }
-    
 }
 
 extension Encodable {

@@ -185,7 +185,7 @@ class Maps extends Component<Props, State> {
                     key={1}
                     coordinate={this.getMapRegion()}>
                     <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-                      <Thumbnail source={{ uri: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg' }} style={{ height: 52, width: 52 }} />
+                      <Thumbnail source={{ uri: 'https://banter-pub.imgix.net/users/nicktee.id' }} style={{ height: 52, width: 52 }} />
                     </View>
                   </Marker>
 
@@ -194,7 +194,7 @@ class Maps extends Component<Props, State> {
                     key={2}
                     coordinate={this.getMapRegion(0.002, 0.002)}>
                     <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-                      <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/25/d6/5d/25d65d189c753c2efc2795fc75a83b7a.jpg' }} style={{ height: 52, width: 52 }} />
+                      <Thumbnail source={{ uri: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4' }} style={{ height: 52, width: 52 }} />
                     </View>
                   </Marker>
                 </MapView>

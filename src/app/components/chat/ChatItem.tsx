@@ -72,7 +72,7 @@ export class ChatItem extends React.Component<Props, State> {
                     {
                         this.props.pullRight
                         ? <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginLeft: 16, alignSelf: 'flex-end' }}>
-                            <Thumbnail source={{ uri: this.props.image }} style={{ height: 52, width: 52 }} />
+                            <Thumbnail source={{ uri: this.props.avatar }} style={{ height: 52, width: 52 }} />
                         </View>
                         : null
                     }

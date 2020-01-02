@@ -28,4 +28,3 @@ RCT_EXTERN_METHOD(putFile:(NSString *)fileName content:(NSString *)content optio
 RCT_EXTERN_METHOD(getFile:(NSString *)path options:(NSDictionary *)options resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 @end
-

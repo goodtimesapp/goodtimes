@@ -90,7 +90,7 @@ const MainNavigator = createStackNavigator(
         },
     },
     {
-        initialRouteName: "Maps"
+        initialRouteName: "Splash"
     }
 );
 
@@ -138,6 +138,6 @@ const DrawerRight = createDrawerNavigator({
     )
 })
 
-export default createAppContainer(MainNavigator);
-
+// export default createAppContainer(MainNavigator);
+export default createAppContainer(DrawerRight);
 

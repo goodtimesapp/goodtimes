@@ -29,8 +29,8 @@ const data = [
   },
   {
     _id: 2,
-    avatar: 'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg',
-    user: 'Julia',
+    avatar: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4',//'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg',
+    user: 'Will',
     hashtag: "#woot",
     hashtagColor: "#4c9aff",
     time: "4 mins",

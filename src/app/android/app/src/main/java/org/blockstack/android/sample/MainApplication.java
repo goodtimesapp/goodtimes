@@ -3,10 +3,10 @@ package org.blockstack.android.sample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import ui.photoeditor.RNPhotoEditorPackage;
 import com.horcrux.svg.SvgPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnfs.RNFSPackage;
-import ui.photoeditor.RNPhotoEditorPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import ui.apptour.RNAppTourPackage;
 import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
@@ -53,10 +53,10 @@ public class MainApplication extends Application implements ReactApplication {
 
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNPhotoEditorPackage(),
             new SvgPackage(),
             new RNFetchBlobPackage(),
             new RNFSPackage(),
-            new RNPhotoEditorPackage(),
             new RNFusedLocationPackage(),
             new RNAppTourPackage(),
             new BottomSheetBehaviorPackage(),

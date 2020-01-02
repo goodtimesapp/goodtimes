@@ -25,7 +25,8 @@
     "1android:debugwin": "cd /c/tools/ReactNativeDebugger && start react-native-debugger.exe",
     "1android:debugmac": "cd /Applications && open React\\ Native\\ Debugger.app",
     "apk": "cd android && ./gradlew assembleRelease",
-    "apk:run": "react-native run-android --variant=release"
+    "apk:run": "react-native run-android --variant=release",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
