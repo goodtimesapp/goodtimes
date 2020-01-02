@@ -154,6 +154,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-picker')
     implementation project(':react-native-photo-editor')
     implementation project(':react-native-svg')
     implementation project(':rn-fetch-blob')

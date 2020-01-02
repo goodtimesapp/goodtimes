@@ -3,6 +3,7 @@ package org.blockstack.android.sample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
 import ui.photoeditor.RNPhotoEditorPackage;
 import com.horcrux.svg.SvgPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -53,6 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
 
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ImagePickerPackage(),
             new RNPhotoEditorPackage(),
             new SvgPackage(),
             new RNFetchBlobPackage(),

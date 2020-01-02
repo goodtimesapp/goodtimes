@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
-import { StyleSheet, Linking, ScrollView, Platform, TouchableOpacity, Dimensions } from "react-native";
-import { Container, Header, Title, Button, Left, Right, Body, Icon, Text, View, Footer, Content, FooterTab, Badge, StyleProvider } from "native-base";
+import { StyleSheet, Linking, ScrollView, Platform, TouchableOpacity, Dimensions, View } from "react-native";
+import { Container, Header, Title, Button, Left, Right, Body, Icon, Text, Footer, Content, FooterTab, Badge, StyleProvider } from "native-base";
 import Markers from "./test/Markers";
 import Camera from './camera/Camera.Container';
 import FooterComponent from './Footer';
@@ -19,6 +19,7 @@ import ImageEditor from './image/ImageEditor';
 const { width, height } = Dimensions.get('screen');
 import { PostsPage } from './posts/Index';
 import { LocalChat } from './chat/LocalChat';
+import ProfileSettings  from './profile/ProfileSettings';
 import Maps from './test/Maps';
 
 
@@ -88,9 +89,15 @@ const MainNavigator = createStackNavigator(
                 header: null
             },
         },
+        ProfileSettings :{ 
+            screen: ProfileSettings,
+            navigationOptions: {
+                header: null
+            },
+        },
     },
     {
-        initialRouteName: "Splash"
+        initialRouteName: "ProfileSettings"
     }
 );
 
