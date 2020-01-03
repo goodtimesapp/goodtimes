@@ -1,7 +1,7 @@
 // @ts-ignore
 import Model from './../radiks/src/model';
 
-export  class Profile extends Model {
+export class Profile extends Model {
   static className = 'Profile';
   static schema = {
     firstName: {

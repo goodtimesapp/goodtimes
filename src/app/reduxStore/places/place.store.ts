@@ -88,19 +88,29 @@ export function setPlaceId(placeId: string) {
             // 1) start at the local location with 9 precision points, if there are more than 5 people then that is your id
             // 2) zoom the map out to 8 and so forth until you are at 1
 
-            try {
-                let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/headcount/${location.latitude}/${location.longitude}`, {
-                    "method": "GET",
-                });
+            // try {
+            //     let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/headcount/${location.latitude}/${location.longitude}`, {
+            //         "method": "GET",
+            //     });
                 
-                let geoJson: any = await geoResp.json();
-                let geohash = geoJson.geohash;
-                let headcount = geoJson.count;
-                console.log('Created geohash', geohash, headcount);
-                // 2) open up a websocker for the place
-                dispatch(setupWebsockets(geohash));
-                dispatch(succeeded(geohash, ActionTypes.SET_PLACE_ID));
-                //dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
+            //     let geoJson: any = await geoResp.json();
+            //     let geohash = geoJson.geohash;
+            //     let headcount = geoJson.count;
+            //     console.log('Created geohash', geohash, headcount);
+            //     // 2) open up a websocker for the place
+            //     dispatch(setupWebsockets(geohash));
+            //     dispatch(succeeded(geohash, ActionTypes.SET_PLACE_ID));
+            //     //dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
+            // } catch (e) {
+            //     console.log('error', e)
+            //     dispatch(failed(e));
+            // }
+
+            // old
+            try {
+                dispatch(setupWebsockets(placeId));
+                dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
+                
             } catch (e) {
                 console.log('error', e)
                 dispatch(failed(e));

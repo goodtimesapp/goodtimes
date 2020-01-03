@@ -97,7 +97,7 @@ const MainNavigator = createStackNavigator(
         },
     },
     {
-        initialRouteName: "ProfileSettings"
+        initialRouteName: "Splash"
     }
 );
 

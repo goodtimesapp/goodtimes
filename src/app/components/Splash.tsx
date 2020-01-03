@@ -10,11 +10,23 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { goodtimes, goose, pplBeach, lite, peace, wild, goodtimesNeon } from './../assets/index';
 import { material } from 'react-native-typography';
 import { LoginSplashPage } from './blockstack/Index';
-import { whileStatement } from '@babel/types';
+import { connect } from 'react-redux';
+import { State as ReduxState } from './../reduxStore/index';
+import {
+  getUserSession,
+  getProfileState,
+  getUserName,
+  putProfileSettings,
+  getProfileSettings,
+  silentLogin
+} from './../reduxStore/profile/profile.store';
+import {Profile} from './../models/Profile';
+import { store } from './../reduxStore/configureStore';
 
 
 interface Props {
-  navigation: any
+  navigation: any;
+  silentLogin: (state: any) => Promise<any>;
 }
 interface State {
   visible: boolean,
@@ -36,7 +48,21 @@ export class Splash extends React.Component<Props, State> {
     //   showIntro: false,
     //   visible: false
     // });
-    await this.checkIfUserHasSeenIntro();
+    
+    await this.trySilentLogin();
+    
+  }
+
+  async trySilentLogin(){
+    let profileState = store.getState().profile;
+    try{
+      this.props.silentLogin(profileState).then(async (loggedin) => {
+        await this.checkIfUserHasSeenIntro();    
+      });
+    } catch (e){
+        
+    }
+    await this.checkIfUserHasSeenIntro();    
   }
 
   async checkIfUserHasSeenIntro() {
@@ -47,7 +73,7 @@ export class Splash extends React.Component<Props, State> {
           this.setState({
             visible: false
           });
-          this.back("DiscoverFeed");
+          this.back("ProfileSettings");
         }, 100)
       } else {
         this.setState({
@@ -307,7 +333,20 @@ const styles = StyleSheet.create({
   }
 });
 
+// Global State
+const mapStateToProps: any = (state: ReduxState) => ({
+  userSession: getUserSession(state.profile),
+  getProfileState: getProfileState(state.profile),
+  getUserName: getUserName(state.profile)
+})
+// Actions to dispatch
+const mapDispatchToProps = {
+  silentLogin: silentLogin,
+}
+
 // @ts-ignore
-export default withNavigation(Splash);
+export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(Splash)))
+
+
 
 

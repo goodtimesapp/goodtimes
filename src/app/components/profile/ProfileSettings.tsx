@@ -4,13 +4,27 @@ import { Container, Content, Header, Icon, Left, Body, Right, Badge, Title, Thum
 import { withNavigation } from 'react-navigation';
 import { human, iOSUIKit } from 'react-native-typography';
 import ImagePicker from 'react-native-image-picker';
-
+import { connect } from 'react-redux';
+import { State as ReduxState } from './../../reduxStore/index';
+import {
+  getUserSession,
+  getProfileState,
+  getUserName,
+  putProfileSettings,
+  getProfileSettings,
+  profileSettingsSelector
+} from './../../reduxStore/profile/profile.store';
+import {Profile} from './../../models/Profile';
 
 interface Props {
   navigation: any;
+  putProfileSettings: (profile: Profile)=> void;
+  getProfileSettings: () => void;
+  profileSettingsSelector: Profile
 }
 interface State {
-  avatarSource: any
+  avatarSource: any;
+  firstName: string;
 }
 
 const options = {
@@ -25,14 +39,27 @@ export class ProfileSettings extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
+    
+    this.state = {
+      avatarSource: null,
+      firstName: ""
+    };
   }
 
-  state = {
-    avatarSource: require('./../../assets/profile.png')
-  };
+ 
 
   componentDidMount() {
+    this.props.getProfileSettings();
+  }
 
+  componentDidUpdate(data: any){
+    console.log('componentDidUpdate =>', data);
+    if (this.props.profileSettingsSelector !== data.profileSettingsSelector){
+        this.setState({
+          firstName: data.profileSettingsSelector.attrs.firstName,
+          avatarSource: data.profileSettingsSelector.attrs.image
+        });
+    }
   }
 
   chooseImage() {
@@ -46,16 +73,27 @@ export class ProfileSettings extends React.Component<Props, State> {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        const source = { uri: response.uri };
-
+        //const source = { uri: response.uri };
         // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+        // @todo compress image
+        const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
           avatarSource: source,
+          firstName: ""
         });
       }
     });
+  }
+
+  saveProfile(){
+    //Alert.alert(this.state.firstName, this.state.avatarSource.uri);
+    let profile: Profile = new Profile({
+      firstName: this.state.firstName,
+      image: this.state.avatarSource.uri
+    });
+    this.props.putProfileSettings(profile);
+    // this.props.navigation.navigate('Goodtimes');
   }
 
 
@@ -104,7 +142,12 @@ export class ProfileSettings extends React.Component<Props, State> {
               width: '100%',
             }} >
               <TouchableOpacity onPress={() => { this.chooseImage() }}>
-                <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={this.state.avatarSource} />
+                {
+                  this.state.avatarSource !== null
+                  ? <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={{uri: this.state.avatarSource}} />
+                  : <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={require('./../../assets/profile.png')} />
+                }
+                
                 <View style={{
                   height: 32,
                   marginTop: -26
@@ -140,7 +183,11 @@ export class ProfileSettings extends React.Component<Props, State> {
                   borderWidth: 1,
                   width: 320
                 }}>
-                  <Input placeholder='First Name' style={[human.body, { color: "#ff5230", width: 320 }]} />
+                  <Input 
+                    placeholder='First Name'
+                    value={this.state.firstName}
+                    style={[human.body, { color: "#ff5230", width: 320 }]}
+                    onChangeText={(firstName)=>{this.setState({firstName})}} />
                 </Item>
               </Content>
             </View>
@@ -159,7 +206,9 @@ export class ProfileSettings extends React.Component<Props, State> {
                   justifyContent: 'space-evenly',
                   alignItems: 'center',
                   flexDirection: "row"
-                }}>
+                }}
+                onPress={()=>{this.saveProfile()}}
+                >
                   <Text style={{ color: "#ffffff", fontSize: 18 }}>Next</Text>
                   <Icon style={{ color: "#ffffff", fontSize: 18 }} name="md-arrow-round-forward" ></Icon>
                 </TouchableOpacity>
@@ -181,4 +230,16 @@ const styles = StyleSheet.create({
 });
 
 
-export default withNavigation(ProfileSettings)
+// Global State
+const mapStateToProps: any = (state: ReduxState) => ({
+  profileSettingsSelector: profileSettingsSelector(state.profile)
+})
+// Actions to dispatch
+const mapDispatchToProps = {
+  putProfileSettings: putProfileSettings,
+  getProfileSettings: getProfileSettings
+}
+
+// @ts-ignore
+export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(ProfileSettings)))
+

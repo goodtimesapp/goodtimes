@@ -14,6 +14,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
 import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
+import {Profile} from './../../models/Profile';
+
 
 
 //#region Initial State
@@ -24,7 +26,8 @@ export interface State {
     privateKey: string;
     backupPhrase: string;
     username: string;
-    profileJSON: any
+    profileJSON: any;
+    settings: Profile
 }
 export const initialState: State = {
     userSession: {} as UserSession,
@@ -33,7 +36,11 @@ export const initialState: State = {
     privateKey: '',
     backupPhrase: '',
     username: '',
-    profileJSON: {}
+    profileJSON: {},
+    settings: new Profile({
+        image: null,
+        firstName: "First Name"
+    })
 }
 //#endregion Initial State
 
@@ -45,7 +52,8 @@ export enum ActionTypes {
     PROFILE_ACTION_STARTED = '[PROFILE] PROFILE_ACTION_STARTED',
     PROFILE_ACTION_SUCCEEDED = '[PROFILE] PROFILE_ACTION_SUCCEEDED',
     PROFILE_ACTION_FAILED = '[PROFILE] PROFILE_ACTION_FAILED',
-    PUT_PROFILE_SETTINGS = 'PUT_PROFILE_SETTINGS',
+    GET_PROFILE_SETTINGS = '[PROFILE] GET_PROFILE_SETTINGS',
+    PUT_PROFILE_SETTINGS = '[PROFILE] PUT_PROFILE_SETTINGS',
 }
 
 export function createAccountSilently(userChosenName: string, avatar: string) {
@@ -121,6 +129,42 @@ export function logout() {
     }
 }
 
+export function getProfileSettings() {
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
+            
+            // @ts-ignore
+            let myProfile = await Profile.fetchOwnList();
+            if (myProfile.length > 0){
+                const payload = myProfile[myProfile.length - 1];
+                dispatch(succeeded(payload, ActionTypes.GET_PROFILE_SETTINGS));
+            } else {
+                dispatch(failed('no profile settings created yet', ActionTypes.GET_PROFILE_SETTINGS));
+            }
+            
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.GET_PROFILE_SETTINGS));
+        }
+    }
+}
+
+export function putProfileSettings(profile: Profile) {
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
+            let resp = await profile.save();
+            console.log('radiks resp', resp);
+            const payload = resp;
+            dispatch(succeeded(payload, ActionTypes.PUT_PROFILE_SETTINGS));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.PUT_PROFILE_SETTINGS));
+        }
+    }
+}
+
 export function started() {
     return {
         type: ActionTypes.PROFILE_ACTION_STARTED,
@@ -172,6 +216,20 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
+        case ActionTypes.GET_PROFILE_SETTINGS : {
+            return {
+                ...state,
+                settings: action.payload
+            }
+        }
+
+        case ActionTypes.PUT_PROFILE_SETTINGS : {
+            return {
+                ...state,
+                settings: action.payload
+            }
+        }
+
         case ActionTypes.PROFILE_ACTION_STARTED: {
             console.log("PROFILE_STARTED");
         }
@@ -194,4 +252,5 @@ export function reducers(state: State = initialState, action: any) {
 export const getUserSession = createSelector(( (state: State) => state), s => s.userSession)
 export const getProfileState = createSelector( (state: State) => state, state => state);
 export const getUserName= createSelector( (state: State) => state, state => state.username);
+export const profileSettingsSelector = createSelector( (state: State) => state, state => state.settings);
 //#endregion Selectors
