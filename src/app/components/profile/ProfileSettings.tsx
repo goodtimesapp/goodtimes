@@ -15,8 +15,7 @@ import {
   profileSettingsSelector
 } from './../../reduxStore/profile/profile.store';
 import {Profile} from './../../models/Profile';
-// @ts-ignore
-import nlp from 'compromise';
+
 
 
 interface Props {
@@ -99,11 +98,7 @@ export class ProfileSettings extends React.Component<Props, State> {
     // this.props.navigation.navigate('Goodtimes');
   }
 
-  sentenceTagger(sentence: string){
-    let doc: any = nlp(sentence);
-    let nouns = doc.nouns().data();
-    let verbs = doc.verbs().data();
-  }
+ 
 
   render() {
     return (
@@ -237,9 +232,9 @@ export class ProfileSettings extends React.Component<Props, State> {
                   alignItems: 'center',
                   flexDirection: "row"
                 }}
-                onPress={()=>{this.sentenceTagger(this.state.firstName)}}
+                onPress={()=>{this.props.navigation.navigate('Maps');}}
                 >
-                  <Text style={{ color: "#ffffff", fontSize: 18 }}>Tag</Text>
+                  <Text style={{ color: "#ffffff", fontSize: 18 }}>Ok</Text>
                 </TouchableOpacity>
               </Content>
             </View>

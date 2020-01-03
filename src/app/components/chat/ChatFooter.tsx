@@ -8,24 +8,45 @@ import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-nativ
 import Message from './../../models/Message';
 import AsyncStorage from "@react-native-community/async-storage";
 import { human, iOSUIKit } from 'react-native-typography';
-
+// @ts-ignore
+import nlp from 'compromise';
 
 
 interface Props {
     navigation: any;
 }
 interface State {
-
+    chatText: string,
+    tags: Array<string>
 }
 
 export class ChatFooter extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+        this.state = {
+            chatText: '',
+            tags: []
+        }
+    }
+
+    sentenceTagger(sentence: string) {
+        let doc: any = nlp(sentence);
+        let nouns = doc.nouns().data();
+        let verbs = doc.verbs().data();
+        if (nouns.length > 0){
+            this.setState({
+                tags: doc.nouns().data().map((t:any)=>t.text)
+            })
+        }
+        
     }
 
     render() {
         return (
+
+
+
             <View style={{
                 flexDirection: 'row',
                 display: 'flex',
@@ -38,8 +59,42 @@ export class ChatFooter extends React.Component<Props, State> {
                 alignContent: 'center',
                 flex: 1
             }}>
+
+               
+
+                <View style={{
+                    flexDirection: 'row',
+                    display: 'flex',
+                    flex: 1,
+                    position: "absolute",
+                    bottom: 80,
+                }}>
+                {
+                    this.state.tags.map( (tag, i) => {
+                        return <TouchableOpacity
+                            onPress={() => { }}
+                            style={{
+                                height: 32,
+                                backgroundColor: "#ff5230",
+                                borderRadius: 16,
+                                borderColor: "white",
+                                borderWidth: 1,
+                                marginLeft: 4,
+                                marginRight: 4,
+                                paddingLeft: 20,
+                                paddingRight: 20,
+                                justifyContent: 'space-evenly',
+                                alignItems: 'center',
+                            }}>
+                            <Text style={{ color: "white", fontSize: 18 }} >#{tag}</Text>
+                        </TouchableOpacity>
+                    })
+                }
+                </View>
+
+
                 <TouchableOpacity
-                    onPress={() => { Alert.alert('hi') }}
+                    onPress={() => { }}
                     style={{
                         height: 42,
                         width: 42,
@@ -73,22 +128,32 @@ export class ChatFooter extends React.Component<Props, State> {
                             borderColor: "#77849b",
                             borderWidth: 1
                         }}>
-                            <Input placeholder='Say something...' style={[human.body, { color: "#77849b", width: '100%', }]} />
+                            <Input
+                                placeholder='Say something...'
+                                value={this.state.chatText}
+                                onChangeText={(chatText) => { 
+                                    this.setState({ chatText });
+                                    this.sentenceTagger(this.state.chatText);
+                                }}
+                                style={[human.body, { color: "#77849b", width: '100%', }]} />
                         </Item>
                     </Content>
 
                 </View>
-                <TouchableOpacity style={{
-                    height: 42,
-                    width: 42,
-                    backgroundColor: "#ff5230",
-                    borderRadius: 21,
-                    justifyContent: 'space-evenly',
-                    alignItems: 'center',
-                }}>
+                <TouchableOpacity
+                    onPress={() => { this.sentenceTagger(this.state.chatText) }}
+                    style={{
+                        height: 42,
+                        width: 42,
+                        backgroundColor: "#ff5230",
+                        borderRadius: 21,
+                        justifyContent: 'space-evenly',
+                        alignItems: 'center',
+                    }}>
                     <Icon style={{ color: "#ffffff", fontSize: 18 }} name="md-send" ></Icon>
                 </TouchableOpacity>
             </View>
+
         )
     }
 }

@@ -145,6 +145,6 @@ const DrawerRight = createDrawerNavigator({
     )
 })
 
-// export default createAppContainer(MainNavigator);
-export default createAppContainer(DrawerRight);
+export default createAppContainer(MainNavigator);
+// export default createAppContainer(DrawerRight);
 

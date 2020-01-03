@@ -9,6 +9,7 @@ import HorizontalScroll from './HorizontalScroll';
 import { AllCaughtUp } from "./AllCaughtUp";
 import { ShowBtn } from './../chat/ShowBtn';
 
+
 interface Props {
   navigation: any;
 }
@@ -62,6 +63,7 @@ export class LocalChat extends React.Component<Props, State> {
   closeDrawer = () => {
     this.props.navigation.closeDrawer();
   }
+
 
   render() {
     return (
