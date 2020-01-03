@@ -38,7 +38,7 @@ export const initialState: State = {
     username: '',
     profileJSON: {},
     settings: new Profile({
-        image: null,
+        image: require('./../../assets/profile.png'),
         firstName: "First Name"
     })
 }

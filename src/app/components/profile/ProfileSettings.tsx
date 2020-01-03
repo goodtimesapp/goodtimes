@@ -15,6 +15,9 @@ import {
   profileSettingsSelector
 } from './../../reduxStore/profile/profile.store';
 import {Profile} from './../../models/Profile';
+// @ts-ignore
+import nlp from 'compromise';
+
 
 interface Props {
   navigation: any;
@@ -41,7 +44,7 @@ export class ProfileSettings extends React.Component<Props, State> {
     super(props);
     
     this.state = {
-      avatarSource: null,
+      avatarSource: require('./../../assets/profile.png'),
       firstName: ""
     };
   }
@@ -90,12 +93,17 @@ export class ProfileSettings extends React.Component<Props, State> {
     //Alert.alert(this.state.firstName, this.state.avatarSource.uri);
     let profile: Profile = new Profile({
       firstName: this.state.firstName,
-      image: this.state.avatarSource.uri
+      image: this.state.avatarSource
     });
     this.props.putProfileSettings(profile);
     // this.props.navigation.navigate('Goodtimes');
   }
 
+  sentenceTagger(sentence: string){
+    let doc: any = nlp(sentence);
+    let nouns = doc.nouns().data();
+    let verbs = doc.verbs().data();
+  }
 
   render() {
     return (
@@ -142,12 +150,9 @@ export class ProfileSettings extends React.Component<Props, State> {
               width: '100%',
             }} >
               <TouchableOpacity onPress={() => { this.chooseImage() }}>
-                {
-                  this.state.avatarSource !== null
-                  ? <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={{uri: this.state.avatarSource}} />
-                  : <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={require('./../../assets/profile.png')} />
-                }
                 
+                <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={this.state.avatarSource} />
+               
                 <View style={{
                   height: 32,
                   marginTop: -26
@@ -214,7 +219,35 @@ export class ProfileSettings extends React.Component<Props, State> {
                 </TouchableOpacity>
               </Content>
             </View>
+
+
+
+            <View style={{
+              height: 50,
+              alignSelf: "flex-end",
+              marginRight: 30,
+            }}>
+              <Content style={{ flex: 1 }}>
+                <TouchableOpacity style={{
+                  height: 42,
+                  width: 120,
+                  backgroundColor: "#ff5230",
+                  borderRadius: 21,
+                  justifyContent: 'space-evenly',
+                  alignItems: 'center',
+                  flexDirection: "row"
+                }}
+                onPress={()=>{this.sentenceTagger(this.state.firstName)}}
+                >
+                  <Text style={{ color: "#ffffff", fontSize: 18 }}>Tag</Text>
+                </TouchableOpacity>
+              </Content>
+            </View>
+          
+
           </View>
+
+
         </ScrollView>
       </View>
 
