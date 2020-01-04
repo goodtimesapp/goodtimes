@@ -12,6 +12,7 @@ import {RadiksPage} from './Index';
 import { withNavigation } from 'react-navigation';
 import {Splash} from './../Splash';
 import AsyncStorage from '@react-native-community/async-storage';
+import { store } from './../../reduxStore/configureStore';
 
 
 interface Props {
@@ -48,8 +49,22 @@ class LoginSplash extends Component<Props, State> {
             isLoading: false
         }
     }
-    
-  
+
+    componentDidUpdate(data: any){
+        console.log('componentDidUpdate =>', data);
+        if (this.props.userSession !== data.userSession){
+            this.setState({
+                profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
+            });
+            this.props.closeSplashModal();
+            if (!store.getState().profile.settings){
+                this.props.navigation.navigate('ProfileSettings');
+            } else{
+                this.props.navigation.navigate('Maps');
+            }
+            
+        }
+    }
 
     async loginWithBlockstack(){
 
@@ -81,12 +96,19 @@ class LoginSplash extends Component<Props, State> {
                         console.log("deep link " + parts[1]);
                         RNBlockstackSdk.handlePendingSignIn(parts[1]).then(
                             (profileResp: any) => {
-                               
+                                
                                 let publicKey = getPublicKeyFromPrivate(profileResp.appPrivateKey);
                                 let privateKey = profileResp.appPrivateKey;
                                 let username = profileResp.username;
                                 
-                                let profile = makeNewProfile(privateKey, publicKey, profileResp.profile.image[0].contentUrl, username)
+                                let image = '';
+                                try{
+                                    image = profileResp.profile.image[0].contentUrl;
+                                } catch(e) {
+
+                                }
+
+                                let profile = makeNewProfile(privateKey, publicKey, image , username)
                                 let userSession = makeUserSession(privateKey, publicKey, username, profile.decodedToken.payload.claim);
 
                                 let profileState =  {
@@ -98,6 +120,7 @@ class LoginSplash extends Component<Props, State> {
                                     username: username,
                                     profileJSON: profile
                                 } 
+                                
                                 // @ts-ignore
                                 this.props.silentLogin(profileState);
 
@@ -117,16 +140,7 @@ class LoginSplash extends Component<Props, State> {
         let signInResult = await RNBlockstackSdk.signIn();
     }
 
-    componentDidUpdate(data: any){
-        console.log('componentDidUpdate =>', data);
-        if (this.props.userSession !== data.userSession){
-            this.setState({
-                profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
-            });
-            this.props.closeSplashModal();
-            this.props.navigation.navigate('Index');
-        }
-    }
+
 
 
     setLoader(isLoading:any){
@@ -155,20 +169,19 @@ class LoginSplash extends Component<Props, State> {
                } 
                                
                 
-                <Button bordered rounded danger onPress={() => this.loginWithBlockstack() }>
-                    <Text style={{ width: '100%', alignContent: 'center'}}>Login / Signup</Text>
+                <Button rounded danger onPress={() => this.loginWithBlockstack() } style={{alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{ width: '100%', color: 'white', alignSelf:'center'}} >Login / Signup</Text>
                 </Button>
 
                 <Text />
-                <Text style={{color: 'white'}}>Or</Text>
-                <Text />
-                <Item rounded style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+                <Text style={{color: 'white'}} >Or</Text>
+                {/* <Item rounded style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
                     <Input style={{color: 'white'}} onEndEditing={ (e: any)=>{
                         AsyncStorage.setItem('tempId', e.nativeEvent.text);
                     }} />
-                </Item>
+                </Item> */}
                 <Text />
-                <Button transparent bordered rounded danger onPress={() =>  this.createAccount() }>
+                <Button transparent bordered rounded danger onPress={() =>  this.createAccount() } style={{alignItems: 'center',justifyContent: 'center'}}>
                     <Text style={{color: 'white'}}>Continue as guest</Text>
                 </Button>
             </ScrollView>

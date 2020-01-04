@@ -27,7 +27,7 @@ import Maps from './test/Maps';
 const MainNavigator = createStackNavigator(
     {
         Index: {
-            screen: Goodtimes,
+            screen: Splash,
             navigationOptions: {
                 header: null
             },
@@ -95,6 +95,12 @@ const MainNavigator = createStackNavigator(
                 header: null
             },
         },
+        ProfilePage: {
+            screen: ProfilePage,
+            navigationOptions: {
+                header: null
+            },
+        }
     },
     {
         initialRouteName: "Splash"

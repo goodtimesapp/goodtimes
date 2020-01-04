@@ -10,7 +10,6 @@ import { UserSession } from 'blockstack';
 import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils'; 
 import {RadiksPage} from './Index';
 
-
 interface Props {
     userSession: any;
     getProfileState: any;
@@ -110,6 +109,7 @@ export default class Profile extends Component<Props, State> {
                 profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
             });
         }
+
     }
 
 
@@ -202,4 +202,3 @@ export default class Profile extends Component<Props, State> {
         )
     }
 }
-

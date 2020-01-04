@@ -57,10 +57,15 @@ export class ProfileSettings extends React.Component<Props, State> {
   componentDidUpdate(data: any){
     console.log('componentDidUpdate =>', data);
     if (this.props.profileSettingsSelector !== data.profileSettingsSelector){
+      try{
+       
         this.setState({
           firstName: data.profileSettingsSelector.attrs.firstName,
           avatarSource: data.profileSettingsSelector.attrs.image
         }); 
+      } catch(e) {console.log('cannot update data.profileSettingsSelector.attrs')}
+      
+
     }
     
   }
@@ -110,7 +115,7 @@ export class ProfileSettings extends React.Component<Props, State> {
         backgroundColor: "#283447",
         justifyContent: "center"
       }}>
-        <ScrollView>
+        
           <View style={{
             marginTop: 32,
             justifyContent: "center",
@@ -210,8 +215,8 @@ export class ProfileSettings extends React.Component<Props, State> {
                 }}
                 onPress={()=>{this.saveProfile()}}
                 >
-                  <Text style={{ color: "#ffffff", fontSize: 18 }}>Next</Text>
-                  <Icon style={{ color: "#ffffff", fontSize: 18 }} name="md-arrow-round-forward" ></Icon>
+                  <Text style={{ color: "#ffffff", fontSize: 18 }}>Save</Text>
+                  <Icon style={{ color: "#ffffff", fontSize: 18 }} name="md-save" ></Icon>
                 </TouchableOpacity>
               </Content>
             </View>
@@ -242,10 +247,9 @@ export class ProfileSettings extends React.Component<Props, State> {
           
 
           </View>
-
-
-        </ScrollView>
+  
       </View>
+      
 
     )
   }

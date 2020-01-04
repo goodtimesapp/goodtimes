@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, I18nManager, Modal, ScrollView, ImageBackground, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Image, I18nManager, Modal, ScrollView, ImageBackground, Dimensions, Alert } from 'react-native';
 import { Icon } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { withNavigation } from 'react-navigation';
@@ -27,6 +27,7 @@ import { store } from './../reduxStore/configureStore';
 interface Props {
   navigation: any;
   silentLogin: (state: any) => Promise<any>;
+  getUserName: any;
 }
 interface State {
   visible: boolean,
@@ -49,6 +50,11 @@ export class Splash extends React.Component<Props, State> {
     //   visible: false
     // });
     
+    this.setState({
+      showIntro: true,
+      visible: true
+    });
+
     await this.trySilentLogin();
     
   }
@@ -57,16 +63,30 @@ export class Splash extends React.Component<Props, State> {
     let profileState = store.getState().profile;
     try{
       this.props.silentLogin(profileState).then(async (loggedin) => {
-        await this.checkIfUserHasSeenIntro();    
+        if (!store.getState().profile.userSession){
+          // stay on splash login page
+        }
+        else if (!store.getState().profile.settings){
+          this.back("ProfileSettings");
+        } else {
+          this.back("Maps");
+        }
       });
     } catch (e){
-        
+      this.back("Splash");
     }
-    await this.checkIfUserHasSeenIntro();    
+    // await this.checkIfUserHasSeenIntro();    
   }
 
   async checkIfUserHasSeenIntro() {
     try {
+
+      if (!this.props.getUserName){
+
+      } else{
+        
+      }
+
       const value = await AsyncStorage.getItem('hasSeenIntro')
       if (value === 'true') {
         setTimeout(() => {

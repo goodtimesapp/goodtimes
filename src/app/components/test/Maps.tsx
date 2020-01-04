@@ -217,10 +217,10 @@ class Maps extends Component<Props, State> {
 
           renderFixedHeader={() => {
 
-            if (!this.state.isHeaderVisible) {
+            if (!this.state.isHeaderVisible && this.props.profileSettingsSelector ) {
               return (
-                <View key="fixed-header" style={styles.fixedSection}>
-                  <MapHeader navigation={null} avatar={this.props.profileSettingsSelector.attrs.image}></MapHeader>
+                <View key="fixed-header" style={styles.fixedSection}>                  
+                  <MapHeader navigation={this.props.navigation} avatar={this.props.profileSettingsSelector.attrs.image}></MapHeader>
                 </View>
               )
             } else {
@@ -229,7 +229,7 @@ class Maps extends Component<Props, State> {
               return (
                   <View key="fixed-header" style={[styles.fixedSection, { backgroundColor: "rgba(15.7,20.4,27.8,0.7)" }]}>
                     <ChatHeader
-                      navigation={null}
+                      navigation={this.props.navigation}
                       onScrollToTop={() => {
                         // @ts-ignore
                         this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 })
