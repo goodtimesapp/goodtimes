@@ -13,6 +13,17 @@ import { MapHeader } from './../chat/MapHeader';
 import { ChatFooter } from './../chat/ChatFooter';
 import { withNavigation } from 'react-navigation';
 import { ShowBtn } from './../chat/ShowBtn';
+import { connect } from 'react-redux';
+import { State as ReduxState } from './../../reduxStore/index';
+import {
+  getUserSession,
+  getProfileState,
+  getUserName,
+  putProfileSettings,
+  getProfileSettings,
+  profileSettingsSelector
+} from './../../reduxStore/profile/profile.store';
+import {Profile} from './../../models/Profile';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -44,6 +55,7 @@ interface State {
 
 interface Props {
   navigation: any;
+  profileSettingsSelector: Profile
 }
 class Maps extends Component<Props, State> {
 
@@ -208,7 +220,7 @@ class Maps extends Component<Props, State> {
             if (!this.state.isHeaderVisible) {
               return (
                 <View key="fixed-header" style={styles.fixedSection}>
-                  <MapHeader navigation={null}></MapHeader>
+                  <MapHeader navigation={null} avatar={this.props.profileSettingsSelector.attrs.image}></MapHeader>
                 </View>
               )
             } else {
@@ -246,6 +258,7 @@ class Maps extends Component<Props, State> {
               alignItems: 'center',
               width: '100%'
             }}>
+              // @ts-ignore
               <ShowBtn text={"Show New"} navigation={null} />
             </TouchableOpacity>
           : 
@@ -277,7 +290,17 @@ class Maps extends Component<Props, State> {
 
 }
 
-export default withNavigation(Maps);
+// Global State
+const mapStateToProps: any = (state: ReduxState) => ({
+  profileSettingsSelector: profileSettingsSelector(state.profile)
+})
+// Actions to dispatch
+const mapDispatchToProps = {
+  putProfileSettings: putProfileSettings,
+  getProfileSettings: getProfileSettings
+}
+// @ts-ignore
+export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(Maps)))
 
 const styles = StyleSheet.create({
   container: {
@@ -498,4 +521,6 @@ const mapStyle = [
     ],
   },
 ];
+
+
 

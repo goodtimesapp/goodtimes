@@ -60,8 +60,9 @@ export class ProfileSettings extends React.Component<Props, State> {
         this.setState({
           firstName: data.profileSettingsSelector.attrs.firstName,
           avatarSource: data.profileSettingsSelector.attrs.image
-        });
+        }); 
     }
+    
   }
 
   chooseImage() {

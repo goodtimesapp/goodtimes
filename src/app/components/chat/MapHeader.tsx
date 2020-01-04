@@ -13,6 +13,7 @@ import { human, iOSUIKit } from 'react-native-typography';
 
 interface Props {
     navigation: any;
+    avatar: any;
 }
 interface State {
 
@@ -49,7 +50,7 @@ export class MapHeader extends React.Component<Props, State> {
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                 }}>
-                    <Icon style={{color: "#77849b", fontSize: 18}} name="md-person" ></Icon>
+                    <Thumbnail small source={this.props.avatar} />
                 </TouchableOpacity>
                 <View  style={{
                     marginLeft: 40, 
