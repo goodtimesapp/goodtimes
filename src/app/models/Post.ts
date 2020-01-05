@@ -5,7 +5,7 @@ import Comment from './Comment';
 
 export let posts: any;
 
-export  class Post extends Model {
+export class Post extends Model {
   static className = 'Post';
 
   static schema = {
@@ -27,6 +27,14 @@ export  class Post extends Model {
     },
     placeId :{
       type: string,
+      decrypted: true
+    },
+    content : {
+      type: string,
+      decrypted: true
+    },
+    tags: {
+      type: Array,
       decrypted: true
     }
   };

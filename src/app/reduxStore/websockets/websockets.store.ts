@@ -5,7 +5,7 @@ import { addPostFromWebSocket } from './../posts/posts.store';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import Message from './../../models/Message';
-
+import { Alert } from 'react-native';
 
 //#region state
 export interface State {
@@ -40,9 +40,6 @@ export function setupWebsockets(placeId: string) {
     return async (dispatch: any) => {
         try {
             
-           
-
-
             let wsEndpoint = `${GOODTIMES_RADIKS_WEBSOCKET}/place/${placeId}`;
             // @ts-ignore
             let ws = new WebSocket(wsEndpoint);
@@ -65,7 +62,8 @@ export function setupWebsockets(placeId: string) {
                             let msg = data.content;
                             dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_MESSAGE));
                         case "Post":
-                            // dispatch(addPostFromWebSocket(data.content));
+                            // dispatch(addPostFromWebSocket(data));
+                            Alert.alert(data.content);
                             dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
                         default:
                             return;

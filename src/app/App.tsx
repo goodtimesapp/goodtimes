@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Provider } from 'react-redux';
 import { store, persistor } from './reduxStore/configureStore';
+import * as websocketsStore from './reduxStore/websockets/websockets.store';
+import * as placeStore from './reduxStore/places/place.store';
 import { PersistGate } from 'redux-persist/integration/react'
 import Index from './components/Index';
 import { SafeAreaView } from 'react-native'
@@ -14,7 +16,6 @@ import * as bip39 from 'bip39';
 import * as bitcoin from 'react-native-bitcoinjs-lib';
 // @ts-ignore
 import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils';
-
 import { StyleProvider } from "native-base";
 // @ts-ignore
 import getTheme from './native-base-theme/components';
@@ -42,6 +43,8 @@ export default class App extends Component<Props, State> {
     window.getBlockchainIdentities = getBlockchainIdentities;
     window.bip39 = bip39;
     window.store = store;
+    window.websocketsStore = websocketsStore;
+    window.placeStore = placeStore;
   }
 
   

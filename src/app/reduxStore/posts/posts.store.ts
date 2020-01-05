@@ -7,10 +7,19 @@ import Comment from './../../models/Comment';
 
 //#region Initial State
 export interface State {
-    posts: Array<Post>
+    posts: Array<any> // Array<Post>
 }
 export const initialState: State = {
-    posts: []
+    posts: [
+        {
+            _id: '1', 
+            attrs: {
+                content: "who wants to get coffee?",
+                createdBy: "nicktee.id",
+                tages: ["coffee", "meetup"]
+            } 
+        }
+    ]
 }
 //#endregion Initial State
 

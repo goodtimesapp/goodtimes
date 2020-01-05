@@ -14,122 +14,104 @@ export interface State {
     place: string,
     placeId: string,
     key: string,
-    websocket: any
+    geohash: string,
+    headcount: number
 }
 export const initialState: State = {
     place: '',
     placeId: '',
     key: '',
-    websocket: null
+    geohash: 'a',
+    headcount: 0
 }
 //#endregion state
 
 //#region actions
 export enum ActionTypes {
-    REQUEST_KEY = "[PLACE] Request a room key ",
-    SET_PLACE_ID = "[PLACE] Set place id",
-    GET_PLACE_DATA = "[PLACE] GET PLACE DATA",
-    GET_PLACE = "[PLACE] GET PLACE",
-    GET_PLACE_KEY = "[PLACE] GET PLACE KEY",
-    PUT_PLACE = "[PLACE] PUT PLACE",
-    POST_PLACE = "[PLACE] POST  PLACE",
-    DELETE_PLACE = "[PLACE] DELETE PLACE",
+    SET_PLACE_ID = "[PLACE] Set place id", // legacy
+    SET_GEOHASH_AT_CURRENT_LOCATION = "[PLACE] SET_GEOHASH_AT_CURRENT_LOCATION",
+    SET_GEOHASH = "[PLACE] SET_GEOHASH",
+    GET_NEAREST_POPULATED_GEOHASH = "[PLACE] GET_NEAREST_POPULATED_GEOHASH",
+    GET_HEADCOUNT_AT_CURRENT_LOCATION = "[PLACE] GET_HEADCOUNT_AT_CURRENT_LOCATION ",
+    GET_HEADCOUNT = "[PLACE] GET_HEADCOUNT",
+    START_LOCATION_AT_CURRENT_LOCATION = "[PLACE]  START_LOCATION_WEBSOCKET_AT_CURRENT_LOCATION",
+    START_LOCATION_WEBSOCKET = "[PLACE]  START_LOCATION_WEBSOCKET",
     PLACE_ACTION_STARTED = "[PLACE] PLACE Action STARTED",
     PLACE_ACTION_SUCCEEDED = "[PLACE] PLACE Action SUCEEDED",
     PLACE_ACTION_FAILED = "[PLACE] PLACE Action FAILED",
 }
 
-// requestKey
-export function requestKey(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-
-            // open two ws
-
-            // 1 key reciever key ws /place/placeId/publickey 
-
-            // listen for key "ReceiveKey" websocket message
-
-            // 2 data ws /place/placeId
-
-            let keyResp = await fetch(`${API_ENDPOINT}`, {
-                "method": "GET",
-                "headers": {
-                    "accept": "application/json",
-                    "authorization": "Bearer " + authToken,
-                    "content-type": "application/json"
-                },
-                "body": JSON.stringify(json)
-            });
-            // Room key algo
-            // @todo proof of presxense - likilhood rank based on reputation and bluetooth. server passes back key if you are most likley there
-            // locationClaim, placeId, userId
-
-            // https://goodtimes-server.herokuapp.com/place/placeId
-
-
-            let payload = '';
-            dispatch(succeeded(payload, ActionTypes.GET_PLACE));
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
-
+// legacy
 export function setPlaceId(placeId: string) {
     return async (dispatch: any) => {
+        try {
+            dispatch(setupWebsockets(placeId));
+            dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
+            
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e));
+        }    
+    }
+}
 
+// query the server to determine the best populated geohash region with more than people present
+// 1) start at the local location with 9 precision points, if there are more than 5 people then that is your geohash
+// 2) zoom the map out to 8 and so forth until you are at 1 (the whole wide world)
+export function getNearestPopulatedGeohash(){
+
+    return async (dispatch: any) => {
+        getCurrentLocation().then( async (location: any) =>{
+            let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/nearest/populated/${location.latitude}/${location.longitude}`, {
+                "method": "GET",
+            });
+            
+            let geoJson: any = await geoResp.json();
+            let geohash = geoJson.geohash;
+            let headcount = geoJson.count;
+            console.log('Created geohash', geohash, headcount);
+            // dispatch(startLocationWebSocket(geohash));
+            dispatch(succeeded({geohash,headcount}, ActionTypes.GET_NEAREST_POPULATED_GEOHASH));
+        });
+    }      
+}
+
+export function getHeadCountAtCurrentLocation(){
+
+}
+
+export function getHeadCount(geohash: string){
+    
+}
+
+export function setGeohashStateAtCurrentLocation(){
+
+}
+
+export function setGeohashState(geohash: string){
+
+}
+
+
+
+
+export function startLocationWebSocketAtCurrentLocation(){
+    return async (dispatch: any) => {
         // 1) Create geohash for your location
         getCurrentLocation().then( async (location: any) =>{
-
-            // query the server to determine the geohash
-            // 1) start at the local location with 9 precision points, if there are more than 5 people then that is your id
-            // 2) zoom the map out to 8 and so forth until you are at 1
-
-            // try {
-            //     let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/headcount/${location.latitude}/${location.longitude}`, {
-            //         "method": "GET",
-            //     });
-                
-            //     let geoJson: any = await geoResp.json();
-            //     let geohash = geoJson.geohash;
-            //     let headcount = geoJson.count;
-            //     console.log('Created geohash', geohash, headcount);
-            //     // 2) open up a websocker for the place
-            //     dispatch(setupWebsockets(geohash));
-            //     dispatch(succeeded(geohash, ActionTypes.SET_PLACE_ID));
-            //     //dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
-            // } catch (e) {
-            //     console.log('error', e)
-            //     dispatch(failed(e));
-            // }
-
-            // old
-            try {
-                dispatch(setupWebsockets(placeId));
-                dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
-                
-            } catch (e) {
-                console.log('error', e)
-                dispatch(failed(e));
-            }
-    
+            dispatch(startLocationWebSocket(location));
         });
-           
     }
 }
 
 
-// getPlaceData
-export function getPlace(json: any, authToken: any) {
+export function startLocationWebSocket(geohash: string) {
     return async (dispatch: any) => {
-        dispatch(started());
         try {
-
-            let payload = '';
-            dispatch(succeeded(payload, ActionTypes.GET_PLACE));
+            // 2) open up a websocker for the place
+            dispatch(setupWebsockets(geohash));
+            dispatch(succeeded(geohash, ActionTypes.START_LOCATION_WEBSOCKET));
+            //dispatch(getPosts({ sort: '-createdAt', placeId: placeId }) );
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
@@ -137,77 +119,6 @@ export function getPlace(json: any, authToken: any) {
     }
 }
 
-export function putPlace(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            fetch(`${API_ENDPOINT}`, {
-                "method": "PUT",
-                "headers": {
-                    "accept": "application/json",
-                    "authorization": "Bearer " + authToken,
-                    "content-type": "application/json"
-                },
-                "body": JSON.stringify(json)
-            })
-                .then(response => response.json())
-                .then(payload => {
-                    dispatch(succeeded(payload, ActionTypes.PUT_PLACE));
-                });
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
-
-export function postPlace(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            fetch(`${API_ENDPOINT}`, {
-                "method": "POST",
-                "headers": {
-                    "accept": "application/json",
-                    "authorization": "Bearer " + authToken,
-                    "content-type": "application/json"
-                },
-                "body": JSON.stringify(json)
-            })
-                .then(response => response.json())
-                .then(payload => {
-                    dispatch(succeeded(payload, ActionTypes.POST_PLACE));
-                });
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
-
-export function deletePlace(json: any, authToken: any) {
-    return async (dispatch: any) => {
-        dispatch(started());
-        try {
-            fetch(`${API_ENDPOINT}`, {
-                "method": "DELETE",
-                "headers": {
-                    "accept": "application/json",
-                    "authorization": "Bearer " + authToken,
-                    "content-type": "application/json"
-                },
-                "body": JSON.stringify(json)
-            })
-                .then(response => response.json())
-                .then(payload => {
-                    dispatch(succeeded(payload, ActionTypes.DELETE_PLACE));
-                });
-        } catch (e) {
-            console.log('error', e)
-            dispatch(failed(e));
-        }
-    }
-}
 
 
 export function started() {
@@ -243,36 +154,29 @@ export function reducers(state: State = initialState, action: any) {
     switch (action.type) {
 
 
-        case ActionTypes.GET_PLACE: {
-            return {
-                ...state,
-                workflowId: action.payload
-            }
-        }
+        
         case ActionTypes.SET_PLACE_ID: {
             return {
                 ...state,
                 placeId: action.payload
             }
         }
-        case ActionTypes.PUT_PLACE: {
+
+        case ActionTypes.GET_NEAREST_POPULATED_GEOHASH: {
             return {
                 ...state,
-                error: action.payload
+                geohash: action.payload.geohash,
+                headcount: action.payload.headcount
             }
         }
-        case ActionTypes.POST_PLACE: {
+
+        case ActionTypes.START_LOCATION_WEBSOCKET: {
             return {
                 ...state,
-                error: action.payload
+                placeId: action.payload
             }
         }
-        case ActionTypes.DELETE_PLACE: {
-            return {
-                ...state,
-                error: action.payload
-            }
-        }
+        
         default:
             return state
     }
@@ -281,5 +185,4 @@ export function reducers(state: State = initialState, action: any) {
 
 //#region selectors
 export const placeState = createSelector((state: State) => state, state => state);
-export const websocket = createSelector((state: State) => state, state => state.websocket);
 //#endregion selectors
