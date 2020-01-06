@@ -282,7 +282,7 @@ class Maps extends Component<Props, State> {
 
           }}
         >
-            <LocalChatScrollView navigation={null} />
+            <LocalChatScrollView navigation={this.props.navigation} getChats={null}  />
         </ParallaxScrollView>
 
 

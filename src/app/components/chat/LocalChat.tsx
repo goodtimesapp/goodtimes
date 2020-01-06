@@ -8,55 +8,35 @@ import { ChatItem } from "./ChatItem";
 import HorizontalScroll from './HorizontalScroll';
 import { AllCaughtUp } from "./AllCaughtUp";
 import { ShowBtn } from './../chat/ShowBtn';
-
+import { connect } from 'react-redux';
+import { State as ReduxState } from './../../reduxStore/index';
+import { posts, getPosts, getChats, initialState } from './../../reduxStore/posts/posts.store';
 
 interface Props {
   navigation: any;
+  postsSelector: any;
+  getChats: () => void;
 }
 interface State {
 
 }
 
-const data = [
-  {
-    _id: 1,
-    avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
-    user: 'Nick',
-    hashtag: "#coffee",
-    hashtagColor: "#4c9aff",
-    time: "5 mins",
-    content: "who want to get coffee and talk chicago",
-    pullRight: true
-  },
-  {
-    _id: 2,
-    avatar: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4',//'https://primalinformation.com/wp-content/uploads/2019/10/Julia-Rose.jpg',
-    user: 'Will',
-    hashtag: "#woot",
-    hashtagColor: "#4c9aff",
-    time: "4 mins",
-    content: "yes I would like to", //this is very useful if you have an animation that must follow the scroll position because without the native driver it will always run a frame behind of the gesture because of the async nature of React Native
-    pullRight: false
-  }
-]
 
 export class LocalChat extends React.Component<Props, State> {
+  
+  state = {
+    nextId: 0,
+    lastMsg: 'hello'
+  };
 
   constructor(props: Props) {
     super(props);
   }
 
-  state = {
-    messages: [],
-    nextId: 0,
-    lastMsg: 'hello'
-  };
+  
 
-  componentDidMount() {
-    this.setState({
-      messages: data
-    });
-
+  componentWillMount() {
+    
   }
 
 
@@ -112,7 +92,7 @@ export class LocalChat extends React.Component<Props, State> {
               width: '100%',
             }}>
             <ShowBtn text={"Show Older"} navigation={null} onButtonPress={() => {
-              let messages = [...data, ...this.state.messages];
+              let messages = [...this.props.postsSelector, ...this.props.postsSelector];
               this.setState({
                 messages
               })
@@ -120,19 +100,19 @@ export class LocalChat extends React.Component<Props, State> {
           </TouchableOpacity>
 
           {
-            this.state.messages
+            initialState.posts
               ? <FlatList
-                data={this.state.messages}
+                data={initialState.posts}
                 renderItem={({ item }: any) => {
                   return <ChatItem
                     navigation={null}
-                    avatar={item.avatar}
-                    hashtag={item.hashtag}
-                    hashtagColor={item.hashtagColor}
-                    user={item.user}
-                    time={item.time}
-                    content={item.content}
-                    pullRight={item.pullRight}
+                    avatar={item.attrs.avatar}
+                    hashtag={item.attrs.hashtag}
+                    hashtagColor={item.attrs.hashtagColor}
+                    user={item.attrs.user}
+                    time={item.attrs.time}
+                    content={item.attrs.content}
+                    pullRight={item.attrs.pullRight}
                   />
                 }
                 }
@@ -169,5 +149,14 @@ const styles = StyleSheet.create({
 
 
 
+// Global State
+const mapStateToProps: any = (state: ReduxState) => ({
+  postsSelector: posts(state.posts)
+})
+// Actions to dispatch
+const mapDispatchToProps = {
+  getChats: getChats
+}
 
-export default withNavigation(LocalChat)
+// @ts-ignore
+export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(LocalChat)))

@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './reduxStore/configureStore';
 import * as websocketsStore from './reduxStore/websockets/websockets.store';
 import * as placeStore from './reduxStore/places/place.store';
+import * as postsStore from './reduxStore/posts/posts.store';
 import { PersistGate } from 'redux-persist/integration/react'
 import Index from './components/Index';
 import { SafeAreaView } from 'react-native'
@@ -45,6 +46,7 @@ export default class App extends Component<Props, State> {
     window.store = store;
     window.websocketsStore = websocketsStore;
     window.placeStore = placeStore;
+    window.postsStore = postsStore;
   }
 
   

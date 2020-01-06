@@ -1,7 +1,7 @@
 
 import { createSelector } from 'reselect';
 import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
-import { Post }  from './../../models/Post';
+import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
 
 
@@ -12,12 +12,28 @@ export interface State {
 export const initialState: State = {
     posts: [
         {
-            _id: '1', 
+            _id: '1',
             attrs: {
-                content: "who wants to get coffee?",
-                createdBy: "nicktee.id",
-                tages: ["coffee", "meetup"]
-            } 
+                avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
+                user: 'Nick',
+                hashtag: "#coffee",
+                hashtagColor: "#4c9aff",
+                time: "5 mins",
+                content: "who want to get coffee and talk chicago",
+                pullRight: true
+            }
+        },
+        {
+            _id: 2,
+            attrs: {
+                avatar: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4',
+                user: 'Will',
+                hashtag: "#woot",
+                hashtagColor: "#4c9aff",
+                time: "4 mins",
+                content: "yes I would like to",
+                pullRight: false
+            }
         }
     ]
 }
@@ -25,13 +41,27 @@ export const initialState: State = {
 
 //#region Actions
 export enum ActionTypes {
+    GET_CHATS = '[POSTS] GET_CHATS',
     GET_POST = '[POSTS] GET_POST',
-    PUT_POST = '[POSTS] PUT_POST', 
+    PUT_POST = '[POSTS] PUT_POST',
     DELETE_POST = '[POSTS] DELETE_POST',
     ADD_POST_FROM_WEBSOCKET = '[POSTS] ADD_POST_FROM_WEBSOCKET',
     POSTS_ACTION_STARTED = '[POSTS] POSTS_ACTION_STARTED',
     POSTS_ACTION_SUCCEEDED = '[POSTS] POSTS_ACTION_SUCCEEDED',
     POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED'
+}
+
+export function getChats(){
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
+            const payload = initialState.posts;
+            dispatch(succeeded(payload, ActionTypes.GET_CHATS));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.GET_CHATS));
+        }
+    }
 }
 
 export function getPosts(filter: any = {}) {
@@ -40,7 +70,7 @@ export function getPosts(filter: any = {}) {
         try {
 
             let posts = await Post.fetchList(filter);
-        
+
             const payload = posts;
 
             dispatch(succeeded(payload, ActionTypes.GET_POST));
@@ -83,7 +113,7 @@ export function deletePost(id: string) {
         dispatch(started());
         try {
             const payload = {
-                
+
             }
             dispatch(succeeded(payload, ActionTypes.DELETE_POST));
         } catch (e) {
@@ -131,14 +161,21 @@ export function failed(error: any, action: ActionTypes) {
 export function reducers(state: State = initialState, action: any) {
     switch (action.type) {
 
-        case ActionTypes.GET_POST: {
+        case ActionTypes.GET_CHATS: {
             return {
-                ...state, 
+                ...state,
                 posts: action.payload
             }
         }
 
-        case ActionTypes.PUT_POST : {
+        case ActionTypes.GET_POST: {
+            return {
+                ...state,
+                posts: action.payload
+            }
+        }
+
+        case ActionTypes.PUT_POST: {
             let clone = [...state.posts];
             clone.unshift(action.payload);
             return {
@@ -147,7 +184,7 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
-        case ActionTypes.ADD_POST_FROM_WEBSOCKET : {
+        case ActionTypes.ADD_POST_FROM_WEBSOCKET: {
             return {
                 ...state,
                 posts: [
@@ -156,15 +193,15 @@ export function reducers(state: State = initialState, action: any) {
                 ]
             }
         }
-        
+
 
         case ActionTypes.DELETE_POST: {
-            return  state;
+            return state;
         }
 
         case ActionTypes.POSTS_ACTION_STARTED: {
             console.log("POSTS_STARTED");
-            return  state;
+            return state;
         }
 
         case ActionTypes.POSTS_ACTION_FAILED: {
@@ -182,5 +219,5 @@ export function reducers(state: State = initialState, action: any) {
 //#endregion Reducers
 
 //#region Selectors
-export const posts = createSelector(( (state: State) => state), s => s.posts)
+export const posts = createSelector(((state: State) => state), state=> state.posts)
 //#endregion Selectors

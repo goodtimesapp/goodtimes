@@ -36,6 +36,10 @@ export class Post extends Model {
     tags: {
       type: Array,
       decrypted: true
+    },
+    updatedAt: {
+      type: number,
+      decrypted: true
     }
   };
 
