@@ -10,7 +10,7 @@ The healthy social network for where you at! Foster local communities. Live your
 - Share media at meetups
 - Make Goodtimes
 
-Today social networks prevent us from living our best real life and can cause some serious mental health issue! We stay at home constantly checking status updates, likes and compring ourselves to other people's perfect, fake version of themselves.
+Today social networks prevent us from living our best real life and can cause some serious mental health issues! We stay at home constantly checking status updates, likes and compring ourselves to other people's perfect, fake version of themselves.
 
 Goodtimes is the inverse of that! It fosters healthy real life relationships. The social feeds are deleted each day and you are only allowed to join a social feed if you are physically in the location. 
 
