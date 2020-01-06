@@ -61,19 +61,19 @@ export class Splash extends React.Component<Props, State> {
 
   async trySilentLogin(){
     let profileState = store.getState().profile;
-    try{
+    try {
       this.props.silentLogin(profileState).then(async (loggedin) => {
-        if (!store.getState().profile.userSession){
+        if (!Object.keys(store.getState().profile.userSession).length){
           // stay on splash login page
         }
-        else if (!store.getState().profile.settings){
+        else if (store.getState().profile.settings.attrs.firstName == "First Name"){
           this.back("ProfileSettings");
         } else {
           this.back("Maps");
         }
       });
     } catch (e){
-      this.back("Splash");
+      // stay on splash page
     }
     // await this.checkIfUserHasSeenIntro();    
   }

@@ -24,14 +24,17 @@ import {
   profileSettingsSelector
 } from './../../reduxStore/profile/profile.store';
 import {
-   getNearestPopulatedGeohash,
-   startLocationWebSocket,
-   placeState,
-   State as PlaceStateModel
+  getNearestPopulatedGeohash,
+  startLocationWebSocket,
+  placeState,
+  State as PlaceStateModel
 } from './../../reduxStore/places/place.store';
 import { websocketsState, State as WebsocketsStateModel } from './../../reduxStore/websockets/websockets.store';
 import { Profile } from './../../models/Profile';
-import { mapStyle } from './Maps.Styles'
+import { mapStyle } from './Maps.Styles';
+import _ from 'lodash';
+import { workerData } from 'worker_threads';
+
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -39,11 +42,12 @@ const LATITUDE_DELTA = 0.009;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const LATITUDE = 41.958351;
 const LONGITUDE = -87.668808;
-const SPACE = 0.001;
+const SPACE = 0.000001;
 const STICKY_HEADER_HEIGHT = 70;
 const window = Dimensions.get('window');
 const PARALLAX_HEADER_HEIGHT = 400;
 const LocalChatScrollView = Animated.createAnimatedComponent(LocalChat);
+const RADIUS_ZOOMER_DELTA = (width / LATITUDE_DELTA)
 
 interface State {
   latitude: any,
@@ -60,6 +64,7 @@ interface State {
   parallaxHeaderHeight: number;
   hasNewPost: boolean;
   isSettingUpWebsocket: boolean;
+  region: any;
 }
 
 interface Props {
@@ -99,9 +104,15 @@ class Maps extends Component<Props, State> {
       firstScroll: true,
       parallaxHeaderHeight: PARALLAX_HEADER_HEIGHT,
       hasNewPost: false,
-      isSettingUpWebsocket: false
+      isSettingUpWebsocket: false,
+      region: {
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+      }
     };
-    
+
   }
 
 
@@ -109,10 +120,10 @@ class Maps extends Component<Props, State> {
     this.setCurrentLocationOnLoad();
   }
 
-  componentDidUpdate(nextState: any){
+  componentDidUpdate(nextState: any) {
     // console.log(' The Maps componentDidUpdate =>', nextState);
-    
-    if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket){
+
+    if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
       this.setState({
         isSettingUpWebsocket: true
       })
@@ -121,18 +132,18 @@ class Maps extends Component<Props, State> {
     }
 
     // clear setting up web socket flag
-    if ( this.props.websocketsState.websocket !== nextState.websocketsState.websocket  && this.state.isSettingUpWebsocket){
+    if (this.props.websocketsState.websocket !== nextState.websocketsState.websocket && this.state.isSettingUpWebsocket) {
       this.setState({
         isSettingUpWebsocket: false
       })
       console.log('done setting up websocket');
-     
+
     }
-   
+
   }
 
 
-  setCurrentLocationOnLoad(){
+  setCurrentLocationOnLoad() {
     getCurrentLocation().then(async (location: any) => {
       // const geohash = Geohash.encode(location.latitude, location.longitude, 4); 
       this.setState({
@@ -144,11 +155,14 @@ class Maps extends Component<Props, State> {
             latitude: location.latitude + SPACE,
             longitude: location.longitude + SPACE,
           },
-          radius: 325,
+          radius: width,
         }
       });
     });
   }
+
+
+
 
   getMapRegion = (scewLat?: number, scewLong?: number) => {
     if (scewLat) {
@@ -176,6 +190,33 @@ class Maps extends Component<Props, State> {
       });
   }
 
+
+  onRegionChangeComplete(region: any) {
+    let radius = this.calculateRadiusForMapsAspectRatio(region.latitudeDelta, region.longitudeDelta);
+    this.setState({
+      region: {
+        latitude: region.latitude,
+        longitude: region.longitude,
+        latitudeDelta: region.latitudeDelta,
+        longitudeDelta: region.longitudeDelta
+      },
+      circle: {
+        center: {
+          latitude: region.latitude,
+          longitude: region.longitude,
+        },
+        radius: radius
+      }
+    });
+    // console.log('onRegionChangeComplete', data, this.state.region, this.state.circle);
+  }
+
+  calculateRadiusForMapsAspectRatio(latitudeDelta: number, longitudeDelta: number) {
+    let windowWidthPaddedInMapUnits = (width - 100) * 100;
+    let circleAspectRatio = (latitudeDelta + longitudeDelta) / 2;
+    let radius = _.round(circleAspectRatio * windowWidthPaddedInMapUnits);
+    return radius;
+  }
 
 
   render() {
@@ -222,7 +263,8 @@ class Maps extends Component<Props, State> {
                   showsMyLocationButton
                   provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                   style={styles.map}
-                  region={this.getMapRegion()}
+                  region={this.state.region}
+                  onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
                   onMapReady={this._onMapReady}
                   customMapStyle={mapStyle}>
                   <Circle
@@ -258,9 +300,9 @@ class Maps extends Component<Props, State> {
 
           renderFixedHeader={() => {
 
-            if (!this.state.isHeaderVisible && this.props.profileSettingsSelector ) {
+            if (!this.state.isHeaderVisible && this.props.profileSettingsSelector) {
               return (
-                <View key="fixed-header" style={styles.fixedSection}>                  
+                <View key="fixed-header" style={styles.fixedSection}>
                   <MapHeader navigation={this.props.navigation} avatar={this.props.profileSettingsSelector.attrs.image}></MapHeader>
                 </View>
               )
@@ -268,21 +310,21 @@ class Maps extends Component<Props, State> {
 
               // this.props.navigation.navigate('LocalChat');
               return (
-                  <View key="fixed-header" style={[styles.fixedSection, { backgroundColor: "rgba(15.7,20.4,27.8,0.7)" }]}>
-                    <ChatHeader
-                      navigation={this.props.navigation}
-                      onScrollToTop={() => {
-                        // @ts-ignore
-                        this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 })
-                      }}
-                    ></ChatHeader>
-                  </View>
+                <View key="fixed-header" style={[styles.fixedSection, { backgroundColor: "rgba(15.7,20.4,27.8,0.7)" }]}>
+                  <ChatHeader
+                    navigation={this.props.navigation}
+                    onScrollToTop={() => {
+                      // @ts-ignore
+                      this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 })
+                    }}
+                  ></ChatHeader>
+                </View>
               );
             }
 
           }}
         >
-            <LocalChatScrollView navigation={this.props.navigation} getChats={null}  />
+          <LocalChatScrollView navigation={this.props.navigation} getChats={null} />
         </ParallaxScrollView>
 
 
@@ -290,7 +332,7 @@ class Maps extends Component<Props, State> {
 
         {
           this.state.hasNewPost
-          ?   
+            ?
             <TouchableOpacity style={{
               position: 'absolute',
               bottom: 80,
@@ -302,11 +344,11 @@ class Maps extends Component<Props, State> {
               // @ts-ignore
               <ShowBtn text={"Show New"} navigation={null} />
             </TouchableOpacity>
-          : 
+            :
             null
-        } 
+        }
 
-      
+
         <View style={{
           backgroundColor: "rgba(15.7,20.4,27.8,0.7)",
           height: 70,
