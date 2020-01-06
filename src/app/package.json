@@ -31,6 +31,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/geolocation": "^2.0.2",
+    "@turf/turf": "^5.1.6",
     "@types/lodash": "^4.14.149",
     "@types/qs": "^6.5.3",
     "@types/react-redux": "^7.1.1",

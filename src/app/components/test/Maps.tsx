@@ -34,6 +34,9 @@ import { Profile } from './../../models/Profile';
 import { mapStyle } from './Maps.Styles';
 import _ from 'lodash';
 import { workerData } from 'worker_threads';
+import * as turf from '@turf/turf';
+
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -118,6 +121,18 @@ class Maps extends Component<Props, State> {
 
   componentWillMount() {
     this.setCurrentLocationOnLoad();
+
+
+    let point = turf.point([24.886, -70.269]);
+    let region = turf.polygon([[
+      [25.774,  -80.190],
+      [18.466, -66.118],
+      [32.321,-64.757],
+      [25.774,  -80.190]
+    ]]);
+    let inBounds = this.isPointInRegion(point, region);
+    debugger;
+
   }
 
   componentDidUpdate(nextState: any) {
@@ -192,6 +207,7 @@ class Maps extends Component<Props, State> {
 
 
   onRegionChangeComplete(region: any) {
+  
     let radius = this.calculateRadiusForMapsAspectRatio(region.latitudeDelta, region.longitudeDelta);
     this.setState({
       region: {
@@ -216,6 +232,11 @@ class Maps extends Component<Props, State> {
     let circleAspectRatio = (latitudeDelta + longitudeDelta) / 2;
     let radius = _.round(circleAspectRatio * windowWidthPaddedInMapUnits);
     return radius;
+  }
+
+  isPointInRegion(point:any, region:any){
+     let isInBounds = turf.booleanPointInPolygon(point, region);
+     return isInBounds;
   }
 
 
