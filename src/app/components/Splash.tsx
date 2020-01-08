@@ -225,7 +225,7 @@ export class Splash extends React.Component<Props, State> {
     showSkipButton
     //hideNextButton
     // hideDoneButton
-    onSkip={() => this.back('Markers')}
+    onSkip={() => {this.back('Maps')}}
   />
 
 

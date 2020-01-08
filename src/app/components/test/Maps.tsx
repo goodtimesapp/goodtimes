@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Circle, Polygon } from 'react-native-maps';
 // @ts-ignore
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import { Container, Header, Content, Card, CardItem, Text, Icon, Right, List, Body, Thumbnail } from 'native-base';
@@ -68,6 +68,7 @@ interface State {
   hasNewPost: boolean;
   isSettingUpWebsocket: boolean;
   region: any;
+  polygon: any;
 }
 
 interface Props {
@@ -113,7 +114,8 @@ class Maps extends Component<Props, State> {
         longitude: LONGITUDE,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
-      }
+      },
+      polygon: null
     };
 
   }
@@ -122,17 +124,8 @@ class Maps extends Component<Props, State> {
   componentWillMount() {
     this.setCurrentLocationOnLoad();
 
-
-    let point = turf.point([24.886, -70.269]);
-    let region = turf.polygon([[
-      [25.774,  -80.190],
-      [18.466, -66.118],
-      [32.321,-64.757],
-      [25.774,  -80.190]
-    ]]);
-    let inBounds = this.isPointInRegion(point, region);
-    debugger;
-
+    
+  
   }
 
   componentDidUpdate(nextState: any) {
@@ -173,7 +166,25 @@ class Maps extends Component<Props, State> {
           radius: width,
         }
       });
+
+      this.calcPoints();
+
     });
+  }
+
+  calcPoints(){
+    let center = [this.state.circle.center.latitude, this.state.circle.center.longitude];
+    let options: any = {
+      
+    };
+    let radius = this.state.circle.radius;
+    let region: any = turf.circle(center, radius, options);
+    
+    let inBounds = this.isPointInRegion(center, region);
+    
+    // this.setState({
+    //   polygon: region.geometry.coordinates[0].map( ( coord:any )=>{ return {latitude: coord[0], longitude: coord[1] } } )
+    // })
   }
 
 
@@ -208,23 +219,26 @@ class Maps extends Component<Props, State> {
 
   onRegionChangeComplete(region: any) {
   
-    let radius = this.calculateRadiusForMapsAspectRatio(region.latitudeDelta, region.longitudeDelta);
-    this.setState({
-      region: {
-        latitude: region.latitude,
-        longitude: region.longitude,
-        latitudeDelta: region.latitudeDelta,
-        longitudeDelta: region.longitudeDelta
-      },
-      circle: {
-        center: {
+    setTimeout( ()=>{
+      let radius = this.calculateRadiusForMapsAspectRatio(region.latitudeDelta, region.longitudeDelta);
+      this.setState({
+        region: {
           latitude: region.latitude,
           longitude: region.longitude,
+          latitudeDelta: region.latitudeDelta,
+          longitudeDelta: region.longitudeDelta
         },
-        radius: radius
-      }
-    });
-    // console.log('onRegionChangeComplete', data, this.state.region, this.state.circle);
+        circle: {
+          center: {
+            latitude: region.latitude,
+            longitude: region.longitude,
+          },
+          radius: radius
+        }
+      });
+      // console.log('onRegionChangeComplete', data, this.state.region, this.state.circle);
+    }, 2 )
+    
   }
 
   calculateRadiusForMapsAspectRatio(latitudeDelta: number, longitudeDelta: number) {
@@ -296,6 +310,18 @@ class Maps extends Component<Props, State> {
                     zIndex={2}
                     strokeWidth={2}
                   />
+                  {/* {
+                    this.state.polygon
+                    ? <Polygon
+                        coordinates={this.state.polygon}
+                        fillColor="rgba(98, 31.8, 19.2, 0.3)"
+                        strokeColor="#fa5131"
+                        zIndex={2}
+                        strokeWidth={2}
+                    />
+                    : null
+                  }
+                    */}
                   <Marker
                     title={"Julia"}
                     key={1}

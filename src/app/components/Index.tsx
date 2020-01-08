@@ -9,7 +9,7 @@ import { createBottomTabNavigator, createStackNavigator, createAppContainer, cre
 import LocationsList from "./location/LocationsList.Container";
 import Chat from './chat/Chat';
 import Blockstack from './blockstack/Blockstack';
-import { ProfilePage } from './blockstack/Index';
+import { ProfilePage,  LoginSplashPage } from './blockstack/Index';
 import Splash from './Splash';
 import Bar from './../components/bottombar/bar';
 import ExpandPage from './ExpandPage';
@@ -100,7 +100,13 @@ const MainNavigator = createStackNavigator(
             navigationOptions: {
                 header: null
             },
-        }
+        },
+        LoginSplash: {
+            screen: LoginSplashPage,
+            navigationOptions: {
+                header: null
+            },
+        },
     },
     {
         initialRouteName: "Splash"
