@@ -22,6 +22,8 @@ import { StyleProvider } from "native-base";
 import getTheme from './native-base-theme/components';
 // @ts-ignore
 import platform from './native-base-theme/variables/platform';
+// @ts-ignore
+import Geohash from 'latlon-geohash';
 
 export interface Props { }
 interface State { 
@@ -47,6 +49,7 @@ export default class App extends Component<Props, State> {
     window.websocketsStore = websocketsStore;
     window.placeStore = placeStore;
     window.postsStore = postsStore;
+    window.Geohash = Geohash;
   }
 
   

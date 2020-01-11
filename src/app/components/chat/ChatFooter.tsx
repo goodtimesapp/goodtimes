@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Image, Alert, StyleSheet, Switch, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, Image, Alert, StyleSheet, Switch, TouchableOpacity, ScrollView, Keyboard } from 'react-native'
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { Container, View, Content, Header, Icon, Left, Button, Body, Right, Badge, Title, Thumbnail, Item, Input } from "native-base";
 import { withNavigation } from 'react-navigation';
@@ -10,14 +10,22 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { human, iOSUIKit } from 'react-native-typography';
 // @ts-ignore
 import nlp from 'compromise';
+import { connect } from 'react-redux';
+import { State as ReduxState } from './../../reduxStore/index';
+import { putPost } from './../../reduxStore/posts/posts.store';
+import { placeState, State as PlaceStateModel  } from './../../reduxStore/places/place.store';
+import { Post } from "./../../models/Post";
 
 
 interface Props {
     navigation: any;
+    putPost: (post: Post )=> void;
+    placeState: PlaceStateModel;
 }
 interface State {
-    chatText: string,
-    tags: Array<string>
+    chatText: string;
+    tags: Array<string>;
+    placeState: PlaceStateModel
 }
 
 export class ChatFooter extends React.Component<Props, State> {
@@ -26,7 +34,18 @@ export class ChatFooter extends React.Component<Props, State> {
         super(props);
         this.state = {
             chatText: '',
-            tags: []
+            tags: [],
+            placeState: {} as PlaceStateModel
+        }
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
+        
+        // place state change subscriber
+        if (prevProps.placeState !== this.props.placeState) {
+            this.setState({
+              placeState: this.props.placeState
+            });
         }
     }
 
@@ -38,15 +57,31 @@ export class ChatFooter extends React.Component<Props, State> {
             this.setState({
                 tags: doc.nouns().data().map((t:any)=>t.text)
             })
-        }
-        
+        }   
+    }
+
+    submitPost(chatText: string){
+        this.sentenceTagger(this.state.chatText);
+        const post = new Post({
+            avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
+            user: 'nicktee.id',
+            hashtag: this.state.tags,
+            hashtagColor: "#4c9aff",
+            time: "5 mins",
+            content: chatText,
+            pullRight: false,
+            geohash: this.state.placeState.geohash
+        })
+        this.props.putPost(post);
+        this.setState({
+            chatText: '',
+            tags: []
+        })
+        Keyboard.dismiss();
     }
 
     render() {
         return (
-
-
-
             <View style={{
                 flexDirection: 'row',
                 display: 'flex',
@@ -59,8 +94,6 @@ export class ChatFooter extends React.Component<Props, State> {
                 alignContent: 'center',
                 flex: 1
             }}>
-
-               
 
                 <View style={{
                     flexDirection: 'row',
@@ -133,7 +166,7 @@ export class ChatFooter extends React.Component<Props, State> {
                                 value={this.state.chatText}
                                 onChangeText={(chatText) => { 
                                     this.setState({ chatText });
-                                    this.sentenceTagger(this.state.chatText);
+                                    this.sentenceTagger(chatText);
                                 }}
                                 style={[human.body, { color: "#77849b", width: '100%', }]} />
                         </Item>
@@ -141,7 +174,7 @@ export class ChatFooter extends React.Component<Props, State> {
 
                 </View>
                 <TouchableOpacity
-                    onPress={() => { this.sentenceTagger(this.state.chatText) }}
+                    onPress={() => { this.submitPost(this.state.chatText) }}
                     style={{
                         height: 42,
                         width: 42,
@@ -175,4 +208,13 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withNavigation(ChatFooter)
+
+
+const mapStateToProps: any = (state: ReduxState) => ({
+    placeState: placeState(state.places)
+})
+const mapDispatchToProps = {
+    putPost: putPost
+}
+export default withNavigation( connect(mapStateToProps, mapDispatchToProps)( ChatFooter ) );
+  

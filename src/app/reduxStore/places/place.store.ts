@@ -158,7 +158,8 @@ export function reducers(state: State = initialState, action: any) {
         case ActionTypes.SET_PLACE_ID: {
             return {
                 ...state,
-                placeId: action.payload
+                placeId: action.payload,
+                geohash: action.payload
             }
         }
 

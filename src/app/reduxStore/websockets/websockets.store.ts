@@ -62,8 +62,8 @@ export function setupWebsockets(placeId: string) {
                             let msg = data.content;
                             dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_MESSAGE));
                         case "Post":
-                            // dispatch(addPostFromWebSocket(data));
-                            Alert.alert(data.content);
+                            dispatch(addPostFromWebSocket(data));
+                            // Alert.alert(data.content);
                             dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
                         default:
                             return;

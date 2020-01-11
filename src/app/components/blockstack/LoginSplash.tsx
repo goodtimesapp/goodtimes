@@ -57,16 +57,16 @@ class LoginSplash extends Component<Props, State> {
                 profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
             });
             this.props.closeSplashModal();
-            // if(store.getState().profile.settings){
-            //     if (store.getState().profile.settings.attrs.firstName == "First Name"){
-            //         this.props.navigation.navigate('ProfileSettings');
-            //     } else{
-            //         this.props.navigation.navigate('Maps');
-            //     }
-            // } else {
-            //     this.props.navigation.navigate('ProfileSettings');
-            // }
-            this.props.navigation.navigate('Maps');
+            if(store.getState().profile.settings){
+                if (store.getState().profile.settings.attrs.firstName == "First Name"){
+                    this.props.navigation.navigate('ProfileSettings');
+                } else{
+                    this.props.navigation.navigate('Maps');
+                }
+            } else {
+                this.props.navigation.navigate('ProfileSettings');
+            }
+            // this.props.navigation.navigate('Maps');
             
         }
     }

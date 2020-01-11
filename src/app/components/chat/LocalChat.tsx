@@ -4,39 +4,74 @@ import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { Container, View, Content, Header, Icon, Left, Button, Body, Right, Badge, Title, Thumbnail, Item } from "native-base";
 import { withNavigation } from 'react-navigation';
 import { human, iOSUIKit } from 'react-native-typography';
-import { ChatItem } from "./ChatItem";
+import ChatItem from "./ChatItem";
 import HorizontalScroll from './HorizontalScroll';
-import { AllCaughtUp } from "./AllCaughtUp";
-import { ShowBtn } from './../chat/ShowBtn';
+import AllCaughtUp from "./AllCaughtUp";
+import ShowBtn from './../chat/ShowBtn';
 import { connect } from 'react-redux';
 import { State as ReduxState } from './../../reduxStore/index';
-import { posts, getPosts, getChats, initialState } from './../../reduxStore/posts/posts.store';
+import { postsState, getPosts, getChats, clearPosts } from './../../reduxStore/posts/posts.store';
+import { placeState, State as PlaceStateModel } from './../../reduxStore/places/place.store';
+import { store } from "reduxStore/configureStore";
+
 
 interface Props {
   navigation: any;
-  postsSelector: any;
+  postsState: any;
   getChats: () => void;
+  getPosts: (filter: any) => void;
+  clearPosts: () => void;
+  placeState: PlaceStateModel
 }
 interface State {
-
+  posts: Array<any>;
+  placeState: PlaceStateModel
 }
 
 
 export class LocalChat extends React.Component<Props, State> {
-  
+
   state = {
     nextId: 0,
-    lastMsg: 'hello'
+    lastMsg: 'hello',
+    posts: [],
+    placeState: {} as PlaceStateModel
   };
 
   constructor(props: Props) {
     super(props);
   }
 
-  
+  componentDidMount() {
+   
+  }
 
-  componentWillMount() {
-    
+  componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
+    //console.log('updated localchat', prevState, prevProps);
+    // posts state change subscriber
+    if (prevProps.postsState !== this.props.postsState) {
+      console.log('postsChangeHandler', this.props.postsState);
+      this.postsChangeHandler();
+    }
+    // place state change subscriber
+    if (prevProps.placeState !== this.props.placeState) {
+      console.log('placeChangeHandler', this.props.placeState);
+      this.placeChangeHandler();
+    }
+  }
+
+  postsChangeHandler(){  
+    this.setState({
+      posts: this.props.postsState.posts
+    });
+  }
+
+  placeChangeHandler(){
+    this.props.clearPosts();
+    this.props.getPosts({geohash: this.props.placeState.geohash});
+    this.setState({
+      placeState: this.props.placeState
+    });
   }
 
 
@@ -79,9 +114,16 @@ export class LocalChat extends React.Component<Props, State> {
               <TouchableOpacity>
                 <Image style={{ width: 32, height: 32 }} source={require('./../../assets/goodtimes.png')} />
               </TouchableOpacity>
-              <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>The Local - Chat</Text>
+              {
+                // @ts-ignore
+                <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>Geohash - { this.state.placeState.geohash } </Text>
+              }              
             </View>
-            <Text style={[human.title1, { color: "#ffffff", paddingTop: 2 }]}>Chicago, IL</Text>
+            {
+              // @ts-ignore
+              <Text style={[human.title1, { color: "#ffffff", paddingTop: 2 }]}>Chicago, IL  </Text>
+            }
+            
           </View>
 
           <TouchableOpacity
@@ -91,21 +133,19 @@ export class LocalChat extends React.Component<Props, State> {
               alignItems: 'center',
               width: '100%',
             }}>
-            <ShowBtn text={"Show Older"} navigation={null} onButtonPress={() => {
-              let messages = [...this.props.postsSelector, ...this.props.postsSelector];
+            {/* <ShowBtn text={"Show Older"} navigation={null} onButtonPress={() => {
+              let messages = [...this.props.posts, ...this.props.posts];
               this.setState({
-                messages
+                posts: messages
               })
-            }} />
+            }} /> */}
           </TouchableOpacity>
 
           {
-            initialState.posts
-              ? <FlatList
-                data={initialState.posts}
+               <FlatList
+                data={this.state.posts}
                 renderItem={({ item }: any) => {
                   return <ChatItem
-                    navigation={null}
                     avatar={item.attrs.avatar}
                     hashtag={item.attrs.hashtag}
                     hashtagColor={item.attrs.hashtagColor}
@@ -118,12 +158,12 @@ export class LocalChat extends React.Component<Props, State> {
                 }
                 keyExtractor={(item: any) => (item._id + (Math.random()).toString())}
               />
-              : null
+             
           }
 
         </View>
 
-        <AllCaughtUp navigation={null} />
+        <AllCaughtUp />
 
 
       </Animated.ScrollView>
@@ -148,15 +188,13 @@ const styles = StyleSheet.create({
 });
 
 
-
-// Global State
 const mapStateToProps: any = (state: ReduxState) => ({
-  postsSelector: posts(state.posts)
+  postsState: postsState(state.posts),
+  placeState: placeState(state.places)
 })
-// Actions to dispatch
 const mapDispatchToProps = {
-  getChats: getChats
+  getPosts: getPosts,
+  getChats: getChats,
+  clearPosts: clearPosts,
 }
-
-// @ts-ignore
-export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(LocalChat)))
+export default withNavigation( connect(mapStateToProps, mapDispatchToProps)( LocalChat ) );

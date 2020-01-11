@@ -11,30 +11,30 @@ export interface State {
 }
 export const initialState: State = {
     posts: [
-        {
-            _id: '1',
-            attrs: {
-                avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
-                user: 'Nick',
-                hashtag: "#coffee",
-                hashtagColor: "#4c9aff",
-                time: "5 mins",
-                content: "who want to get coffee and talk chicago",
-                pullRight: true
-            }
-        },
-        {
-            _id: 2,
-            attrs: {
-                avatar: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4',
-                user: 'Will',
-                hashtag: "#woot",
-                hashtagColor: "#4c9aff",
-                time: "4 mins",
-                content: "yes I would like to",
-                pullRight: false
-            }
-        }
+        // {
+        //     _id: '44',
+        //     attrs: {
+        //         avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
+        //         user: 'Nick',
+        //         hashtag: "#coffee",
+        //         hashtagColor: "#4c9aff",
+        //         time: "5 mins",
+        //         content: "44",
+        //         pullRight: true
+        //     }
+        // },
+        // {
+        //     _id: '45',
+        //     attrs: {
+        //         avatar: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4',
+        //         user: 'Will',
+        //         hashtag: "#woot",
+        //         hashtagColor: "#4c9aff",
+        //         time: "4 mins",
+        //         content: "45",
+        //         pullRight: false
+        //     }
+        // }
     ]
 }
 //#endregion Initial State
@@ -45,6 +45,7 @@ export enum ActionTypes {
     GET_POST = '[POSTS] GET_POST',
     PUT_POST = '[POSTS] PUT_POST',
     DELETE_POST = '[POSTS] DELETE_POST',
+    CLEAR_POSTS = '[POSTS] CLEAR_POST',
     ADD_POST_FROM_WEBSOCKET = '[POSTS] ADD_POST_FROM_WEBSOCKET',
     POSTS_ACTION_STARTED = '[POSTS] POSTS_ACTION_STARTED',
     POSTS_ACTION_SUCCEEDED = '[POSTS] POSTS_ACTION_SUCCEEDED',
@@ -64,15 +65,14 @@ export function getChats(){
     }
 }
 
+
 export function getPosts(filter: any = {}) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
 
             let posts = await Post.fetchList(filter);
-
             const payload = posts;
-
             dispatch(succeeded(payload, ActionTypes.GET_POST));
         } catch (e) {
             console.log('error', e)
@@ -100,6 +100,7 @@ export function addPostFromWebSocket(post: any) {
     return async (dispatch: any) => {
         try {
             let payload = post;
+            
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
         } catch (e) {
             console.log('error', e)
@@ -116,6 +117,19 @@ export function deletePost(id: string) {
 
             }
             dispatch(succeeded(payload, ActionTypes.DELETE_POST));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.DELETE_POST));
+        }
+    }
+}
+
+export function clearPosts() {
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
+            const payload: any = []
+            dispatch(succeeded(payload, ActionTypes.CLEAR_POSTS));
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.DELETE_POST));
@@ -199,6 +213,14 @@ export function reducers(state: State = initialState, action: any) {
             return state;
         }
 
+        case ActionTypes.CLEAR_POSTS: {
+            return {
+                ...state,
+                posts: []
+            }
+        }
+
+
         case ActionTypes.POSTS_ACTION_STARTED: {
             console.log("POSTS_STARTED");
             return state;
@@ -219,5 +241,6 @@ export function reducers(state: State = initialState, action: any) {
 //#endregion Reducers
 
 //#region Selectors
-export const posts = createSelector(((state: State) => state), state=> state.posts)
+export const postsState = createSelector((state: State) => state, state => state);
+
 //#endregion Selectors

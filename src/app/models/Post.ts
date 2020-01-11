@@ -29,6 +29,10 @@ export class Post extends Model {
       type: string,
       decrypted: true
     },
+    geohash :{
+      type: string,
+      decrypted: true
+    },
     content : {
       type: string,
       decrypted: true

@@ -6,11 +6,11 @@ import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import { Container, Header, Content, Card, CardItem, Text, Icon, Right, List, Body, Thumbnail } from 'native-base';
 // @ts-ignore
 import { RADAR_KEY_API } from 'react-native-dotenv';
-import { LocalChat } from './../chat/LocalChat';
+import LocalChat  from './../chat/LocalChat';
 import { getCurrentLocation, whereami } from './../../utils/location-utils';
-import { ChatHeader } from './../chat/ChatHeader';
-import { MapHeader } from './../chat/MapHeader';
-import { ChatFooter } from './../chat/ChatFooter';
+import ChatHeader  from './../chat/ChatHeader';
+import MapHeader from './../chat/MapHeader';
+import ChatFooter from './../chat/ChatFooter';
 import { withNavigation } from 'react-navigation';
 import { ShowBtn } from './../chat/ShowBtn';
 import { connect } from 'react-redux';
@@ -368,10 +368,9 @@ class Maps extends Component<Props, State> {
                 </View>
               );
             }
-
-          }}
-        >
-          <LocalChatScrollView navigation={this.props.navigation} getChats={null} />
+          }}>
+          
+          <LocalChatScrollView postsState />
         </ParallaxScrollView>
 
 
@@ -409,7 +408,7 @@ class Maps extends Component<Props, State> {
           borderTopLeftRadius: 16
         }}>
 
-          <ChatFooter navigation={null} ></ChatFooter>
+          <ChatFooter ></ChatFooter>
 
         </View>
 
