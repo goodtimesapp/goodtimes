@@ -15,7 +15,7 @@ import Bar from './../components/bottombar/bar';
 import ExpandPage from './ExpandPage';
 import Goodtimes from './Goodtimes';
 import DiscoverFeed from './discover/DiscoverFeed';
-import ImageEditor from './image/ImageEditor';
+// import ImageEditor from './image/ImageEditor';
 const { width, height } = Dimensions.get('screen');
 import { PostsPage } from './posts/Index';
 import { LocalChat } from './chat/LocalChat';
@@ -47,12 +47,12 @@ const MainNavigator = createStackNavigator(
         Post: { 
             screen: PostsPage,
         },
-        ImageEditor: { 
-            screen: ImageEditor,
-            navigationOptions: {
-                header: null,
-            },
-        },
+        // ImageEditor: { 
+        //     screen: ImageEditor,
+        //     navigationOptions: {
+        //         header: null,
+        //     },
+        // },
         Chat: { 
             screen: Chat,
             navigationOptions: {

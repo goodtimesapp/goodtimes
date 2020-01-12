@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.imagepicker.ImagePickerPackage;
-import ui.photoeditor.RNPhotoEditorPackage;
 import com.horcrux.svg.SvgPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnfs.RNFSPackage;
@@ -20,7 +19,6 @@ import me.jhen.devsettings.DevSettingsPackage;
 import li.yunqi.rnsecurestorage.RNSecureStoragePackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
-import io.radar.react.RNRadarPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 
 
@@ -32,7 +30,6 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
 import java.util.List;
-import io.radar.sdk.Radar;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 
@@ -48,14 +45,10 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
 
-      String publishableKey = BuildConfig.RADAR_KEY;
-      Radar.initialize(publishableKey);
   
-
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new ImagePickerPackage(),
-            new RNPhotoEditorPackage(),
             new SvgPackage(),
             new RNFetchBlobPackage(),
             new RNFSPackage(),
@@ -71,7 +64,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNSecureStoragePackage(),
             new RandomBytesPackage(),
             new ReactNativeConfigPackage(),
-            new RNRadarPackage(),
             new MapsPackage(),
             new RNBlockstackSdkPackage(),
               new VectorIconsPackage(),

@@ -43,7 +43,7 @@ export class LocalChat extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-   
+
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
@@ -60,15 +60,15 @@ export class LocalChat extends React.Component<Props, State> {
     }
   }
 
-  postsChangeHandler(){  
+  postsChangeHandler() {
     this.setState({
       posts: this.props.postsState.posts
     });
   }
 
-  placeChangeHandler(){
+  placeChangeHandler() {
     this.props.clearPosts();
-    this.props.getPosts({geohash: this.props.placeState.geohash});
+    this.props.getPosts({ geohash: this.props.placeState.geohash });
     this.setState({
       placeState: this.props.placeState
     });
@@ -110,20 +110,15 @@ export class LocalChat extends React.Component<Props, State> {
         <View style={{ padding: 18 }}>
 
           <View style={{ paddingBottom: 36 }}>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
               <TouchableOpacity>
                 <Image style={{ width: 32, height: 32 }} source={require('./../../assets/goodtimes.png')} />
               </TouchableOpacity>
-              {
-                // @ts-ignore
-                <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>Geohash - { this.state.placeState.geohash } </Text>
-              }              
+              <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>Geohash - {this.state.placeState.geohash} </Text>
+              <Text style={[human.title1, { color: "#ffffff", paddingTop: 2, alignSelf: 'flex-end' }]}>Chicago, IL  </Text>
             </View>
-            {
-              // @ts-ignore
-              <Text style={[human.title1, { color: "#ffffff", paddingTop: 2 }]}>Chicago, IL  </Text>
-            }
-            
+           
+
           </View>
 
           <TouchableOpacity
@@ -142,23 +137,23 @@ export class LocalChat extends React.Component<Props, State> {
           </TouchableOpacity>
 
           {
-               <FlatList
-                data={this.state.posts}
-                renderItem={({ item }: any) => {
-                  return <ChatItem
-                    avatar={item.attrs.avatar}
-                    hashtag={item.attrs.hashtag}
-                    hashtagColor={item.attrs.hashtagColor}
-                    user={item.attrs.user}
-                    time={item.attrs.time}
-                    content={item.attrs.content}
-                    pullRight={item.attrs.pullRight}
-                  />
-                }
-                }
-                keyExtractor={(item: any) => (item._id + (Math.random()).toString())}
-              />
-             
+            <FlatList
+              data={this.state.posts}
+              renderItem={({ item }: any) => {
+                return <ChatItem
+                  avatar={item.attrs.avatar}
+                  hashtag={item.attrs.hashtag}
+                  hashtagColor={item.attrs.hashtagColor}
+                  user={item.attrs.user}
+                  time={item.attrs.time}
+                  content={item.attrs.content}
+                  pullRight={item.attrs.pullRight}
+                />
+              }
+              }
+              keyExtractor={(item: any) => (item._id + (Math.random()).toString())}
+            />
+
           }
 
         </View>
@@ -197,4 +192,4 @@ const mapDispatchToProps = {
   getChats: getChats,
   clearPosts: clearPosts,
 }
-export default withNavigation( connect(mapStateToProps, mapDispatchToProps)( LocalChat ) );
+export default withNavigation(connect(mapStateToProps, mapDispatchToProps)(LocalChat));

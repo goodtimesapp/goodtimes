@@ -151,11 +151,15 @@ android {
             }
         }
     }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    } 
+
 }
 
 dependencies {
     implementation project(':react-native-image-picker')
-    implementation project(':react-native-photo-editor')
     implementation project(':react-native-svg')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-fs')
@@ -171,14 +175,12 @@ dependencies {
     implementation project(':react-native-secure-storage')
     implementation project(':react-native-randombytes')
     implementation project(':react-native-config')
-    implementation project(':react-native-radar')
     implementation project(':react-native-blockstack')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.browser:browser:1.0.0'
     implementation "com.facebook.react:react-native:0.59.9"  // From node_modules
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'io.radar:sdk:2.1.+'
     implementation project(':react-native-maps')
     compile project(':react-native-vector-icons')
     compile project(':react-native-blockstack')
@@ -191,3 +193,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+

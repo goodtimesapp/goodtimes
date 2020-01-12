@@ -59,7 +59,6 @@ target 'example-sdk-module' do
 
   # end
 
-  pod 'RNPhotoEditor', :path => '../node_modules/react-native-photo-editor'
 
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 

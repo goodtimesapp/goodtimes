@@ -194,7 +194,11 @@ export function reducers(state: State = initialState, action: any) {
             clone.unshift(action.payload);
             return {
                 ...state,
-                posts: clone
+                // posts: clone
+                posts: [
+                    ...state.posts,
+                    action.payload
+                ]
             }
         }
 

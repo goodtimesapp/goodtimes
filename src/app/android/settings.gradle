@@ -1,8 +1,6 @@
 rootProject.name = 'example'
 include ':react-native-image-picker'
 project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
-include ':react-native-photo-editor'
-project(':react-native-photo-editor').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-photo-editor/android')
 include ':react-native-svg'
 project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
 include ':rn-fetch-blob'
@@ -33,8 +31,6 @@ include ':react-native-randombytes'
 project(':react-native-randombytes').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-randombytes/android')
 include ':react-native-config'
 project(':react-native-config').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-config/android')
-include ':react-native-radar'
-project(':react-native-radar').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-radar/android')
 include ':react-native-maps'
 project(':react-native-maps').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-maps/lib/android')
 include ':react-native-blockstack'

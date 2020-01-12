@@ -12,8 +12,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { connect } from 'react-redux';
 import { getBase64, setBase64 } from './../../reduxStore/global/global.store';
 import { State as ReduxState } from './../../reduxStore/index';
-// @ts-ignore
-import { RNPhotoEditor } from 'react-native-photo-editor'
+
 
 
 interface Props {
@@ -141,22 +140,22 @@ class Camera extends Component<Props, State> {
       let  imageUrl =data.uri.replace('file://', '')
      
 
-      RNPhotoEditor.Edit({
-        path: imageUrl,
-        onDone: () => {
-            console.log('on done', imageUrl);
-            this.setState({
-              visible: false
-            });
-            RNFetchBlob.fs.readFile(imageUrl, 'base64').then( (base64) =>{
-                let r = this.props.setBase64(base64);
-                this.props.navigation.navigate('Post', { base64Photo: 'data:image/jpg;base64,' + base64 });
-            }); 
-        },
-        onCancel: () => {
-            console.log('on cancel')
-        }
-      });
+      // RNPhotoEditor.Edit({
+      //   path: imageUrl,
+      //   onDone: () => {
+      //       console.log('on done', imageUrl);
+      //       this.setState({
+      //         visible: false
+      //       });
+      //       RNFetchBlob.fs.readFile(imageUrl, 'base64').then( (base64) =>{
+      //           let r = this.props.setBase64(base64);
+      //           this.props.navigation.navigate('Post', { base64Photo: 'data:image/jpg;base64,' + base64 });
+      //       }); 
+      //   },
+      //   onCancel: () => {
+      //       console.log('on cancel')
+      //   }
+      // });
 
       // Geolocation.getCurrentPosition(location => {
       //   console.log(location)
