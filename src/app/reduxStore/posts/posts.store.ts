@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
-
+import _ from 'lodash';
 
 //#region Initial State
 export interface State {
@@ -189,26 +189,36 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
-        case ActionTypes.PUT_POST: {
-            let clone = [...state.posts];
-            clone.unshift(action.payload);
-            return {
-                ...state,
-                // posts: clone
-                posts: [
-                    ...state.posts,
-                    action.payload
-                ]
-            }
-        }
+        // case ActionTypes.PUT_POST: {
+        //     // let clone = [...state.posts];
+        //     // clone.unshift(action.payload);
+        //     if (!action.payload.attrs){
+        //         action.payload = {
+        //             attrs: action.payload
+        //         }
+        //     }
+        //     return {
+        //         ...state,
+        //         // posts: clone
+        //         posts: _.uniq([
+        //             ...state.posts,
+        //             action.payload 
+        //         ])
+        //     }
+        // }
 
         case ActionTypes.ADD_POST_FROM_WEBSOCKET: {
+            if (!action.payload.attrs){
+                action.payload = {
+                    attrs: action.payload
+                }
+            }
             return {
                 ...state,
-                posts: [
+                posts: _.uniq([
                     ...state.posts,
                     action.payload
-                ]
+                ])
             }
         }
 
