@@ -19,6 +19,7 @@ import {
   putProfileSettings,
   getProfileSettings,
   silentLogin,
+  createAccountSilently,
   State as ProfileStateModel
 } from './../reduxStore/profile/profile.store';
 import {Profile} from './../models/Profile';
@@ -30,7 +31,7 @@ interface Props {
   navigation: any;
   silentLogin: (state: any) => Promise<any>;
   getUserName: any;
-  userSession: ProfileStateModel;
+  userSession: any;
 }
 interface State {
   visible: boolean,
@@ -64,18 +65,22 @@ export class Splash extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
     if (this.props.userSession !== prevProps.userSession) {
-      this.closeSplashModal();
-      if(store.getState().profile.settings){
-          if (store.getState().profile.settings.attrs.firstName == "First Name" ||
-              store.getState().profile.settings.attrs.firstName == "" || 
-              store.getState().profile.settings.attrs.firstName == null ){
-              this.props.navigation.navigate('ProfileSettings');
-          } else{
-              this.props.navigation.navigate('Maps');
-          }
-      } else {
-          this.props.navigation.navigate('ProfileSettings');
+      if (Object.entries(this.props.userSession.store)){
+        this.closeSplashModal();
+        this.props.navigation.navigate('ProfileSettings');
       }
+      
+      // if(store.getState().profile.settings){
+      //     if (store.getState().profile.settings.attrs.firstName == "First Name" ||
+      //         store.getState().profile.settings.attrs.firstName == "" || 
+      //         store.getState().profile.settings.attrs.firstName == null ){
+      //         this.props.navigation.navigate('ProfileSettings');
+      //     } else{
+      //         this.props.navigation.navigate('Maps');
+      //     }
+      // } else {
+      //     this.props.navigation.navigate('ProfileSettings');
+      // }
     }
   }
 
@@ -194,7 +199,7 @@ export class Splash extends React.Component<Props, State> {
           
           {
             item.login
-              ? <LoginSplashPage closeSplashModal={this.closeSplashModal.bind(this)}></LoginSplashPage>
+              ? <LoginSplashPage closeSplashModal={this.closeSplashModal.bind(this)} ></LoginSplashPage>
               : null
           }
         </View>
@@ -365,11 +370,13 @@ const styles = StyleSheet.create({
 const mapStateToProps: any = (state: ReduxState) => ({
   userSession: getUserSession(state.profile),
   getProfileState: getProfileState(state.profile),
-  getUserName: getUserName(state.profile)
+  getUserName: getUserName(state.profile),
+  
 })
 // Actions to dispatch
 const mapDispatchToProps = {
   silentLogin: silentLogin,
+  createAccountSilently: createAccountSilently
 }
 
 // @ts-ignore

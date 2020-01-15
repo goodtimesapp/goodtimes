@@ -67,14 +67,18 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
             window.userSession = userSession;
             configureRadiks(userSession);
             let blockstackUser = await User.createWithCurrentUser();
-            const payload = {
+            const payload: State = {
                 backupPhrase: keychain.backupPhrase,
                 publicKey: id.appPublicKey,
                 privateKey: id.appPrivateKey,
-                userSession: userSession,
+                userSession: userSession as any,
                 username: id.username,
                 error: 'none',
-                profileJSON: id.profileJSON
+                profileJSON: id.profileJSON,
+                settings: new Profile({
+                    image: require('./../../assets/profile.png'),
+                    firstName: "First Name"
+                })
             }
             dispatch(succeeded(payload, ActionTypes.CREATE_ACCOUNT_SILENTLY));
         } catch (e) {
@@ -93,15 +97,20 @@ export function silentLogin(state: State) {
             window.userSession = userSession;
             configureRadiks(userSession);
             let blockstackUser = await User.createWithCurrentUser();
-            let payload = {
+            let payload: State = {
                 ...state,
-                userSession: userSession,
+                userSession: userSession as any,
                 publicKey: state.publicKey,
                 privateKey: state.privateKey,
                 username: state.username,
-                profileJSON: state.profileJSON
+                profileJSON: state.profileJSON,
+                settings: new Profile({
+                    image: require('./../../assets/profile.png'),
+                    firstName: "Fetching name..."
+                })
             }
             dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
+            dispatch(getProfileSettings());
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.SILENT_LOGIN));
