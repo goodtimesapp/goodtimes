@@ -50,15 +50,31 @@ class LoginSplash extends Component<Props, State> {
         }
     }
 
-    componentDidUpdate(data: any){
-        console.log('componentDidUpdate =>', data);
-        if (this.props.userSession !== data.userSession){
-            this.setState({
-                profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
-            });
+    componentDidUpdate(prevProps: Props, prevState: State){
+        // console.log('componentDidUpdate =>', data);
+        // if (this.props.userSession !== data.userSession){
+        //     this.setState({
+        //         profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
+        //     });
+        //     this.props.closeSplashModal();
+        //     if(store.getState().profile.settings){
+        //         if (store.getState().profile.settings.attrs.firstName == "First Name"){
+        //             this.props.navigation.navigate('ProfileSettings');
+        //         } else{
+        //             this.props.navigation.navigate('Maps');
+        //         }
+        //     } else {
+        //         this.props.navigation.navigate('ProfileSettings');
+        //     }
+        //     // this.props.navigation.navigate('Maps');
+            
+        // }
+        if (this.props.userSession !== prevProps.userSession) {
             this.props.closeSplashModal();
             if(store.getState().profile.settings){
-                if (store.getState().profile.settings.attrs.firstName == "First Name"){
+                if (store.getState().profile.settings.attrs.firstName == "First Name" ||
+                    store.getState().profile.settings.attrs.firstName == "" || 
+                    store.getState().profile.settings.attrs.firstName == null ){
                     this.props.navigation.navigate('ProfileSettings');
                 } else{
                     this.props.navigation.navigate('Maps');
@@ -66,8 +82,6 @@ class LoginSplash extends Component<Props, State> {
             } else {
                 this.props.navigation.navigate('ProfileSettings');
             }
-            // this.props.navigation.navigate('Maps');
-            
         }
     }
 

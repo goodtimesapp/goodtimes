@@ -18,16 +18,19 @@ import {
   getUserName,
   putProfileSettings,
   getProfileSettings,
-  silentLogin
+  silentLogin,
+  State as ProfileStateModel
 } from './../reduxStore/profile/profile.store';
 import {Profile} from './../models/Profile';
 import { store } from './../reduxStore/configureStore';
+import _ from 'lodash';
 
 
 interface Props {
   navigation: any;
   silentLogin: (state: any) => Promise<any>;
   getUserName: any;
+  userSession: ProfileStateModel;
 }
 interface State {
   visible: boolean,
@@ -44,38 +47,43 @@ export class Splash extends React.Component<Props, State> {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     // this.setState({
     //   showIntro: false,
     //   visible: false
     // });
-    
+  
     this.setState({
       showIntro: true,
       visible: true
     });
 
-    await this.trySilentLogin();
+    this.trySilentLogin();
     
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
+    if (this.props.userSession !== prevProps.userSession) {
+      this.closeSplashModal();
+      if(store.getState().profile.settings){
+          if (store.getState().profile.settings.attrs.firstName == "First Name" ||
+              store.getState().profile.settings.attrs.firstName == "" || 
+              store.getState().profile.settings.attrs.firstName == null ){
+              this.props.navigation.navigate('ProfileSettings');
+          } else{
+              this.props.navigation.navigate('Maps');
+          }
+      } else {
+          this.props.navigation.navigate('ProfileSettings');
+      }
+    }
   }
 
   async trySilentLogin(){
     let profileState = store.getState().profile;
-    try {
-      this.props.silentLogin(profileState).then(async (loggedin) => {
-        if (!Object.keys(store.getState().profile.userSession).length){
-          // stay on splash login page
-        }
-        else if (store.getState().profile.settings.attrs.firstName == "First Name"){
-          this.back("ProfileSettings");
-        } else {
-          this.back("Maps");
-        }
-      });
-    } catch (e){
-      // stay on splash page
+    if ( !_.isEmpty(profileState.userSession) ){
+      this.props.silentLogin(profileState);
     }
-    // await this.checkIfUserHasSeenIntro();    
   }
 
   async checkIfUserHasSeenIntro() {
