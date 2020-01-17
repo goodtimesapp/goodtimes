@@ -6,6 +6,8 @@ import { addPostFromWebSocket } from './../posts/posts.store';
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import Message from './../../models/Message';
 import { Alert } from 'react-native';
+import io from 'socket.io-client';
+declare let window: any;
 
 //#region state
 export interface State {
@@ -39,22 +41,22 @@ export enum ActionTypes {
 export function setupWebsockets(placeId: string) {
     return async (dispatch: any) => {
         try {
-            
-            let wsEndpoint = `${GOODTIMES_RADIKS_WEBSOCKET}/place/${placeId}`;
-            // @ts-ignore
-            let ws = new WebSocket(wsEndpoint);
-            console.log(`Setup Websocket for place ${placeId}`)
-            
-            ws.onopen = () => {
-                console.log(`connection opened for place ${placeId}`)
-                // ws.send('something'); // send a message
-            };
 
-            ws.onmessage = (e: any) => {
+
+            // socket io test
+            // set-up a connection between the client and the server
+            // https://github.com/justadudewhohacks/websocket-chat
+            // const socket = io.connect(GOODTIMES_RADIKS_SERVER);
+            const ws = io(`${GOODTIMES_RADIKS_SERVER}`);
+            
+            window.ws = ws;
+           
+            console.log(`Setup Websocket for place ${placeId}`)
+
+            ws.on('message',  (data: any) => {
                 // a message was received
-                console.log(`[WEBSOCKET ONMESSAGE from place ${placeId}] `, e.data);
+                console.log(`[WEBSOCKET ON MESSAGE from place ${placeId}] `, data);
                 try {
-                    let data = JSON.parse(e.data);
                     let modelType = data.radiksType;
                     switch (modelType) {
                         case "Message":
@@ -72,21 +74,25 @@ export function setupWebsockets(placeId: string) {
                 } catch (e) {
                     dispatch(apiError(e));
                 }
-            };
+            });
 
-            ws.onerror = (e: any) => {
+
+            ws.on('error', (e: any) => {
                 // an error occurred
                 console.log(e.message);
                 dispatch(apiError(e));
                 dispatch(failed(e));
                 // dispatch(accessDenied(e.response.toString()));
-            };
+            });
 
-            ws.onclose = (e: any) => {
-                // connection closed
-                console.log(e.code, e.reason);
-                dispatch(apiEnd(''));
-            };
+
+            ws.emit('join', placeId);
+
+            // ws.onclose = (e: any) => {
+            //     // connection closed
+            //     console.log(e.code, e.reason);
+            //     dispatch(apiEnd(''));
+            // };
 
             dispatch(succeeded(ws, ActionTypes.SETUP_WEBSOCKETS))
 
@@ -142,9 +148,9 @@ export function reducers(state: State = initialState, action: any) {
 
     switch (action.type) {
         case ActionTypes.SETUP_WEBSOCKETS: {
-            
+
             // close old websocket
-            if (state.websocket){
+            if (state.websocket) {
                 console.log('closing websocket')
                 state.websocket.close();
             }

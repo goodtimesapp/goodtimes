@@ -7,7 +7,8 @@ import { name as appName } from './app.json';
 
 YellowBox.ignoreWarnings([
     'Require cycle:',
-    'Switch:'
+    'Switch:',
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`,'
 ]);
 
 AppRegistry.registerComponent(appName, () => App);
