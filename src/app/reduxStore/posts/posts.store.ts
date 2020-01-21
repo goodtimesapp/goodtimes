@@ -1,13 +1,22 @@
 
 import { createSelector } from 'reselect';
+import {  Dimensions } from 'react-native';
 import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
 import _ from 'lodash';
+const { width, height } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.009;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const LATITUDE = 47.122036;
+const LONGITUDE = -88.564358;
+
 
 //#region Initial State
 export interface State {
-    posts: Array<any> // Array<Post>
+    posts: Array<any> // Array<Post>,
+    markers: Array<any>
 }
 export const initialState: State = {
     posts: [
@@ -35,6 +44,16 @@ export const initialState: State = {
         //         pullRight: false
         //     }
         // }
+    ],
+    markers: [
+        {
+            name: 'Nick',
+            coordinate: {
+                latitude: 47.122036,
+                longitude: -88.564358
+            },
+            image: 'https://banter-pub.imgix.net/users/nicktee.id'
+        } 
     ]
 }
 //#endregion Initial State
@@ -101,6 +120,9 @@ export function addPostFromWebSocket(post: any) {
         try {
             let payload = post;
             
+
+            // markers and pics
+
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
         } catch (e) {
             console.log('error', e)
@@ -218,7 +240,8 @@ export function reducers(state: State = initialState, action: any) {
                 posts: _.uniq([
                     ...state.posts,
                     action.payload
-                ])
+                ]),
+                markers: initialState.markers
             }
         }
 

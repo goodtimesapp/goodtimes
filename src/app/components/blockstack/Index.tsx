@@ -7,6 +7,7 @@ import {
   createAccountSilently,
   logout,
   silentLogin,
+  State as ProfileStateModel
 } from './../../reduxStore/profile/profile.store';
 import Profile from './Profile'
 import Radiks from './Radiks'

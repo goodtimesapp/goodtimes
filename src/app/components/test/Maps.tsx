@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity, PickerIOSItem } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Circle, Polygon } from 'react-native-maps';
 // @ts-ignore
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -35,8 +35,7 @@ import { mapStyle } from './Maps.Styles';
 import _ from 'lodash';
 import { workerData } from 'worker_threads';
 import * as turf from '@turf/turf';
-
-
+import { postsState, State as PostsStateModel, initialState } from './../../reduxStore/posts/posts.store';
 
 
 const { width, height } = Dimensions.get('window');
@@ -69,6 +68,7 @@ interface State {
   isSettingUpWebsocket: boolean;
   region: any;
   polygon: any;
+  currentLocation: any;
 }
 
 interface Props {
@@ -78,9 +78,12 @@ interface Props {
   getNearestPopulatedGeohash: () => void;
   startLocationWebSocket: (geohash: string) => void;
   websocketsState: WebsocketsStateModel;
+  postsState: PostsStateModel
 }
 
 class Maps extends Component<Props, State> {
+
+  map: any;
 
   static navigationOptions = {
     title: 'GeoFence Social',
@@ -109,26 +112,22 @@ class Maps extends Component<Props, State> {
       parallaxHeaderHeight: PARALLAX_HEADER_HEIGHT,
       hasNewPost: false,
       isSettingUpWebsocket: false,
-      region: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      },
-      polygon: null
+      region: null,
+      polygon: null,
+      currentLocation: null
     };
+  }
 
+  componentDidMount(){
+    this.zoomToMyCurrentLocation();
   }
 
 
   componentWillMount() {
     this.setCurrentLocationOnLoad();
-
-    
-  
   }
 
-  componentDidUpdate(nextState: any) {
+  componentDidUpdate(prevProps: Props, nextState: State) {
     // console.log(' The Maps componentDidUpdate =>', nextState);
 
     if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
@@ -136,18 +135,46 @@ class Maps extends Component<Props, State> {
         isSettingUpWebsocket: true
       })
       console.log('null websocket...set one up here', this.props.placeState.geohash);
-      this.props.startLocationWebSocket(nextState.placeState.geohash);
+      this.props.startLocationWebSocket(prevProps.placeState.geohash);
     }
 
     // clear setting up web socket flag
-    if (this.props.websocketsState.websocket !== nextState.websocketsState.websocket && this.state.isSettingUpWebsocket) {
+    if (this.props.websocketsState.websocket !== prevProps.websocketsState.websocket && this.state.isSettingUpWebsocket) {
       this.setState({
         isSettingUpWebsocket: false
       })
       console.log('done setting up websocket');
-
     }
 
+    if (this.props.postsState !== prevProps.postsState) {
+      debugger;
+      this.setState({
+        markers: this.props.postsState.markers
+      })
+    }
+
+  }
+
+  zoomToMyCurrentLocation() {
+    getCurrentLocation().then((location: any) => {
+        console.log('current loc', location);
+        this.setState({
+            region: null
+        });
+        let r = {
+            ...location,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+        }
+        this.map.animateToRegion(r);
+
+        setTimeout((r) => {
+            this.setState({
+                currentLocation: location,
+                region: r,
+            });
+        }, 2000);
+    });
   }
 
 
@@ -191,17 +218,17 @@ class Maps extends Component<Props, State> {
 
 
   getMapRegion = (scewLat?: number, scewLong?: number) => {
-    if (scewLat) {
-      return {
-        latitude: this.state.latitude + scewLat,
-        longitude: this.state.longitude + scewLong,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-    }
+    // if (scewLat) {
+    //   return {
+    //     latitude: 47.122036 + scewLat,
+    //     longitude: -88.564358 + scewLong,
+    //     latitudeDelta: LATITUDE_DELTA,
+    //     longitudeDelta: LONGITUDE_DELTA
+    //   }
+    // }
     return {
-      latitude: this.state.latitude,
-      longitude: this.state.longitude,
+      latitude: 47.122036,
+      longitude: -88.564358 ,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     }
@@ -294,6 +321,7 @@ class Maps extends Component<Props, State> {
               }]}>
 
                 <MapView
+                  ref={map => this.map = map}
                   showsUserLocation
                   showsMyLocationButton
                   provider={PROVIDER_GOOGLE} // remove if not using Google Maps
@@ -322,23 +350,42 @@ class Maps extends Component<Props, State> {
                     : null
                   }
                     */}
-                  <Marker
+                   {/* <Marker
                     title={"Julia"}
                     key={1}
                     coordinate={this.getMapRegion()}>
                     <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
                       <Thumbnail source={{ uri: 'https://banter-pub.imgix.net/users/nicktee.id' }} style={{ height: 52, width: 52 }} />
                     </View>
-                  </Marker>
+                  </Marker> */}
 
-                  <Marker
-                    title={"Helen"}
-                    key={2}
-                    coordinate={this.getMapRegion(0.002, 0.002)}>
+                  
+                  {/* <Marker
+                    title={"Julia"}
+                    key={1}
+                    coordinate={this.getMapRegion()}>
                     <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-                      <Thumbnail source={{ uri: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4' }} style={{ height: 52, width: 52 }} />
+                      <Thumbnail source={{ uri: 'https://banter-pub.imgix.net/users/nicktee.id' }} style={{ height: 52, width: 52 }} />
+                    </View>
+                  </Marker> */}
+
+                  {
+                    initialState.markers.forEach( (item: any, i: number)=>{
+                      debugger;
+                    <Marker
+                    title={item.name}
+                    key={i}
+                    coordinate={item.coordinate}>
+                    <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
+                      <Thumbnail source={{ uri: item.image }} style={{ height: 52, width: 52 }} />
                     </View>
                   </Marker>
+
+                    } )
+                  }
+                  
+                  
+                 
                 </MapView>
               </View>
             )
@@ -350,7 +397,7 @@ class Maps extends Component<Props, State> {
             if (!this.state.isHeaderVisible && this.props.profileSettingsSelector) {
               return (
                 <View key="fixed-header" style={styles.fixedSection}>
-                  <MapHeader navigation={this.props.navigation} avatar={this.props.profileSettingsSelector.attrs.image}></MapHeader>
+                  <MapHeader avatar={this.props.profileSettingsSelector.attrs.image}></MapHeader>
                 </View>
               )
             } else {
@@ -359,7 +406,6 @@ class Maps extends Component<Props, State> {
               return (
                 <View key="fixed-header" style={[styles.fixedSection, { backgroundColor: "rgba(15.7,20.4,27.8,0.7)" }]}>
                   <ChatHeader
-                    navigation={this.props.navigation}
                     onScrollToTop={() => {
                       // @ts-ignore
                       this.refs.parallaxScrollView.scrollTo({ x: 0, y: 0 })
@@ -408,7 +454,7 @@ class Maps extends Component<Props, State> {
           borderTopLeftRadius: 16
         }}>
 
-          <ChatFooter ></ChatFooter>
+          <ChatFooter placeState={this.props.placeState} ></ChatFooter>
 
         </View>
 
@@ -481,7 +527,8 @@ const styles = StyleSheet.create({
 const mapStateToProps: any = (state: ReduxState) => ({
   profileSettingsSelector: profileSettingsSelector(state.profile),
   placeState: placeState(state.places),
-  websocketsState: websocketsState(state.websockets)
+  websocketsState: websocketsState(state.websockets),
+  postsState: postsState
 })
 // Actions to dispatch
 const mapDispatchToProps = {

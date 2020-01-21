@@ -13,11 +13,11 @@ import { withNavigation } from 'react-navigation';
 import {Splash} from './../Splash';
 import AsyncStorage from '@react-native-community/async-storage';
 import { store } from './../../reduxStore/configureStore';
-
+import { State as ProfileStateModel } from './../../reduxStore/profile/profile.store';
 
 interface Props {
     userSession: any;
-    getProfileState: any;
+    getProfileState: ProfileStateModel;
     getUserName: any;
     createAccountSilently: (userChosenName: string, avatar: string) => void;
     logout: () => void;
@@ -91,6 +91,17 @@ class LoginSplash extends Component<Props, State> {
         //     }
         // }      
         
+        if (this.props.getProfileState !== prevProps.getProfileState){
+            this.props.closeSplashModal();
+            debugger;
+            if (this.props.getProfileState.settings.attrs.firstName == "First Name" ||
+                this.props.getProfileState.settings.attrs.firstName == ""  || 
+                this.props.getProfileState.settings.attrs.firstName == null ) {
+                    this.props.navigation.navigate('ProfileSettings');
+            } else {
+                this.props.navigation.navigate('Maps');
+            }
+        }
 
     }
 
