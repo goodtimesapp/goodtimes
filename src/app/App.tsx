@@ -6,7 +6,7 @@ import * as placeStore from './reduxStore/places/place.store';
 import * as postsStore from './reduxStore/posts/posts.store';
 import { PersistGate } from 'redux-persist/integration/react'
 import Index from './components/Index';
-import { SafeAreaView } from 'react-native'
+import { SafeAreaView , AppState } from 'react-native'
 declare let window: any;
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
@@ -34,7 +34,6 @@ export const BLOCKSTACK_STATE_VERSION_KEY = 'BLOCKSTACK_STATE_VERSION'
 
 export default class App extends Component<Props, State> {
 
-
   constructor(props: Props){
     super(props);
     window.SecureStorage = SecureStorage;
@@ -51,6 +50,7 @@ export default class App extends Component<Props, State> {
     window.postsStore = postsStore;
     window.Geohash = Geohash;
   }
+
 
   
   render (){

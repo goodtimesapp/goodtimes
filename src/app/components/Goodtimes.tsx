@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ScrollView, Image, FlatList, AppState,  RefreshControl, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, Image, FlatList, AppState, RefreshControl, ActivityIndicator } from 'react-native'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Header from './Header';
@@ -13,7 +13,7 @@ import {
     logout,
     silentLogin,
 } from './../reduxStore/profile/profile.store';
-import { posts, getPosts } from './../reduxStore/posts/posts.store';
+import { getPosts } from './../reduxStore/posts/posts.store';
 import { getBase64, selectBase64 } from './../reduxStore/global/global.store';
 import { setupWebsockets, websocketsState } from './../reduxStore/websockets/websockets.store';
 import { store } from './../reduxStore/configureStore';
@@ -32,7 +32,7 @@ interface Props {
     silentLogin: (state: any) => Promise<any>;
     selectBase64: () => string;
     posts: Array<Post>;
-    getPosts: (filter: any) =>  Promise<any>;
+    getPosts: (filter: any) => Promise<any>;
     websockets: any;
     setupWebsockets: (placeId: string) => void;
 }
@@ -44,7 +44,6 @@ interface State {
 
 export class Goodtimes extends Component<Props, State> {
 
-    
 
     constructor(props: Props) {
         super(props);
@@ -57,37 +56,22 @@ export class Goodtimes extends Component<Props, State> {
     componentDidMount() {
 
         let profileState = store.getState().profile;
-        
-
-        // if (_.isEmpty(profileState.userSession)) {
-        //     this.props.navigation.navigate('Profile');
-        // } else {
-            // try silent login
-            try{
-                this.props.silentLogin(profileState).then( (loggedin) => {
-                
-                   
-                    this.props.getPosts({ sort: '-createdAt', placeId: store.getState().places.placeId }) 
-        
-                    // listen for AppState background/foreground changes
-                    // AppState.addEventListener('change', this._handleAppStateChange);
-                });
-            } catch (e){
-                this.props.navigation.navigate('Profile');
-            }
-            
-
-            
-
-        //}
-
+        try {
+            this.props.silentLogin(profileState).then((loggedin) => {
+                this.props.getPosts({ sort: '-createdAt', placeId: store.getState().places.placeId })
+                // listen for AppState background/foreground changes
+                // AppState.addEventListener('change', this._handleAppStateChange);
+            });
+        } catch (e) {
+            this.props.navigation.navigate('Profile');
+        }
     }
 
     componentWillUnmount() {
         // AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         console.log('componentDidUpdate');
     }
 
@@ -113,19 +97,19 @@ export class Goodtimes extends Component<Props, State> {
 
     };
 
-    onRefresh  = async () =>{
+    onRefresh = async () => {
         this.setState({
             refreshing: true
         });
-    
-        await this.props.getPosts({ sort: '-createdAt' , placeId: store.getState().places.placeId })
 
-        setTimeout( ()=>{
+        await this.props.getPosts({ sort: '-createdAt', placeId: store.getState().places.placeId })
+
+        setTimeout(() => {
 
             this.setState({
                 refreshing: false
             });
-        }, 500 )  
+        }, 500)
 
     }
 
@@ -134,7 +118,7 @@ export class Goodtimes extends Component<Props, State> {
             <View style={{ flex: 1 }}>
                 <Header />
 
-                { this.props.posts
+                {this.props.posts
                     ? <FlatList
                         data={this.props.posts}
                         extraData={this.props}
@@ -143,7 +127,7 @@ export class Goodtimes extends Component<Props, State> {
                         renderItem={({ item }) =>
                             <CardComponent
                                 likes={11}
-                                avatar={ `https://ui-avatars.com/api/?name=${item.attrs.createdBy}` }
+                                avatar={`https://ui-avatars.com/api/?name=${item.attrs.createdBy}`}
                                 image={item.attrs.image}
                                 name={item.attrs.createdBy}
                                 summary={item.attrs.description}
@@ -160,7 +144,7 @@ export class Goodtimes extends Component<Props, State> {
                     : <Text>Fetching Posts...</Text>
                 }
 
-               
+
 
             </View>
         )

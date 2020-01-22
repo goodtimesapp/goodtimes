@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity, PickerIOSItem } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity, AppState } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Circle, Polygon } from 'react-native-maps';
 // @ts-ignore
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -120,6 +120,7 @@ class Maps extends Component<Props, State> {
 
   componentDidMount(){
     this.zoomToMyCurrentLocation();
+    AppState.addEventListener('change', this._handleAppStateChange);
   }
 
 
@@ -127,15 +128,15 @@ class Maps extends Component<Props, State> {
     this.setCurrentLocationOnLoad();
   }
 
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
   componentDidUpdate(prevProps: Props, nextState: State) {
     // console.log(' The Maps componentDidUpdate =>', nextState);
 
     if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
-      this.setState({
-        isSettingUpWebsocket: true
-      })
-      console.log('null websocket...set one up here', this.props.placeState.geohash);
-      this.props.startLocationWebSocket(prevProps.placeState.geohash);
+     this.openWebSocket(prevProps.placeState.geohash);
     }
 
     // clear setting up web socket flag
@@ -177,6 +178,38 @@ class Maps extends Component<Props, State> {
     });
   }
 
+  _handleAppStateChange = (nextAppState: any) => {
+
+    switch (nextAppState) {
+        case 'active': {
+            console.log('activated');
+            // check to make sure you have an active websocket if you are logged in
+            debugger;
+            this.openWebSocket(this.props.placeState.geohash);
+            break;
+        }
+        case 'inactive': {
+            console.log('inactive');
+            break;
+        }
+        case 'background': {
+            console.log('background');
+            break;
+        }
+        default:
+            break;
+    }
+
+};
+
+
+  openWebSocket(geohash: string){
+    this.setState({
+      isSettingUpWebsocket: true
+    })
+    console.log('null websocket...set one up here', this.props.placeState.geohash);
+    this.props.startLocationWebSocket(geohash);
+  }
 
   setCurrentLocationOnLoad() {
     getCurrentLocation().then(async (location: any) => {
@@ -371,7 +404,6 @@ class Maps extends Component<Props, State> {
 
                   {
                     initialState.markers.forEach( (item: any, i: number)=>{
-                      debugger;
                     <Marker
                     title={item.name}
                     key={i}
