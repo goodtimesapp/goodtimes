@@ -116,7 +116,7 @@ export default class Profile extends Component<Props, State> {
     render() {
         return (
             <ScrollView style={{ padding: 10 }}>
-                <Button bordered rounded success onPress={() => this.loginWithBlockstack() }>
+                <Button onPress={() => this.loginWithBlockstack() }>
                     <Text style={{color: 'black'}}>Login with Blockstack</Text>
                 </Button>
 
@@ -150,7 +150,7 @@ export default class Profile extends Component<Props, State> {
                     </Item>
                 </Content>
                 <Text />
-                <Button bordered rounded success onPress={() => this.props.createAccountSilently(this.state.username, this.state.avatar)}>
+                <Button onPress={() => this.props.createAccountSilently(this.state.username, this.state.avatar)}>
                     <Text style={{color: 'black'}}>Next =></Text>
                 </Button>
 
@@ -161,7 +161,7 @@ export default class Profile extends Component<Props, State> {
                 <Text />
                 <Text />
 
-                <Button bordered rounded onPress={() => this.props.logout()}>
+                <Button onPress={() => this.props.logout()}>
                     <Text style={{color: 'black'}}>Logout</Text>
                 </Button>
 

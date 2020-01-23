@@ -67,7 +67,9 @@ export class Splash extends React.Component<Props, State> {
         if(store.getState().profile.settings){
           if (store.getState().profile.settings.attrs.firstName == "First Name" ||
             store.getState().profile.settings.attrs.firstName == "" || 
-            store.getState().profile.settings.attrs.firstName == null ){
+            store.getState().profile.settings.attrs.firstName == null ||
+            store.getState().profile.settings.attrs.firstName == "Fetching name...") {
+              
             this.props.navigation.navigate('ProfileSettings');
           } else {
             this.props.navigation.navigate('Maps');

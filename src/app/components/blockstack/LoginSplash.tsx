@@ -93,12 +93,16 @@ class LoginSplash extends Component<Props, State> {
         
         if (this.props.getProfileState !== prevProps.getProfileState){
             this.props.closeSplashModal();
-            if (this.props.getProfileState.settings.attrs.firstName == "First Name" ||
+            try{
+                if (this.props.getProfileState.settings.attrs.firstName == "First Name" ||
                 this.props.getProfileState.settings.attrs.firstName == ""  || 
                 this.props.getProfileState.settings.attrs.firstName == null ) {
                     this.props.navigation.navigate('ProfileSettings');
-            } else {
-                this.props.navigation.navigate('Maps');
+                } else {
+                    this.props.navigation.navigate('Maps');
+                }
+            } catch(e){
+                this.props.navigation.navigate('ProfileSettings');
             }
         }
 

@@ -66,7 +66,7 @@ export class ChatFooter extends React.Component<Props, State> {
         this.sentenceTagger(this.state.chatText);
         const post = new Post({
             avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
-            user: 'nicktee.id',
+            user: this.props.profileState.username,
             hashtag: this.state.tags,
             hashtagColor: "#4c9aff",
             time: "5 mins",
