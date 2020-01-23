@@ -258,6 +258,7 @@ export function reducers(state: State = initialState, action: any) {
 //#endregion Reducers
 
 //#region Selectors
+export const profileState = createSelector(( (state: State) => state), s => s)
 export const getUserSession = createSelector(( (state: State) => state), s => s.userSession)
 export const getProfileState = createSelector( (state: State) => state, state => state);
 export const getUserName= createSelector( (state: State) => state, state => state.username);

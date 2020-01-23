@@ -8,6 +8,7 @@ import { getCurrentLocation } from './../../utils/location-utils';
 import Geohash from 'latlon-geohash';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
+import { LatLng } from 'react-native-maps';
 
 //#region state
 export interface State {
@@ -15,14 +16,19 @@ export interface State {
     placeId: string,
     key: string,
     geohash: string,
-    headcount: number
+    headcount: number,
+    currentLocation: LatLng
 }
 export const initialState: State = {
     place: '',
     placeId: '',
     key: '',
     geohash: 'a',
-    headcount: 0
+    headcount: 0,
+    currentLocation: {
+        latitude:1,
+        longitude: 2
+    }
 }
 //#endregion state
 
@@ -39,6 +45,7 @@ export enum ActionTypes {
     PLACE_ACTION_STARTED = "[PLACE] PLACE Action STARTED",
     PLACE_ACTION_SUCCEEDED = "[PLACE] PLACE Action SUCEEDED",
     PLACE_ACTION_FAILED = "[PLACE] PLACE Action FAILED",
+    GET_MY_CURRENT_LOCATION = "[PLACE] GET_MY_CURRENT_LOCATION"
 }
 
 // legacy
@@ -48,6 +55,20 @@ export function setPlaceId(placeId: string) {
             dispatch(setupWebsockets(placeId));
             dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
             
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e));
+        }    
+    }
+}
+
+export function getMyCurrentLocation() {
+    return async (dispatch: any) => {
+        try {
+            getCurrentLocation().then((location: any) => {
+                console.log('current loc', location);
+                dispatch(succeeded(location, ActionTypes.GET_MY_CURRENT_LOCATION));
+            });
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e));
@@ -153,7 +174,12 @@ export function reducers(state: State = initialState, action: any) {
 
     switch (action.type) {
 
-
+        case ActionTypes.GET_MY_CURRENT_LOCATION: {
+            return {
+                ...state,
+               currentLocation: action.payload
+            }
+        }
         
         case ActionTypes.SET_PLACE_ID: {
             return {

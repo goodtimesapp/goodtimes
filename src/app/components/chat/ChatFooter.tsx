@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { State as ReduxState } from './../../reduxStore/index';
 import { putPost } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel  } from './../../reduxStore/places/place.store';
+import { profileState, State as ProfileStateModel  } from './../../reduxStore/profile/profile.store';
 import { Post } from "./../../models/Post";
 
 
@@ -21,6 +22,7 @@ interface Props {
     navigation: any;
     putPost: (post: Post )=> void;
     placeState: PlaceStateModel;
+    profileState: ProfileStateModel;
 }
 interface State {
     chatText: string;
@@ -70,7 +72,10 @@ export class ChatFooter extends React.Component<Props, State> {
             time: "5 mins",
             content: chatText,
             pullRight: false,
-            geohash: this.state.placeState.geohash
+            geohash: this.state.placeState.geohash,
+            latitude: this.props.placeState.currentLocation.latitude,
+            longitude: this.props.placeState.currentLocation.longitude,
+            image: this.props.profileState.settings.attrs.image, // @todo - this should not be base64...maybe a link...maybe base64 is ok
         })
         this.props.putPost(post);
         this.setState({
@@ -211,7 +216,8 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps: any = (state: ReduxState) => ({
-    placeState: placeState(state.places)
+    placeState: placeState(state.places),
+    profileState: profileState(state.profile)
 })
 const mapDispatchToProps = {
     putPost: putPost

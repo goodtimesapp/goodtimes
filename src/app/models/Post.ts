@@ -44,6 +44,14 @@ export class Post extends Model {
     updatedAt: {
       type: number,
       decrypted: true
+    },
+    latitude: {
+      type: number,
+      decrypted: true
+    },
+    longitude: {
+      type: number,
+      decrypted: true
     }
   };
 

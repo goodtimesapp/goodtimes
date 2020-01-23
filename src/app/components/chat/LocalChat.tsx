@@ -147,14 +147,17 @@ export class LocalChat extends React.Component<Props, State> {
             }} /> */}
           </TouchableOpacity>
 
-          <HorzScrollTrending navigation />
+          <View style={{marginRight: -20}}>
+            <HorzScrollTrending navigation />
+          </View>
+          
 
           {
             <FlatList
               data={this.state.posts}
               renderItem={({ item }: any) => {
                 return <ChatItem
-                  avatar={item.attrs.avatar}
+                  avatar={item.attrs.image || {uri:item.attrs.avatar } }
                   hashtag={item.attrs.hashtag}
                   hashtagColor={item.attrs.hashtagColor}
                   user={item.attrs.user}

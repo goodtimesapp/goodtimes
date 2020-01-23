@@ -26,6 +26,7 @@ import {
 import {
   getNearestPopulatedGeohash,
   startLocationWebSocket,
+  getMyCurrentLocation,
   placeState,
   State as PlaceStateModel
 } from './../../reduxStore/places/place.store';
@@ -77,6 +78,7 @@ interface Props {
   placeState: PlaceStateModel;
   getNearestPopulatedGeohash: () => void;
   startLocationWebSocket: (geohash: string) => void;
+  getMyCurrentLocation: () => void;
   websocketsState: WebsocketsStateModel;
   postsState: PostsStateModel
 }
@@ -120,6 +122,7 @@ class Maps extends Component<Props, State> {
 
   componentDidMount() {
     this.zoomToMyCurrentLocation();
+    this.props.getMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
   }
 
@@ -582,7 +585,8 @@ const mapDispatchToProps = {
   putProfileSettings: putProfileSettings,
   getProfileSettings: getProfileSettings,
   getNearestPopulatedGeohash: getNearestPopulatedGeohash,
-  startLocationWebSocket: startLocationWebSocket
+  startLocationWebSocket: startLocationWebSocket,
+  getMyCurrentLocation: getMyCurrentLocation
 }
 // @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(Maps)))
