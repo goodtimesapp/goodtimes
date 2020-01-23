@@ -7,6 +7,7 @@ var App_1 = require("./App");
 var app_json_1 = require("./app.json");
 react_native_1.YellowBox.ignoreWarnings([
     'Require cycle:',
-    'Switch:'
+    'Switch:',
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 react_native_1.AppRegistry.registerComponent(app_json_1.name, function () { return App_1["default"]; });

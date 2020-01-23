@@ -6,9 +6,9 @@ import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import { Container, Header, Content, Card, CardItem, Text, Icon, Right, List, Body, Thumbnail } from 'native-base';
 // @ts-ignore
 import { RADAR_KEY_API } from 'react-native-dotenv';
-import LocalChat  from './../chat/LocalChat';
+import LocalChat from './../chat/LocalChat';
 import { getCurrentLocation, whereami } from './../../utils/location-utils';
-import ChatHeader  from './../chat/ChatHeader';
+import ChatHeader from './../chat/ChatHeader';
 import MapHeader from './../chat/MapHeader';
 import ChatFooter from './../chat/ChatFooter';
 import { withNavigation } from 'react-navigation';
@@ -118,7 +118,7 @@ class Maps extends Component<Props, State> {
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.zoomToMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
   }
@@ -136,7 +136,7 @@ class Maps extends Component<Props, State> {
     // console.log(' The Maps componentDidUpdate =>', nextState);
 
     if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
-     this.openWebSocket(prevProps.placeState.geohash);
+      this.openWebSocket(prevProps.placeState.geohash);
     }
 
     // clear setting up web socket flag
@@ -158,52 +158,64 @@ class Maps extends Component<Props, State> {
 
   zoomToMyCurrentLocation() {
     getCurrentLocation().then((location: any) => {
-        console.log('current loc', location);
-        this.setState({
-            region: null
-        });
-        let r = {
-            ...location,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-        }
-        this.map.animateToRegion(r);
+      console.log('current loc', location);
+      let markers = [{
+        name: 'Nick',
+        coordinate: {
+            latitude:location.latitude,
+            longitude: location.longitude
+        },
+        image: 'https://banter-pub.imgix.net/users/nicktee.id'
+    } ];
+      // if (this.state.markers){
+      //   markers = [...this.state.markers, location]
+      // }
+      this.setState({
+        region: null,
+        markers: markers
+      });
+      let r = {
+        ...location,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      }
+      this.map.animateToRegion(r);
 
-        setTimeout((r) => {
-            this.setState({
-                currentLocation: location,
-                region: r,
-            });
-        }, 2000);
+      setTimeout((r) => {
+        this.setState({
+          currentLocation: location,
+          region: r
+        });
+      }, 2000);
     });
   }
 
   _handleAppStateChange = (nextAppState: any) => {
 
     switch (nextAppState) {
-        case 'active': {
-            console.log('activated');
-            // check to make sure you have an active websocket if you are logged in
-            debugger;
-            this.openWebSocket(this.props.placeState.geohash);
-            break;
-        }
-        case 'inactive': {
-            console.log('inactive');
-            break;
-        }
-        case 'background': {
-            console.log('background');
-            break;
-        }
-        default:
-            break;
+      case 'active': {
+        console.log('activated');
+        // check to make sure you have an active websocket if you are logged in
+        debugger;
+        this.openWebSocket(this.props.placeState.geohash);
+        break;
+      }
+      case 'inactive': {
+        console.log('inactive');
+        break;
+      }
+      case 'background': {
+        console.log('background');
+        break;
+      }
+      default:
+        break;
     }
 
-};
+  };
 
 
-  openWebSocket(geohash: string){
+  openWebSocket(geohash: string) {
     this.setState({
       isSettingUpWebsocket: true
     })
@@ -232,16 +244,16 @@ class Maps extends Component<Props, State> {
     });
   }
 
-  calcPoints(){
+  calcPoints() {
     let center = [this.state.circle.center.latitude, this.state.circle.center.longitude];
     let options: any = {
-      
+
     };
     let radius = this.state.circle.radius;
     let region: any = turf.circle(center, radius, options);
-    
+
     let inBounds = this.isPointInRegion(center, region);
-    
+
     // this.setState({
     //   polygon: region.geometry.coordinates[0].map( ( coord:any )=>{ return {latitude: coord[0], longitude: coord[1] } } )
     // })
@@ -261,7 +273,7 @@ class Maps extends Component<Props, State> {
     // }
     return {
       latitude: 47.122036,
-      longitude: -88.564358 ,
+      longitude: -88.564358,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     }
@@ -278,8 +290,8 @@ class Maps extends Component<Props, State> {
 
 
   onRegionChangeComplete(region: any) {
-  
-    setTimeout( ()=>{
+
+    setTimeout(() => {
       let radius = this.calculateRadiusForMapsAspectRatio(region.latitudeDelta, region.longitudeDelta);
       this.setState({
         region: {
@@ -297,8 +309,8 @@ class Maps extends Component<Props, State> {
         }
       });
       // console.log('onRegionChangeComplete', data, this.state.region, this.state.circle);
-    }, 2 )
-    
+    }, 2)
+
   }
 
   calculateRadiusForMapsAspectRatio(latitudeDelta: number, longitudeDelta: number) {
@@ -308,9 +320,9 @@ class Maps extends Component<Props, State> {
     return radius;
   }
 
-  isPointInRegion(point:any, region:any){
-     let isInBounds = turf.booleanPointInPolygon(point, region);
-     return isInBounds;
+  isPointInRegion(point: any, region: any) {
+    let isInBounds = turf.booleanPointInPolygon(point, region);
+    return isInBounds;
   }
 
 
@@ -383,7 +395,7 @@ class Maps extends Component<Props, State> {
                     : null
                   }
                     */}
-                   {/* <Marker
+                  {/* <Marker
                     title={"Julia"}
                     key={1}
                     coordinate={this.getMapRegion()}>
@@ -392,7 +404,7 @@ class Maps extends Component<Props, State> {
                     </View>
                   </Marker> */}
 
-                  
+
                   {/* <Marker
                     title={"Julia"}
                     key={1}
@@ -403,21 +415,24 @@ class Maps extends Component<Props, State> {
                   </Marker> */}
 
                   {
-                    initialState.markers.forEach( (item: any, i: number)=>{
-                    <Marker
-                    title={item.name}
-                    key={i}
-                    coordinate={item.coordinate}>
-                    <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
-                      <Thumbnail source={{ uri: item.image }} style={{ height: 52, width: 52 }} />
-                    </View>
-                  </Marker>
+                    this.state.markers
+                    ?
+                      this.state.markers.map((item: any, i: number) => {
+                        return <Marker
+                          title={item.name}
+                          key={i}
+                          coordinate={item.coordinate}>
+                          <View style={{ backgroundColor: "#344155", height: 52, width: 52, borderRadius: 26, marginEnd: 16, alignSelf: 'flex-end' }}>
+                            <Thumbnail source={{ uri: item.image }} style={{ height: 52, width: 52 }} />
+                          </View>
+                        </Marker>
 
-                    } )
+                      })
+                    : null
                   }
-                  
-                  
-                 
+
+
+
                 </MapView>
               </View>
             )
@@ -447,7 +462,7 @@ class Maps extends Component<Props, State> {
               );
             }
           }}>
-          
+
           <LocalChatScrollView postsState />
         </ParallaxScrollView>
 

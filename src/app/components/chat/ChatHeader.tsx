@@ -65,7 +65,7 @@ export class ChatHeader extends React.Component<Props, State> {
                     flex: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-evenly',
+                    justifyContent: 'space-around',
                     borderColor: "#77849b",
                     borderWidth: 1,
                     paddingTop: 4,
@@ -83,7 +83,7 @@ export class ChatHeader extends React.Component<Props, State> {
                      thumbColor="#ff5230"
                      value={true} /> */}
                 </View>
-                {/* <TouchableOpacity style={{
+                <TouchableOpacity style={{
                     height: 32, 
                     width: 32, 
                     backgroundColor:  "#283447", 
@@ -93,8 +93,8 @@ export class ChatHeader extends React.Component<Props, State> {
                     justifyContent: 'space-evenly',
                     alignItems: 'center',
                 }}>
-                    <Icon style={{color: "#77849b", fontSize: 18}} name="map" ></Icon>
-                </TouchableOpacity> */}
+                    <Icon style={{color: "#77849b", fontSize: 18}} name="ios-search" ></Icon>
+                </TouchableOpacity>
             </View>
         )
     }

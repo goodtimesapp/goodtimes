@@ -13,6 +13,7 @@ import { State as ReduxState } from './../../reduxStore/index';
 import { postsState, getPosts, getChats, clearPosts } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel } from './../../reduxStore/places/place.store';
 import { store } from "reduxStore/configureStore";
+import { HorzScrollTrending } from "./HorzScrollTrending";
 
 
 interface Props {
@@ -109,22 +110,32 @@ export class LocalChat extends React.Component<Props, State> {
 
         <View style={{ padding: 18 }}>
 
-          <View style={{ paddingBottom: 36 }}>
-            <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
+          <View style={{ paddingBottom: 12 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
               <TouchableOpacity>
                 <Image style={{ width: 32, height: 32 }} source={require('./../../assets/goodtimes.png')} />
               </TouchableOpacity>
-              <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>Geohash - {this.state.placeState.geohash} </Text>
               <Text style={[human.title1, { color: "#ffffff", paddingTop: 2, alignSelf: 'flex-end' }]}>Chicago, IL  </Text>
+              <Text style={[human.title3, { color: "#b4c2db", paddingBottom: 2, paddingLeft: 6 }]}>{this.state.placeState.geohash} </Text>
+              <TouchableOpacity style={{
+                    height: 32, 
+                    width: 32, 
+                    backgroundColor:  "#283447", 
+                    borderRadius: 16,
+                    borderColor: "#77849b",
+                    borderWidth: 1,
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
+                }}>
+                    <Icon style={{color: "#77849b", fontSize: 18}} name="ios-search" ></Icon>
+                </TouchableOpacity>
             </View>
-           
-
           </View>
 
           <TouchableOpacity
             style={{
               alignSelf: 'center',
-              marginBottom: 12,
+              marginBottom: 0,
               alignItems: 'center',
               width: '100%',
             }}>
@@ -135,6 +146,8 @@ export class LocalChat extends React.Component<Props, State> {
               })
             }} /> */}
           </TouchableOpacity>
+
+          <HorzScrollTrending navigation />
 
           {
             <FlatList

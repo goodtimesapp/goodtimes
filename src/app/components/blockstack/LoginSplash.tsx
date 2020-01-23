@@ -93,7 +93,6 @@ class LoginSplash extends Component<Props, State> {
         
         if (this.props.getProfileState !== prevProps.getProfileState){
             this.props.closeSplashModal();
-            debugger;
             if (this.props.getProfileState.settings.attrs.firstName == "First Name" ||
                 this.props.getProfileState.settings.attrs.firstName == ""  || 
                 this.props.getProfileState.settings.attrs.firstName == null ) {

@@ -43,7 +43,7 @@ export class ChatItem extends React.Component<Props, State> {
                     }
                     
                     <View style={{ flexGrow: 1, marginRight: 6 }}>
-                        <TouchableOpacity  onPress={() => { Alert.alert('pressed') }} 
+                        <TouchableOpacity  
                             style={[ (this.props.pullRight ? styles.hashTagRight : styles.hashTag ) , {backgroundColor: this.props.hashtagColor } ]}>
                             <Text style={[human.body, { color: "#ffffff", paddingBottom: 2 }]}>
                                 {this.props.hashtag}
