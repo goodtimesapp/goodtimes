@@ -122,57 +122,58 @@ class Maps extends Component<Props, State> {
   }
 
   componentDidMount() {   
-    this.zoomToMyCurrentLocation();
+    this.setCurrentLocationOnLoad();
+    this.props.getMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
   }
 
-
-  componentWillMount() {
-    this.setCurrentLocationOnLoad();
-  }
-
+  
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
-  componentDidUpdate(prevProps: Props, nextState: State) {
-    // console.log(' The Maps componentDidUpdate =>', nextState);
-
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    
     // websockets subscriber
-    if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
-      this.openWebSocket(prevProps.placeState.geohash);
-    }
+    // if (this.props.websocketsState !== prevProps.websocketsState){
+    //   if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
+    //     this.openWebSocket(prevProps.placeState.geohash);
+    //   }
+    //   if ( (this.props.websocketsState.websocket !== prevProps.websocketsState.websocket) && this.state.isSettingUpWebsocket) {
+    //     this.setState({
+    //       isSettingUpWebsocket: false
+    //     });
+    //     console.log('done setting up websocket');
+    //   }
+    // }
 
-    // clear setting up web socket flag
-    if (this.props.websocketsState.websocket !== prevProps.websocketsState.websocket && this.state.isSettingUpWebsocket) {
-      this.setState({
-        isSettingUpWebsocket: false
-      })
-      console.log('done setting up websocket');
+    if (this.props.placeState !== prevProps.placeState) {
+      if ( (this.props.placeState.currentLocation !== prevProps.placeState.currentLocation) && !this.state.isSettingUpWebsocket){
+        this.openWebSocket(this.props.placeState.geohash);
+      }
     }
 
     if (this.props.postsState !== prevProps.postsState) {
+      console.log('[componentDidUpdate] Maps.tsx props.postsState' );
       this.setState({
         markers: this.props.postsState.markers
       })
     }
 
-    // if (this.props.placeState.currentLocation !== prevProps.placeState.currentLocation) {
-    //   this.zoomToMyCurrentLocation();
-    // }
-
     if (this.props.profileSettingsSelector !== prevProps.profileSettingsSelector) {
+      console.log('[componentDidUpdate] Maps.tsx props.profileSettingsSelector' );
       try {
         if (this.props.profileSettingsSelector.attrs.firstName == "First Name" ||
           this.props.profileSettingsSelector.attrs.firstName == "" ||
-          this.props.profileSettingsSelector.attrs.firstName == null) {
-
+          this.props.profileSettingsSelector.attrs.firstName == null
+        ){
           this.props.navigation.navigate('ProfileSettings');
         }
       } catch (e) {
         console.log('no profile')
       }
     }
+
   }
 
   zoomToMyCurrentLocation() {
@@ -209,13 +210,15 @@ class Maps extends Component<Props, State> {
     });
   }
 
+ 
   _handleAppStateChange = (nextAppState: any) => {
 
     switch (nextAppState) {
       case 'active': {
         console.log('activated');
         // check to make sure you have an active websocket if you are logged in
-        this.openWebSocket(this.props.placeState.geohash);
+        //this.openWebSocket(this.props.placeState.geohash);
+        this.props.getMyCurrentLocation();
         break;
       }
       case 'inactive': {
@@ -239,6 +242,7 @@ class Maps extends Component<Props, State> {
     })
     console.log('null websocket...set one up here', this.props.placeState.geohash);
     this.props.startLocationWebSocket(geohash);
+    this.zoomToMyCurrentLocation();
   }
 
   setCurrentLocationOnLoad() {
@@ -258,7 +262,7 @@ class Maps extends Component<Props, State> {
       });
 
       this.calcPoints();
-
+      this.zoomToMyCurrentLocation();
     });
   }
 

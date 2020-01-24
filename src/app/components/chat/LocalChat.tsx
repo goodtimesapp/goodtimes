@@ -48,17 +48,21 @@ export class LocalChat extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
-    //console.log('updated localchat', prevState, prevProps);
+    
     // posts state change subscriber
-    if (prevProps.postsState !== this.props.postsState) {
+    if (this.props.postsState !== prevProps.postsState ) {
+      console.log('[componentDidUpdate] LocalChat.tsx props.postsState' );
       // console.log('postsChangeHandler', this.props.postsState);
       this.postsChangeHandler();
     }
+
     // place state change subscriber
-    if (prevProps.placeState !== this.props.placeState) {
-      console.log('placeChangeHandler', this.props.placeState);
+    if (this.props.placeState !==  prevProps.placeState ) {
+      // console.log('placeChangeHandler', this.props.placeState);
+      console.log('[componentDidUpdate] LocalChat.tsx place.postsState' );
       this.placeChangeHandler();
     }
+
   }
 
   postsChangeHandler() {

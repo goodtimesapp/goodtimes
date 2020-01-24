@@ -44,7 +44,8 @@ export class ChatFooter extends React.Component<Props, State> {
     componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
         
         // place state change subscriber
-        if (prevProps.placeState !== this.props.placeState) {
+        if (this.props.placeState !== prevProps.placeState) {
+            console.log('[componentDidUpdate] ChatFooter.tsx props.placeState' );
             this.setState({
               placeState: this.props.placeState
             });

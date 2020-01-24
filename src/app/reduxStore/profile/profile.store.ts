@@ -226,7 +226,8 @@ export function reducers(state: State = initialState, action: any) {
 
         case ActionTypes.LOGOUT: {
             return  { 
-
+                ...initialState,
+                progress: 'logged out'
             }
         }
 

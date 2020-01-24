@@ -10,6 +10,7 @@ import Geohash from 'latlon-geohash';
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import { LatLng } from 'react-native-maps';
 
+
 //#region state
 export interface State {
     place: string,
@@ -68,6 +69,7 @@ export function getMyCurrentLocation() {
             getCurrentLocation().then((location: any) => {
                 console.log('current loc', location);
                 dispatch(succeeded(location, ActionTypes.GET_MY_CURRENT_LOCATION));
+                dispatch(getNearestPopulatedGeohash());
             });
         } catch (e) {
             console.log('error', e)
@@ -86,13 +88,12 @@ export function getNearestPopulatedGeohash(){
             let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/nearest/populated/${location.latitude}/${location.longitude}`, {
                 "method": "GET",
             });
-            
             let geoJson: any = await geoResp.json();
             let geohash = geoJson.geohash;
             let headcount = geoJson.count;
             console.log('Created geohash', geohash, headcount);
-            // dispatch(startLocationWebSocket(geohash));
             dispatch(succeeded({geohash,headcount}, ActionTypes.GET_NEAREST_POPULATED_GEOHASH));
+            dispatch(startLocationWebSocket(geohash));
         });
     }      
 }

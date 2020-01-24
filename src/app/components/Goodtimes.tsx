@@ -71,9 +71,6 @@ export class Goodtimes extends Component<Props, State> {
         // AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
-    componentDidUpdate() {
-        console.log('goodtimes componentDidUpdate');
-    }
 
     _handleAppStateChange = (nextAppState: any) => {
 

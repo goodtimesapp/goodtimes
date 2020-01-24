@@ -51,16 +51,6 @@ class LoginSplash extends Component<Props, State> {
         }
     }
 
-    componentDidUpdate(prevProps: Props, prevState: State){
-    
-        if (this.props.profileState.progress !== this.props.profileState.progress){
-            if (this.props.profileState.progress == "silent logged in..."){
-                // this.props.closeSplashModal();
-                // this.props.navigation.navigate('App');
-            }  
-        }
-        
-    }
 
     async loginWithBlockstack(){
 

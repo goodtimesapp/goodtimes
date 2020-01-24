@@ -102,11 +102,11 @@ export default class Profile extends Component<Props, State> {
         let signInResult = await RNBlockstackSdk.signIn();
     }
 
-    componentDidUpdate(data: any){
-        console.log('profile.tsx componentDidUpdate =>', data);
-        if (this.props.userSession !== data.userSession){
+    componentDidUpdate(prevProps: Props, prevState: State){
+        if (this.props.userSession !== prevProps.userSession){
+            console.log('[componentDidUpdate] Profile.tsx props.userSession' );
             this.setState({
-                profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
+                profileData: [{title: 'UserData', content: JSON.stringify(prevProps.userSession)}]
             });
         }
     }

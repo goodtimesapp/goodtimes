@@ -65,8 +65,9 @@ export class ProfileSettings extends React.Component<Props, State> {
   }
 
    componentDidUpdate(prevProps: Props, nextState: State) {
-    // console.log('componentDidUpdate =>', prevProps);
+    
     if (this.props.profileSettingsSelector !== prevProps.profileSettingsSelector){
+      console.log('[componentDidUpdate] ProfileSettings.tsx props.profileSettingsSelector' );
       try {
         this.setState({
           firstName: this.props.profileSettingsSelector.attrs.firstName,
@@ -77,10 +78,17 @@ export class ProfileSettings extends React.Component<Props, State> {
       }
     }
 
-    if (_.isEmpty(this.props.profileState)){
-      this.props.navigation.navigate('Auth');
+    if (this.props.profileState !== prevProps.profileState){
+      console.log('[componentDidUpdate] ProfileSettings.tsx props.profileState' );
+      if (this.props.profileState.progress !== prevProps.profileState.progress){
+        if (this.props.profileState.progress == "logged out"){
+          this.props.navigation.navigate('Auth');
+        }
+      }
     }
 
+    
+    
   }
 
   chooseImage() {

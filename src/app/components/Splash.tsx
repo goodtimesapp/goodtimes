@@ -71,17 +71,17 @@ export class Splash extends React.Component<Props, State> {
     // }
 
     if (this.props.profileState.progress !== prevProps.profileState.progress) {
-      console.log('progress chged');
+      console.log('[componentDidUpdate] Splash.tsx props.profileState.progess' );
       this.setState({
         loginStatus: this.props.profileState.progress
-      })
+      });
       if (this.props.profileState.progress == "got profile settings..." || 
-          this.props.profileState.progress == "created account silently..." || 
-          this.props.profileState.progress == "no profile settings created yet") {
+          this.props.profileState.progress == "no profile settings created yet" || 
+          this.props.profileState.progress == "created account silently..."
+      ) {
         this.closeSplashModal();
         this.props.navigation.navigate('App');
       }
-      
     }
 
   }
@@ -239,7 +239,7 @@ export class Splash extends React.Component<Props, State> {
   </LinearGradient>;
 
   introEL = <AppIntroSlider
-    onDone={() => this.back('Markers')}
+    onDone={() => this.back('App')}
     slides={slides}
     renderItem={this._renderItem}
     // bottomButton
@@ -247,7 +247,7 @@ export class Splash extends React.Component<Props, State> {
     showSkipButton
     //hideNextButton
     // hideDoneButton
-    onSkip={() => { Alert.alert('todo skip to last slide') }}
+    onSkip={() => { this.back('App') }}
   />
 
 
