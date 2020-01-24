@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, I18nManager, Modal, ScrollView, ImageBackground, Dimensions, Alert } from 'react-native';
+import { StyleSheet, View, Text, Image, I18nManager, Modal, ScrollView, ImageBackground, Dimensions, ActivityIndicator, StatusBar, Alert } from 'react-native';
 import { Icon } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import { withNavigation } from 'react-navigation';
@@ -20,9 +20,10 @@ import {
   getProfileSettings,
   silentLogin,
   createAccountSilently,
-  State as ProfileStateModel
+  State as ProfileStateModel,
+  profileState
 } from './../reduxStore/profile/profile.store';
-import {Profile} from './../models/Profile';
+import { Profile } from './../models/Profile';
 import { store } from './../reduxStore/configureStore';
 import _ from 'lodash';
 
@@ -32,10 +33,12 @@ interface Props {
   silentLogin: (state: any) => Promise<any>;
   getUserName: any;
   userSession: any;
+  profileState: ProfileStateModel;
 }
 interface State {
-  visible: boolean,
-  showIntro: boolean
+  visible: boolean;
+  showIntro: boolean;
+  loginStatus: string;
 }
 
 export class Splash extends React.Component<Props, State> {
@@ -45,6 +48,7 @@ export class Splash extends React.Component<Props, State> {
     this.state = {
       visible: true,
       showIntro: false,
+      loginStatus: 'status:'
     };
   }
 
@@ -61,31 +65,31 @@ export class Splash extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
-    if (this.props.userSession !== prevProps.userSession) {
-      if (Object.entries(this.props.userSession.store)){
+    // if (this.props.userSession !== prevProps.userSession) {
+    //     this.closeSplashModal();
+    //     this.props.navigation.navigate('App');
+    // }
+
+    if (this.props.profileState.progress !== prevProps.profileState.progress) {
+      console.log('progress chged');
+      this.setState({
+        loginStatus: this.props.profileState.progress
+      })
+      if (this.props.profileState.progress == "got profile settings..." || 
+          this.props.profileState.progress == "created account silently..." || 
+          this.props.profileState.progress == "no profile settings created yet") {
         this.closeSplashModal();
-        if(store.getState().profile.settings){
-          if (store.getState().profile.settings.attrs.firstName == "First Name" ||
-            store.getState().profile.settings.attrs.firstName == "" || 
-            store.getState().profile.settings.attrs.firstName == null ||
-            store.getState().profile.settings.attrs.firstName == "Fetching name...") {
-              
-            this.props.navigation.navigate('ProfileSettings');
-          } else {
-            this.props.navigation.navigate('Maps');
-          }
-        } else {
-          this.props.navigation.navigate('ProfileSettings');
-        }
+        this.props.navigation.navigate('App');
       }
       
-      
     }
+
   }
 
-  async trySilentLogin(){
+
+  async trySilentLogin() {
     let profileState = store.getState().profile;
-    if ( !_.isEmpty(profileState.userSession) ){
+    if (!_.isEmpty(profileState.userSession)) {
       this.props.silentLogin(profileState);
     }
   }
@@ -93,10 +97,10 @@ export class Splash extends React.Component<Props, State> {
   async checkIfUserHasSeenIntro() {
     try {
 
-      if (!this.props.getUserName){
+      if (!this.props.getUserName) {
 
-      } else{
-        
+      } else {
+
       }
 
       const value = await AsyncStorage.getItem('hasSeenIntro')
@@ -122,7 +126,7 @@ export class Splash extends React.Component<Props, State> {
     }
   }
 
-  closeSplashModal(){
+  closeSplashModal() {
     this.setState({
       visible: false
     });
@@ -151,17 +155,23 @@ export class Splash extends React.Component<Props, State> {
 
         {
           item.goodlogo
-          ? <Text style={[material.display3White, { color: item.textColor, textAlign: 'center', paddingTop: item.topPad }]}>Goodtimes</Text>
-          : null
+            ? <Text style={[material.display3White, { color: item.textColor, textAlign: 'center', paddingTop: item.topPad }]}>Goodtimes</Text>
+            : null
         }
-       
+
+
+
+
+
+
+
         <View style={{ width: '100%', height: '100%', alignContent: 'center', alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: item.contentPad }} >
           {
             item.image
               ?
               <View>
                 <Image source={item.image} style={[styles.roundImage]} ></Image>
-                <Text style={{ position: 'relative', backgroundColor: 'rgba(0, 0, 0, 0.35)', width:Dimensions.get('window').width , height: 100 , marginTop: -200 }}>
+                <Text style={{ position: 'relative', backgroundColor: 'rgba(0, 0, 0, 0.35)', width: Dimensions.get('window').width, height: 100, marginTop: -200 }}>
                   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 </Text>
               </View>
@@ -189,13 +199,13 @@ export class Splash extends React.Component<Props, State> {
           }
           {
             item.text
-            ? <View>
+              ? <View>
                 <Text />
-                <Text style={[material.title, styles.text, {color: item.textColor}] }>{item.text}</Text>
+                <Text style={[material.title, styles.text, { color: item.textColor }]}>{item.text}</Text>
               </View>
-            : null
+              : null
           }
-          
+
           {
             item.login
               ? <LoginSplashPage closeSplashModal={this.closeSplashModal.bind(this)} ></LoginSplashPage>
@@ -237,7 +247,7 @@ export class Splash extends React.Component<Props, State> {
     showSkipButton
     //hideNextButton
     // hideDoneButton
-    onSkip={() => {this.back('Maps')}}
+    onSkip={() => { Alert.alert('todo skip to last slide') }}
   />
 
 
@@ -252,6 +262,10 @@ export class Splash extends React.Component<Props, State> {
         visible={this.state.visible}
         onRequestClose={() => this.back('Markers')}>
         {renderEl}
+        <View style={{ justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
+          <Text style={{ color: 'white', alignSelf: 'center', backgroundColor: 'hotpink', width: '100%', height: 32, position: 'absolute', bottom: 125 }} >{this.state.loginStatus}</Text>
+        </View>
+
       </Modal>
     );
   }
@@ -370,7 +384,7 @@ const mapStateToProps: any = (state: ReduxState) => ({
   userSession: getUserSession(state.profile),
   getProfileState: getProfileState(state.profile),
   getUserName: getUserName(state.profile),
-  
+  profileState: profileState(state.profile)
 })
 // Actions to dispatch
 const mapDispatchToProps = {

@@ -49,13 +49,13 @@ export function setupWebsockets(placeId: string) {
             // const socket = io.connect(GOODTIMES_RADIKS_SERVER);
             const ws = io(`${GOODTIMES_RADIKS_SERVER}`);
             
-            window.ws = ws;
+            
            
             console.log(`Setup Websocket for place ${placeId}`)
 
             ws.on('message',  (data: any) => {
                 // a message was received
-                console.log(`[WEBSOCKET ON MESSAGE from place ${placeId}] `, data);
+                console.log(`[WEBSOCKET ON MESSAGE from place ${placeId}] `);
                 try {
                     let modelType = data.radiksType;
                     switch (modelType) {
@@ -125,7 +125,7 @@ export function started() {
 }
 
 export function succeeded(payload: any, action: ActionTypes) {
-    console.log(payload);
+    // console.log(payload);
     return {
         type: action,
         payload: payload,

@@ -74,7 +74,7 @@ export default class Profile extends Component<Props, State> {
         let id = await this.createBlockchainIdentity(keychain);
         let username = await SecureStorage.getItem('username');
         let userSession = this.makeUserSession(id.appPrivateKey, id.appPublicKey, username, id.profileJSON.decodedToken.payload.claim);
-        window.userSession = userSession;
+       
         this.configureRadiks(userSession);
         let blockstackUser = await User.createWithCurrentUser();
         this.setState({

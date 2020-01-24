@@ -80,7 +80,8 @@ interface Props {
   startLocationWebSocket: (geohash: string) => void;
   getMyCurrentLocation: () => void;
   websocketsState: WebsocketsStateModel;
-  postsState: PostsStateModel
+  postsState: PostsStateModel;
+  getProfileSettings: () => void;
 }
 
 class Maps extends Component<Props, State> {
@@ -120,9 +121,8 @@ class Maps extends Component<Props, State> {
     };
   }
 
-  componentDidMount() {
+  componentDidMount() {   
     this.zoomToMyCurrentLocation();
-    this.props.getMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
   }
 
@@ -138,6 +138,7 @@ class Maps extends Component<Props, State> {
   componentDidUpdate(prevProps: Props, nextState: State) {
     // console.log(' The Maps componentDidUpdate =>', nextState);
 
+    // websockets subscriber
     if (!this.props.websocketsState.websocket && this.props.placeState.geohash && !this.state.isSettingUpWebsocket) {
       this.openWebSocket(prevProps.placeState.geohash);
     }
@@ -151,12 +152,27 @@ class Maps extends Component<Props, State> {
     }
 
     if (this.props.postsState !== prevProps.postsState) {
-      debugger;
       this.setState({
         markers: this.props.postsState.markers
       })
     }
 
+    // if (this.props.placeState.currentLocation !== prevProps.placeState.currentLocation) {
+    //   this.zoomToMyCurrentLocation();
+    // }
+
+    if (this.props.profileSettingsSelector !== prevProps.profileSettingsSelector) {
+      try {
+        if (this.props.profileSettingsSelector.attrs.firstName == "First Name" ||
+          this.props.profileSettingsSelector.attrs.firstName == "" ||
+          this.props.profileSettingsSelector.attrs.firstName == null) {
+
+          this.props.navigation.navigate('ProfileSettings');
+        }
+      } catch (e) {
+        console.log('no profile')
+      }
+    }
   }
 
   zoomToMyCurrentLocation() {
@@ -165,11 +181,11 @@ class Maps extends Component<Props, State> {
       let markers = [{
         name: 'Nick',
         coordinate: {
-            latitude:location.latitude,
-            longitude: location.longitude
+          latitude: location.latitude,
+          longitude: location.longitude
         },
         image: 'https://banter-pub.imgix.net/users/nicktee.id'
-    } ];
+      }];
       // if (this.state.markers){
       //   markers = [...this.state.markers, location]
       // }
@@ -199,7 +215,6 @@ class Maps extends Component<Props, State> {
       case 'active': {
         console.log('activated');
         // check to make sure you have an active websocket if you are logged in
-        debugger;
         this.openWebSocket(this.props.placeState.geohash);
         break;
       }
@@ -294,7 +309,7 @@ class Maps extends Component<Props, State> {
 
   onRegionChangeComplete(region: any) {
 
-    setTimeout(() => {
+    
       let radius = this.calculateRadiusForMapsAspectRatio(region.latitudeDelta, region.longitudeDelta);
       this.setState({
         region: {
@@ -312,7 +327,7 @@ class Maps extends Component<Props, State> {
         }
       });
       // console.log('onRegionChangeComplete', data, this.state.region, this.state.circle);
-    }, 2)
+    
 
   }
 
@@ -419,7 +434,7 @@ class Maps extends Component<Props, State> {
 
                   {
                     this.state.markers
-                    ?
+                      ?
                       this.state.markers.map((item: any, i: number) => {
                         return <Marker
                           title={item.name}
@@ -431,7 +446,7 @@ class Maps extends Component<Props, State> {
                         </Marker>
 
                       })
-                    : null
+                      : null
                   }
 
 
@@ -586,7 +601,7 @@ const mapDispatchToProps = {
   getProfileSettings: getProfileSettings,
   getNearestPopulatedGeohash: getNearestPopulatedGeohash,
   startLocationWebSocket: startLocationWebSocket,
-  getMyCurrentLocation: getMyCurrentLocation
+  getMyCurrentLocation: getMyCurrentLocation,
 }
 // @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)((withNavigation(Maps)))

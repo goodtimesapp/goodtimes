@@ -39,7 +39,7 @@ export class MapHeader extends React.Component<Props, State> {
                 flex: 1
             }}>
                 <TouchableOpacity 
-                    onPress={ ()=> { this.props.navigation.navigate("ProfilePage"); } }
+                    onPress={ ()=> { this.props.navigation.navigate("ProfileSettings"); } }
                     style={{
                         height: 32, 
                         width: 32, 

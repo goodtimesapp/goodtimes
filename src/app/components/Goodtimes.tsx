@@ -72,7 +72,7 @@ export class Goodtimes extends Component<Props, State> {
     }
 
     componentDidUpdate() {
-        console.log('componentDidUpdate');
+        console.log('goodtimes componentDidUpdate');
     }
 
     _handleAppStateChange = (nextAppState: any) => {

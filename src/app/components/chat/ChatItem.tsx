@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Image, Alert, StyleSheet } from 'react-native'
+import { Text, Image, Alert, StyleSheet, TouchableOpacity, ScrollView  } from 'react-native'
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { Container, View, Content, Header, Icon, Left, Button, Body, Right, Badge, Title, Thumbnail } from "native-base";
 import { withNavigation } from 'react-navigation';
@@ -8,7 +8,6 @@ import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-nativ
 import Message from './../../models/Message';
 import AsyncStorage from "@react-native-community/async-storage";
 import { human, iOSUIKit } from 'react-native-typography';
-import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 
 
 interface Props {

@@ -51,7 +51,7 @@ export class LocalChat extends React.Component<Props, State> {
     //console.log('updated localchat', prevState, prevProps);
     // posts state change subscriber
     if (prevProps.postsState !== this.props.postsState) {
-      console.log('postsChangeHandler', this.props.postsState);
+      // console.log('postsChangeHandler', this.props.postsState);
       this.postsChangeHandler();
     }
     // place state change subscriber

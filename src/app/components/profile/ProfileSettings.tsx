@@ -12,9 +12,13 @@ import {
   getUserName,
   putProfileSettings,
   getProfileSettings,
-  profileSettingsSelector
+  profileSettingsSelector,
+  logout,
+  profileState,
+  State as ProfileStateModel
 } from './../../reduxStore/profile/profile.store';
 import {Profile} from './../../models/Profile';
+import _ from 'lodash';
 
 
 
@@ -22,7 +26,9 @@ interface Props {
   navigation: any;
   putProfileSettings: (profile: Profile)=> void;
   getProfileSettings: () => void;
-  profileSettingsSelector: Profile
+  profileSettingsSelector: Profile;
+  logout: ()=> void;
+  profileState: ProfileStateModel
 }
 interface State {
   avatarSource: any;
@@ -48,26 +54,33 @@ export class ProfileSettings extends React.Component<Props, State> {
     };
   }
 
- 
 
   componentDidMount() {
-    this.props.getProfileSettings();
+    if (this.props.profileSettingsSelector.attrs ){
+      this.setState({
+        avatarSource:this.props.profileSettingsSelector.attrs.image,
+        firstName: this.props.profileSettingsSelector.attrs.firstName
+      });
+    }
   }
 
-  componentDidUpdate(data: any){
-    console.log('componentDidUpdate =>', data);
-    if (this.props.profileSettingsSelector !== data.profileSettingsSelector){
-      try{
-       
+   componentDidUpdate(prevProps: Props, nextState: State) {
+    // console.log('componentDidUpdate =>', prevProps);
+    if (this.props.profileSettingsSelector !== prevProps.profileSettingsSelector){
+      try {
         this.setState({
-          firstName: data.profileSettingsSelector.attrs.firstName,
-          avatarSource: data.profileSettingsSelector.attrs.image
+          firstName: this.props.profileSettingsSelector.attrs.firstName,
+          avatarSource: this.props.profileSettingsSelector.attrs.image
         }); 
-      } catch(e) {console.log('cannot update data.profileSettingsSelector.attrs')}
-      
-
+      } catch(e) {
+        console.log('cannot update data.profileSettingsSelector.attrs')
+      }
     }
-    
+
+    if (_.isEmpty(this.props.profileState)){
+      this.props.navigation.navigate('Auth');
+    }
+
   }
 
   chooseImage() {
@@ -104,16 +117,18 @@ export class ProfileSettings extends React.Component<Props, State> {
     // this.props.navigation.navigate('Goodtimes');
   }
 
+  logout(){
+    this.props.logout();
+  }
  
 
   render() {
     return (
 
 
-      <View style={{
+      <ScrollView style={{
         flex: 1,
-        backgroundColor: "#283447",
-        justifyContent: "center"
+        backgroundColor: "#283447"
       }}>
         
           <View style={{
@@ -195,6 +210,8 @@ export class ProfileSettings extends React.Component<Props, State> {
                     style={[human.body, { color: "#ff5230", width: 320 }]}
                     onChangeText={(firstName)=>{this.setState({firstName})}} />
                 </Item>
+                  <Text/>
+                  <Text style={{color: 'white'}}>{this.props.profileState.username}</Text>
               </Content>
             </View>
             <View style={{
@@ -244,11 +261,33 @@ export class ProfileSettings extends React.Component<Props, State> {
                 </TouchableOpacity>
               </Content>
             </View>
+
+            <View style={{
+              height: 50,
+              alignSelf: "flex-end",
+              marginRight: 30,
+            }}>
+              <Content style={{ flex: 1 }}>
+                <TouchableOpacity style={{
+                  height: 42,
+                  width: 120,
+                  backgroundColor: "#ff5230",
+                  borderRadius: 21,
+                  justifyContent: 'space-evenly',
+                  alignItems: 'center',
+                  flexDirection: "row"
+                }}
+                onPress={()=>{this.logout()}}
+                >
+                  <Text style={{ color: "#ffffff", fontSize: 18 }}>logout</Text>
+                </TouchableOpacity>
+              </Content>
+            </View>
           
 
           </View>
   
-      </View>
+      </ScrollView>
       
 
     )
@@ -265,12 +304,14 @@ const styles = StyleSheet.create({
 
 // Global State
 const mapStateToProps: any = (state: ReduxState) => ({
-  profileSettingsSelector: profileSettingsSelector(state.profile)
+  profileSettingsSelector: profileSettingsSelector(state.profile),
+  profileState: profileState(state.profile)
 })
 // Actions to dispatch
 const mapDispatchToProps = {
   putProfileSettings: putProfileSettings,
-  getProfileSettings: getProfileSettings
+  getProfileSettings: getProfileSettings,
+  logout: logout
 }
 
 // @ts-ignore

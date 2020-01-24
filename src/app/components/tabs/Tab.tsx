@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, StyleSheet, Animated, UIManager, findNodeHandle, LayoutRectangle } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Animated, LayoutRectangle } from 'react-native';
 import { Icon } from 'native-base';
 import { makeUUID4 } from 'blockstack';
 import { render } from 'node-sass';

@@ -216,9 +216,9 @@ export default class Markers extends Component<Props, State> {
                             };
                             return (
                                 <Marker
-                                    // key={index}
+                                    key={index}
                                     coordinate={marker.coordinate}
-                                    key={`${marker.title}-${marker.selected ? 'active' : 'inactive'}`}
+                                    // key={`${marker.title}-${marker.selected ? 'active' : 'inactive'}`}
                                     pinColor={(marker.selected ? 'green' : 'red')}>
                                     <Animated.View>
                                         <Animated.View />

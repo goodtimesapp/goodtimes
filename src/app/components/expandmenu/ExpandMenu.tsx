@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { Icon, Button, Text } from 'native-base';
 import ScalingButton from './ScalingButton';
-import { PanGestureHandler } from 'react-native-gesture-handler';
 
 interface Props{
     frictionOpen?: number,

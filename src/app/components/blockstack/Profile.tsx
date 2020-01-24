@@ -103,15 +103,13 @@ export default class Profile extends Component<Props, State> {
     }
 
     componentDidUpdate(data: any){
-        console.log('componentDidUpdate =>', data);
+        console.log('profile.tsx componentDidUpdate =>', data);
         if (this.props.userSession !== data.userSession){
             this.setState({
                 profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
             });
         }
-
     }
-
 
     render() {
         return (

@@ -118,12 +118,7 @@ export default class Blockstack extends Component<Props, State> {
   // https://github.com/blockstack/blockstack-browser/blob/8103c82f5b4ae24c8b1f4e52385326c0a5a60ce8/app/js/profiles/store/registration/actions.js
   // https://github.com/blockstack/blockstack-browser/blob/5f7fa28672abfd53ee454ff96283072a499ab869/app/js/account/CreateAccountPage.js
   async createAccount(){
-    window.bs = RNBlockstackSdk;
-    window.bitcoin = bitcoin;
-    window.blockstack = blockstack;
-    window.bip39 = bip39;
-    window.bip32utils = bip32utils;
-    console.log('bitcoin', bitcoin);
+  
     
     //1) init wallet
     let masterKeychain = null
@@ -175,7 +170,7 @@ export default class Blockstack extends Component<Props, State> {
       appConfig: appConfig,
       sessionStore: dataStore
     });
-    window.userSession = userSession;
+   
 
     // 4) put file
     userSession.putFile('goodtimes.json', '{"blockstack":"rocks"}');
@@ -252,12 +247,7 @@ export default class Blockstack extends Component<Props, State> {
   
 
   async createAccount2(){
-    window.bitcoin = bitcoin;
-    window.bs = RNBlockstackSdk;
-    window.blockstack = blockstack;
-    window.bip39 = bip39;
-    window.bip32utils = bip32utils;
-    console.log('bitcoin', bitcoin);
+   
 
     // backup this mnemonic locally in secure storage so the user can recover his account
     let mnemonic = bip39.generateMnemonic();

@@ -39,16 +39,16 @@ export default class App extends Component<Props, State> {
     window.SecureStorage = SecureStorage;
     window.AsyncStorage = AsyncStorage;
     window.blockstack = require('blockstack');
-    window.blockstackRN = require('react-native-blockstack');
-    window.bitcoinjs = bitcoinjs;
-    window.bitcoin = bitcoin;
-    window.getBlockchainIdentities = getBlockchainIdentities;
-    window.bip39 = bip39;
-    window.store = store;
-    window.websocketsStore = websocketsStore;
-    window.placeStore = placeStore;
-    window.postsStore = postsStore;
-    window.Geohash = Geohash;
+    // window.blockstackRN = require('react-native-blockstack');
+    // window.bitcoinjs = bitcoinjs;
+    // window.bitcoin = bitcoin;
+    // window.getBlockchainIdentities = getBlockchainIdentities;
+    // window.bip39 = bip39;
+    // window.store = store;
+    // window.websocketsStore = websocketsStore;
+    // window.placeStore = placeStore;
+    // window.postsStore = postsStore;
+    // window.Geohash = Geohash;
   }
 
 

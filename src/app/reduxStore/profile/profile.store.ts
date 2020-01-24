@@ -27,7 +27,8 @@ export interface State {
     backupPhrase: string;
     username: string;
     profileJSON: any;
-    settings: Profile
+    settings: Profile;
+    progress: string; 
 }
 export const initialState: State = {
     userSession: {} as UserSession,
@@ -40,7 +41,8 @@ export const initialState: State = {
     settings: new Profile({
         image: require('./../../assets/profile.png'),
         firstName: "First Name"
-    })
+    }),
+    progress: 'initializing...'
 }
 //#endregion Initial State
 
@@ -58,13 +60,13 @@ export enum ActionTypes {
 
 export function createAccountSilently(userChosenName: string, avatar: string) {
     return async (dispatch: any) => {
-        dispatch(started());
+        dispatch(started('creating account silently...'));
         try {
 
             let keychain = await initWallet();
             let id = await createBlockchainIdentity(keychain);
             let userSession = makeUserSession(id.appPrivateKey, id.appPublicKey, id.username, id.profileJSON.decodedToken.payload.claim);
-            window.userSession = userSession;
+           
             configureRadiks(userSession);
             let blockstackUser = await User.createWithCurrentUser();
             const payload: State = {
@@ -78,7 +80,8 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
                 settings: new Profile({
                     image: require('./../../assets/profile.png'),
                     firstName: "First Name"
-                })
+                }),
+                progress: 'created account silently...'
             }
             dispatch(succeeded(payload, ActionTypes.CREATE_ACCOUNT_SILENTLY));
         } catch (e) {
@@ -90,7 +93,7 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
 
 export function silentLogin(state: State) {
     return async (dispatch: any) => {
-        dispatch(started());
+        dispatch(started('silently logging in...'));
         try {
       
             let userSession = makeUserSession(state.privateKey, state.publicKey, state.username, state.profileJSON.decodedToken.payload.claim);
@@ -106,11 +109,12 @@ export function silentLogin(state: State) {
                 profileJSON: state.profileJSON,
                 settings: new Profile({
                     image: require('./../../assets/profile.png'),
-                    firstName: "Fetching name..."
-                })
+                    firstName: ""
+                }),
+                progress: 'silent logged in...'
             }
-            dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
             dispatch(getProfileSettings());
+            dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.SILENT_LOGIN));
@@ -121,7 +125,7 @@ export function silentLogin(state: State) {
 
 export function logout() {
     return async (dispatch: any) => {
-        dispatch(started());
+        dispatch(started('logging out...'));
         try {
             await SecureStorage.removeItem('backupPhrase');
             await SecureStorage.removeItem('GROUP_MEMBERSHIPS_STORAGE_KEY');
@@ -140,7 +144,7 @@ export function logout() {
 
 export function getProfileSettings() {
     return async (dispatch: any) => {
-        dispatch(started());
+        dispatch(started('getting profile settings'));
         try {
             
             // @ts-ignore
@@ -161,7 +165,7 @@ export function getProfileSettings() {
 
 export function putProfileSettings(profile: Profile) {
     return async (dispatch: any) => {
-        dispatch(started());
+        dispatch(started('saving profile settings...'));
         try {
             let resp = await profile.save();
             console.log('radiks resp', resp);
@@ -174,16 +178,16 @@ export function putProfileSettings(profile: Profile) {
     }
 }
 
-export function started() {
+export function started(message: string) {
     return {
         type: ActionTypes.PROFILE_ACTION_STARTED,
-        payload: {},
+        payload: message,
         status: ActionTypes.PROFILE_ACTION_STARTED
     };
 }
 
 export function succeeded(payload: any, action: ActionTypes) {
-    console.log(payload);
+    // console.log(payload);
     return {
         type: action,
         payload: payload,
@@ -197,7 +201,8 @@ export function failed(error: any, action: ActionTypes) {
         type: ActionTypes.PROFILE_ACTION_FAILED,
         payload: {
             error,
-            action
+            action,
+            progress: error
         },
         status: ActionTypes.PROFILE_ACTION_FAILED,
     };
@@ -228,26 +233,33 @@ export function reducers(state: State = initialState, action: any) {
         case ActionTypes.GET_PROFILE_SETTINGS : {
             return {
                 ...state,
-                settings: action.payload
+                settings: action.payload,
+                progress: 'got profile settings...'
             }
         }
 
         case ActionTypes.PUT_PROFILE_SETTINGS : {
             return {
                 ...state,
-                settings: action.payload
+                settings: action.payload,
+                progress: 'saved profile settings...'
             }
         }
 
         case ActionTypes.PROFILE_ACTION_STARTED: {
             console.log("PROFILE_STARTED");
+            return {
+                ...state,
+                progress: action.payload
+            }
         }
 
         case ActionTypes.PROFILE_ACTION_FAILED: {
             console.log("PROFILE_FAILED", action.payload);
             return {
                 ...state,
-                error: action.payload
+                error: action.payload,
+                progress: action.payload.progress
             }
         }
 

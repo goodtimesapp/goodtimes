@@ -5,7 +5,7 @@ import { Container, Header, Title, Button, Left, Right, Body, Icon, Text, Footer
 import Markers from "./test/Markers";
 import Camera from './camera/Camera.Container';
 import FooterComponent from './Footer';
-import { createBottomTabNavigator, createStackNavigator, createAppContainer, createDrawerNavigator, SafeAreaView, DrawerItems } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator, createAppContainer, createDrawerNavigator, SafeAreaView, createSwitchNavigator } from 'react-navigation';
 import LocationsList from "./location/LocationsList.Container";
 import Chat from './chat/Chat';
 import Blockstack from './blockstack/Blockstack';
@@ -26,24 +26,12 @@ import Maps from './test/Maps';
 
 const MainNavigator = createStackNavigator(
     {
-        Index: {
-            screen: Splash,
-            navigationOptions: {
-                header: null
-            },
-        },
-        Splash: { 
-            screen: Splash,
-            navigationOptions: {
-                header: null
-            },
-        },
-        Camera: { 
-            screen: Camera,
-            navigationOptions: {
-                header: null,
-            },
-        },
+        // Camera: { 
+        //     screen: Camera,
+        //     navigationOptions: {
+        //         header: null,
+        //     },
+        // },
         Post: { 
             screen: PostsPage,
         },
@@ -59,24 +47,24 @@ const MainNavigator = createStackNavigator(
                 header: null,
             },
         },
-        Bar: { 
-            screen: Bar,
-            navigationOptions: {
-                header: null
-            },
-        },
-        ExpandPage: { 
-            screen: ExpandPage,
-            navigationOptions: {
-                header: null
-            },
-        },
-        DiscoverFeed :{ 
-            screen: DiscoverFeed,
-            navigationOptions: {
-                header: null
-            },
-        },
+        // Bar: { 
+        //     screen: Bar,
+        //     navigationOptions: {
+        //         header: null
+        //     },
+        // },
+        // ExpandPage: { 
+        //     screen: ExpandPage,
+        //     navigationOptions: {
+        //         header: null
+        //     },
+        // },
+        // DiscoverFeed :{ 
+        //     screen: DiscoverFeed,
+        //     navigationOptions: {
+        //         header: null
+        //     },
+        // },
         LocalChat :{ 
             screen: LocalChat,
             navigationOptions: {
@@ -95,24 +83,35 @@ const MainNavigator = createStackNavigator(
                 header: null
             },
         },
-        ProfilePage: {
-            screen: ProfilePage,
-            navigationOptions: {
-                header: null
-            },
-        },
-        LoginSplash: {
-            screen: LoginSplashPage,
-            navigationOptions: {
-                header: null
-            },
-        },
-    },
+    }, 
     {
-        initialRouteName: "Splash"
+        initialRouteName: "Maps"
     }
 );
 
+const AuthStackNavigator = createStackNavigator({
+    Splash: { 
+        screen: Splash,
+        navigationOptions: {
+            header: null
+        },
+    },
+    LoginSplash: {
+        screen: LoginSplashPage,
+        navigationOptions: {
+            header: null
+        },
+    },
+    ProfilePage: {
+        screen: ProfilePage,
+        navigationOptions: {
+            header: null
+        },
+    },
+    }, {
+        initialRouteName: "Splash"
+    }
+)
 
 const Tabs = createBottomTabNavigator({
     Home: { screen: MainNavigator },
@@ -157,6 +156,18 @@ const DrawerRight = createDrawerNavigator({
     )
 })
 
-export default createAppContainer(MainNavigator);
+// export default createAppContainer(MainNavigator);
 // export default createAppContainer(DrawerRight);
+export default createAppContainer(
+    createSwitchNavigator(
+      {
+        App: MainNavigator,
+        Auth: AuthStackNavigator,
+      },
+      {
+        initialRouteName: 'Auth',
+      }
+    )
+);
+
 

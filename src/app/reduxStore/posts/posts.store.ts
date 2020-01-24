@@ -170,7 +170,7 @@ export function started() {
 }
 
 export function succeeded(payload: any, action: ActionTypes) {
-    console.log(payload);
+    // console.log(payload);
     return {
         type: action,
         payload: payload,

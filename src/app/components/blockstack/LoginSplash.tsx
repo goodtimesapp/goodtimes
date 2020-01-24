@@ -22,15 +22,16 @@ interface Props {
     createAccountSilently: (userChosenName: string, avatar: string) => void;
     logout: () => void;
     silentLogin: () => void;
-    navigation: any,
-    closeSplashModal: any
+    navigation: any;
+    closeSplashModal: any;
+    profileState: ProfileStateModel
 }
 
 interface State {
-    username: string,
-    avatar: string,
-    profileData: any,
-    isLoading: boolean
+    username: string;
+    avatar: string;
+    profileData: any;
+    isLoading: boolean;
 }
 
 
@@ -51,61 +52,14 @@ class LoginSplash extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props, prevState: State){
-        // console.log('componentDidUpdate =>', data);
-        // if (this.props.userSession !== data.userSession){
-        //     this.setState({
-        //         profileData: [{title: 'UserData', content: JSON.stringify(data.userSession)}]
-        //     });
-        //     this.props.closeSplashModal();
-        //     if(store.getState().profile.settings){
-        //         if (store.getState().profile.settings.attrs.firstName == "First Name"){
-        //             this.props.navigation.navigate('ProfileSettings');
-        //         } else{
-        //             this.props.navigation.navigate('Maps');
-        //         }
-        //     } else {
-        //         this.props.navigation.navigate('ProfileSettings');
-        //     }
-        //     // this.props.navigation.navigate('Maps');
-            
-        // }
-        // if (this.props.userSession !== prevProps.userSession) {
-        //     this.props.closeSplashModal();
-        //     if(store.getState().profile.settings){
-        //         if (store.getState().profile.settings.attrs.firstName == "First Name" ||
-        //             store.getState().profile.settings.attrs.firstName == "" || 
-        //             store.getState().profile.settings.attrs.firstName == null ){
-        //             this.props.navigation.navigate('ProfileSettings');
-        //         } else{
-        //             this.props.navigation.navigate('Maps');
-        //         }
-        //     } else {
-        //         this.props.navigation.navigate('ProfileSettings');
-        //     }
-        // }
-
-        // if (this.props.userSession !== prevProps.userSession) {
-        //     if (Object.entries(this.props.userSession.store)){
-        //         this.props.closeSplashModal();
-        //         this.props.navigation.navigate('ProfileSettings');
-        //     }
-        // }      
-        
-        if (this.props.getProfileState !== prevProps.getProfileState){
-            this.props.closeSplashModal();
-            try{
-                if (this.props.getProfileState.settings.attrs.firstName == "First Name" ||
-                this.props.getProfileState.settings.attrs.firstName == ""  || 
-                this.props.getProfileState.settings.attrs.firstName == null ) {
-                    this.props.navigation.navigate('ProfileSettings');
-                } else {
-                    this.props.navigation.navigate('Maps');
-                }
-            } catch(e){
-                this.props.navigation.navigate('ProfileSettings');
-            }
+    
+        if (this.props.profileState.progress !== this.props.profileState.progress){
+            if (this.props.profileState.progress == "silent logged in..."){
+                // this.props.closeSplashModal();
+                // this.props.navigation.navigate('App');
+            }  
         }
-
+        
     }
 
     async loginWithBlockstack(){
@@ -166,11 +120,8 @@ class LoginSplash extends Component<Props, State> {
                                 // @ts-ignore
                                 this.props.silentLogin(profileState);
 
-                                
-                                this.props.closeSplashModal();
-                                this.props.navigation.navigate('ProfileSettings');
-                                      
-                        
+                                // this.props.closeSplashModal();
+                                // this.props.navigation.navigate('App');
                                 
                             },
                             (error: any) => {
@@ -210,17 +161,19 @@ class LoginSplash extends Component<Props, State> {
                     this.state.isLoading
                     ? <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', zIndex: 200}}>
                         <ActivityIndicator size="large" color="#64B5F6" />
+                        
                       </View>
                     : null   
                } 
-                               
+
+               
                 
                 <Button rounded danger onPress={() => this.loginWithBlockstack() } style={{alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={{ width: '100%', color: 'white', alignSelf:'center'}} >Login / Signup</Text>
                 </Button>
 
                 <Text />
-                <Text style={{color: 'white'}} >Or</Text>
+                <Text style={{color: 'white',alignSelf: 'center'}} >Or</Text>
                 {/* <Item rounded style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
                     <Input style={{color: 'white'}} onEndEditing={ (e: any)=>{
                         AsyncStorage.setItem('tempId', e.nativeEvent.text);
@@ -230,6 +183,11 @@ class LoginSplash extends Component<Props, State> {
                 <Button transparent bordered rounded danger onPress={() =>  this.createAccount() } style={{alignItems: 'center',justifyContent: 'center'}}>
                     <Text style={{color: 'white'}}>Continue as guest</Text>
                 </Button>
+
+                
+                
+                
+               
             </ScrollView>
         )
     }

@@ -7,7 +7,8 @@ import {
   createAccountSilently,
   logout,
   silentLogin,
-  State as ProfileStateModel
+  State as ProfileStateModel,
+  profileState
 } from './../../reduxStore/profile/profile.store';
 import Profile from './Profile'
 import Radiks from './Radiks'
@@ -17,7 +18,8 @@ import LoginSplash from './LoginSplash';
 const mapStateToProps: any = (state: State) => ({
   userSession: getUserSession(state.profile),
   getProfileState: getProfileState(state.profile),
-  getUserName: getUserName(state.profile)
+  getUserName: getUserName(state.profile),
+  profileState: profileState(state.profile)
 })
 
 // Actions to dispatch

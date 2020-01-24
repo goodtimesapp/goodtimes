@@ -111,6 +111,7 @@ export class ChatFooter extends React.Component<Props, State> {
                     this.state.tags.map( (tag, i) => {
                         return <TouchableOpacity
                             onPress={() => { }}
+                            key={i}
                             style={{
                                 height: 32,
                                 backgroundColor: "#ff5230",
