@@ -27,7 +27,7 @@
     "apk": "cd android && ./gradlew assembleRelease",
     "apk:run": "react-native run-android --variant=release",
     "ios": "react-native run-ios",
-    "clear:react:cache": "react-native start --reset-cache"
+    "clear-cache": "react-native start --reset-cache"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",

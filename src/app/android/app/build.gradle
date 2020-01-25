@@ -6,7 +6,7 @@ apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 project.ext.envConfigFiles = [
         debug: ".env",
-        release: ".env"
+        release: ".env.production"
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
@@ -112,8 +112,8 @@ android {
         applicationId "org.blockstack.android.sample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
