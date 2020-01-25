@@ -80,6 +80,12 @@ ext {
                     storePassword: "android",
                     keyAlias: "androiddebugkey",
                     keyPassword: "android"
+            ]),
+            release : SigningConfig.newInstance([
+                    storeFile: file("keystores/debug.keystore"),
+                    storePassword: "android",
+                    keyAlias: "androiddebugkey",
+                    keyPassword: "android"
             ])
     ]
 }

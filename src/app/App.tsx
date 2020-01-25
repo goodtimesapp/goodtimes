@@ -6,7 +6,7 @@ import * as placeStore from './reduxStore/places/place.store';
 import * as postsStore from './reduxStore/posts/posts.store';
 import { PersistGate } from 'redux-persist/integration/react'
 import Index from './components/Index';
-import { SafeAreaView , AppState } from 'react-native'
+import { SafeAreaView , AppState } from 'react-native';
 declare let window: any;
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
