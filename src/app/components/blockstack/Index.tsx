@@ -8,7 +8,8 @@ import {
   logout,
   silentLogin,
   State as ProfileStateModel,
-  profileState
+  profileState,
+  saveStateFromBlockstackLogin
 } from './../../reduxStore/profile/profile.store';
 import Profile from './Profile'
 import Radiks from './Radiks'
@@ -26,7 +27,8 @@ const mapStateToProps: any = (state: State) => ({
 const mapDispatchToProps = {
     createAccountSilently:  createAccountSilently,
     logout: logout,
-    silentLogin: silentLogin
+    silentLogin: silentLogin,
+    saveStateFromBlockstackLogin: saveStateFromBlockstackLogin
 }
 
 export let ProfilePage = connect<any, any, any>(mapStateToProps, mapDispatchToProps)(Profile);

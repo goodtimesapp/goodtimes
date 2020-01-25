@@ -24,7 +24,8 @@ interface Props {
     silentLogin: () => void;
     navigation: any;
     closeSplashModal: any;
-    profileState: ProfileStateModel
+    profileState: ProfileStateModel;
+    saveStateFromBlockstackLogin: (profileState: any) => void
 }
 
 interface State {
@@ -107,12 +108,8 @@ class LoginSplash extends Component<Props, State> {
                                     profileJSON: profile
                                 } 
                                 
-                                // @ts-ignore
-                                this.props.silentLogin(profileState);
+                                this.props.saveStateFromBlockstackLogin(profileState);
 
-                                // this.props.closeSplashModal();
-                                // this.props.navigation.navigate('App');
-                                
                             },
                             (error: any) => {
                                 console.log("handleAuthResponse " + JSON.stringify(error));

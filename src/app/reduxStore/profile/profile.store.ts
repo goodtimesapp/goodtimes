@@ -58,6 +58,8 @@ export enum ActionTypes {
     PUT_PROFILE_SETTINGS = '[PROFILE] PUT_PROFILE_SETTINGS',
 }
 
+
+// called when first load and "Continue as Guest" is clicked
 export function createAccountSilently(userChosenName: string, avatar: string) {
     return async (dispatch: any) => {
         dispatch(started('creating account silently...'));
@@ -69,6 +71,7 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
            
             configureRadiks(userSession);
             let blockstackUser = await User.createWithCurrentUser();
+            window.User = blockstackUser;
             const payload: State = {
                 backupPhrase: keychain.backupPhrase,
                 publicKey: id.appPublicKey,
@@ -91,25 +94,57 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
     }
 }
 
+// called everytime app is loaded and there is a cached UserSession
 export function silentLogin(state: State) {
     return async (dispatch: any) => {
         dispatch(started('silently logging in...'));
         try {
-      
             let userSession = makeUserSession(state.privateKey, state.publicKey, state.username, state.profileJSON.decodedToken.payload.claim);
             window.userSession = userSession;
             configureRadiks(userSession);
-            let blockstackUser = await User.createWithCurrentUser();
+            // @todo remov this below...i dont think we need this becuase the userSession is cached and recreated on silentLogin
+            // let blockstackUser = await User.createWithCurrentUser();
+            // window.User = blockstackUser;
             let payload: State = {
                 ...state,
                 userSession: userSession as any,
+                //publicKey: state.publicKey,
+                //privateKey: state.privateKey,
+                //username: state.username,
+                //profileJSON: state.profileJSON,
+                // settings: new Profile({
+                //     image: require('./../../assets/profile.png'), // placeholders
+                //     firstName: "" // placeholders
+                // }),
+                progress: 'silent logged in...'
+            }
+            // dispatch(getProfileSettings());
+            dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.SILENT_LOGIN));
+        }
+    }
+}
+
+export function saveStateFromBlockstackLogin(state: State) {
+    return async (dispatch: any) => {
+        dispatch(started('silently logging in...'));
+        try {
+            window.userSession = state.userSession;
+            configureRadiks(state.userSession);
+            let blockstackUser = await User.createWithCurrentUser();
+            window.User = blockstackUser;
+            let payload: State = {
+                ...state,
+                userSession: state.userSession as any,
                 publicKey: state.publicKey,
                 privateKey: state.privateKey,
                 username: state.username,
                 profileJSON: state.profileJSON,
                 settings: new Profile({
-                    image: require('./../../assets/profile.png'),
-                    firstName: ""
+                    image: require('./../../assets/profile.png'), // placeholders
+                    firstName: "" // placeholders
                 }),
                 progress: 'silent logged in...'
             }

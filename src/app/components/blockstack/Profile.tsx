@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import { ScrollView } from 'react-native';
-import { Button, Text, Input, Content, Item, Container, Accordion } from 'native-base';
-import { rando, makeUserSession, makeProfileJSON , getPublicKeyFromPrivate, makeNewProfile} from '../../utils/profile';
+import { Button, Text, Input, Content, Item, Accordion } from 'native-base';
+import { 
+    rando, 
+    makeUserSession, 
+    getPublicKeyFromPrivate,
+    makeNewProfile,
+} from '../../utils/profile';
 // @ts-ignore
 import RNBlockstackSdk from "react-native-blockstack";
 import { DeviceEventEmitter } from "react-native";
-import { UserSession } from 'blockstack';
-// @ts-ignore
-import { getBlockchainIdentities, signProfileForUpload, DEFAULT_PROFILE } from '@utils'; 
 import {RadiksPage} from './Index';
 
 interface Props {
@@ -17,6 +19,7 @@ interface Props {
     createAccountSilently: (userChosenName: string, avatar: string) => void;
     logout: () => void;
     silentLogin: () => void;
+    saveStateFromBlockstackLogin: (state: any) => void
 }
 
 interface State {
@@ -77,6 +80,7 @@ export default class Profile extends Component<Props, State> {
                                 let profile = makeNewProfile(privateKey, publicKey, profileResp.profile.image[0].contentUrl, username)
                                 let userSession = makeUserSession(privateKey, publicKey, username, profile.decodedToken.payload.claim);
 
+                               
                                 let profileState =  {
                                     userSession: userSession,
                                     error: '',
@@ -87,7 +91,7 @@ export default class Profile extends Component<Props, State> {
                                     profileJSON: profile
                                 } 
                                 // @ts-ignore
-                                this.props.silentLogin(profileState);
+                                this.props.saveStateFromBlockstackLogin(profileState);
                             },
                             (error: any) => {
                                 console.log("handleAuthResponse " + JSON.stringify(error));
