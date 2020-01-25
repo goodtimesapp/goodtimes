@@ -8,6 +8,7 @@ var app_json_1 = require("./app.json");
 react_native_1.YellowBox.ignoreWarnings([
     'Require cycle:',
     'Switch:',
-    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
+    'Deprecation warning: value provided is not in a recognized RFC2822 or ISO format.'
 ]);
 react_native_1.AppRegistry.registerComponent(app_json_1.name, function () { return App_1["default"]; });

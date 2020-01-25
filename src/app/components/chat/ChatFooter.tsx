@@ -16,6 +16,7 @@ import { putPost } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel  } from './../../reduxStore/places/place.store';
 import { profileState, State as ProfileStateModel  } from './../../reduxStore/profile/profile.store';
 import { Post } from "./../../models/Post";
+import * as moment from 'moment';
 
 
 interface Props {
@@ -70,7 +71,8 @@ export class ChatFooter extends React.Component<Props, State> {
             user: this.props.profileState.username,
             hashtag: this.state.tags,
             hashtagColor: "#4c9aff",
-            time: "5 mins",
+            // @ts-ignore
+            time: Date().now,
             content: chatText,
             pullRight: false,
             geohash: this.state.placeState.geohash,

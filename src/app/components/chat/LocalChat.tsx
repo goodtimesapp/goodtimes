@@ -14,6 +14,7 @@ import { postsState, getPosts, getChats, clearPosts } from './../../reduxStore/p
 import { placeState, State as PlaceStateModel } from './../../reduxStore/places/place.store';
 import { store } from "reduxStore/configureStore";
 import { HorzScrollTrending } from "./HorzScrollTrending";
+import moment from 'moment';
 
 
 interface Props {

@@ -11,7 +11,7 @@ const LATITUDE_DELTA = 0.009;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const LATITUDE = 47.122036;
 const LONGITUDE = -88.564358;
-
+import uuidv4 from 'uuid/v4';
 
 //#region Initial State
 export interface State {
@@ -104,10 +104,12 @@ export function putPost(post: Post) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
+            post.attrs.isSynced = false;
+            post.attrs.clientGuid = uuidv4();
+            dispatch(succeeded(post, ActionTypes.PUT_POST));
             let resp = await post.save();
             console.log('radiks resp', resp);
             const payload = resp;
-            dispatch(succeeded(payload, ActionTypes.PUT_POST));
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.PUT_POST));
@@ -120,7 +122,6 @@ export function addPostFromWebSocket(post: any) {
         try {
             let payload = post;
             
-
             // markers and pics
 
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
@@ -211,23 +212,15 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
-        // case ActionTypes.PUT_POST: {
-        //     // let clone = [...state.posts];
-        //     // clone.unshift(action.payload);
-        //     if (!action.payload.attrs){
-        //         action.payload = {
-        //             attrs: action.payload
-        //         }
-        //     }
-        //     return {
-        //         ...state,
-        //         // posts: clone
-        //         posts: _.uniq([
-        //             ...state.posts,
-        //             action.payload 
-        //         ])
-        //     }
-        // }
+        case ActionTypes.PUT_POST: {
+            return {
+                ...state,
+                posts: [
+                    ...state.posts,
+                    action.payload 
+                ]
+            }
+        }
 
         case ActionTypes.ADD_POST_FROM_WEBSOCKET: {
             if (!action.payload.attrs){
@@ -235,6 +228,12 @@ export function reducers(state: State = initialState, action: any) {
                     attrs: action.payload
                 }
             }
+
+            let clientGuid = action.payload.attrs.clientGuid;
+            if (clientGuid){
+                // state.posts.filter(c=>c.)
+            }
+            
             return {
                 ...state,
                 posts: _.uniq([

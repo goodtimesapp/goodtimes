@@ -146,13 +146,19 @@ export class ProfileSettings extends React.Component<Props, State> {
             alignItems: 'center',
             width: '100%',
           }}>
+
             <View style={{
               height: 50,
               justifyContent: "center",
               alignSelf: 'center',
               alignItems: 'center',
               width: '100%',
+              flexDirection: 'row'
             }}>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Maps')} 
+                 style={{alignSelf: 'flex-start', marginLeft: -25, marginRight: 10 }}>
+                <Icon style={[human.largeTitle, { color: "#b4c2db"}]} name="md-arrow-round-back"></Icon>
+              </TouchableOpacity>
               <Text style={[human.largeTitle, { color: "#b4c2db" }]}>Profile Settings</Text>
             </View>
             <View style={{

@@ -8,7 +8,8 @@ import { name as appName } from './app.json';
 YellowBox.ignoreWarnings([
     'Require cycle:',
     'Switch:',
-    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
+    'Deprecation warning: value provided is not in a recognized RFC2822 or ISO format.'
 ]);
 
 AppRegistry.registerComponent(appName, () => App);

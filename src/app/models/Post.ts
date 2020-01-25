@@ -52,6 +52,14 @@ export class Post extends Model {
     longitude: {
       type: number,
       decrypted: true
+    },
+    isSynced: {
+      type: Boolean,
+      decrypted: true
+    },
+    clientGuid: {
+      type: string,
+      decrypted: true
     }
   };
 

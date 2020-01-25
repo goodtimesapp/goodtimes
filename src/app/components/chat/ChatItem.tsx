@@ -8,7 +8,7 @@ import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-nativ
 import Message from './../../models/Message';
 import AsyncStorage from "@react-native-community/async-storage";
 import { human, iOSUIKit } from 'react-native-typography';
-
+import moment from 'moment';
 
 interface Props {
     navigation: any;
@@ -49,14 +49,17 @@ export class ChatItem extends React.Component<Props, State> {
                             </Text>
                         </TouchableOpacity>
                         <View style={{ backgroundColor: "#344155", borderRadius: 12, paddingTop: 12, paddingBottom: 12, paddingRight: 8, paddingLeft: 8 }}>
-                            <View style={{ flexDirection: 'row', flex: 1 }}>
+                            <View style={{ flexDirection: 'column', flex: 1 }}>
                                 <Text style={[iOSUIKit.bodyEmphasized, 
                                     { color: "#4787db", paddingBottom: 2, paddingLeft: 6, alignSelf: 'flex-start', flexGrow: 1 }]}>
                                         {this.props.user}
                                 </Text>
                                 <View>
                                     <Text style={[iOSUIKit.bodyEmphasized, { color: "#7e8ba2", paddingBottom: 2, paddingLeft: 6, alignSelf: 'flex-end' }]}>
-                                        {this.props.time}
+                                     { moment(this.props.time).calendar(this.props.time, {
+                                        sameElse: 'MMMM Do,YYYY hh:mm a'
+                                       })
+                                     }
                                     </Text>
                                 </View>
                             </View>
