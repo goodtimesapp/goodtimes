@@ -45,7 +45,7 @@ export class LocalChat extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-
+    this.placeChangeHandler();
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {

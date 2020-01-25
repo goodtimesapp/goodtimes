@@ -19,6 +19,8 @@ import {
 } from './../../reduxStore/profile/profile.store';
 import {Profile} from './../../models/Profile';
 import _ from 'lodash';
+// @ts-ignore
+import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 
 
 
@@ -226,6 +228,8 @@ export class ProfileSettings extends React.Component<Props, State> {
                 </Item>
                   <Text/>
                   <Text style={{color: 'white'}}>{this.props.profileState.username}</Text>
+                  <Text/>
+                  <Text style={{color: 'white'}}>{GOODTIMES_RADIKS_SERVER}</Text>
               </Content>
             </View>
             <View style={{

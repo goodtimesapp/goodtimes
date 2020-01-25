@@ -53,8 +53,8 @@ export enum ActionTypes {
 export function setPlaceId(placeId: string) {
     return async (dispatch: any) => {
         try {
-            dispatch(setupWebsockets(placeId));
-            dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
+            //dispatch(setupWebsockets(placeId));
+            //dispatch(succeeded(placeId, ActionTypes.SET_PLACE_ID));
             
         } catch (e) {
             console.log('error', e)

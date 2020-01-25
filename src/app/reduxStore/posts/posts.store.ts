@@ -228,18 +228,21 @@ export function reducers(state: State = initialState, action: any) {
                     attrs: action.payload
                 }
             }
-
             let clientGuid = action.payload.attrs.clientGuid;
+            let poppedPosts = state.posts;
             if (clientGuid){
-                // state.posts.filter(c=>c.)
+                let existingPost = state.posts.find( g => g.attrs.clientGuid == clientGuid );
+                if (existingPost){
+                    _.remove(poppedPosts, existingPost);
+                }
             }
             
             return {
                 ...state,
-                posts: _.uniq([
-                    ...state.posts,
+                posts: [
+                    ...poppedPosts,
                     action.payload
-                ]),
+                ],                
                 markers: initialState.markers
             }
         }

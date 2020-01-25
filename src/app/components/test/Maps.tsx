@@ -122,9 +122,11 @@ class Maps extends Component<Props, State> {
   }
 
   componentDidMount() {   
-    this.setCurrentLocationOnLoad();
+    
+    // this.setCurrentLocationOnLoad();
     this.props.getMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
+    this.zoomToMyCurrentLocation();
   }
 
   
@@ -148,8 +150,8 @@ class Maps extends Component<Props, State> {
     // }
 
     if (this.props.placeState !== prevProps.placeState) {
-      if ( (this.props.placeState.currentLocation !== prevProps.placeState.currentLocation) && !this.state.isSettingUpWebsocket){
-        this.openWebSocket(this.props.placeState.geohash);
+      if (this.props.placeState.currentLocation !== prevProps.placeState.currentLocation){
+        this.zoomToMyCurrentLocation();
       }
     }
 
@@ -236,14 +238,14 @@ class Maps extends Component<Props, State> {
   };
 
 
-  openWebSocket(geohash: string) {
-    this.setState({
-      isSettingUpWebsocket: true
-    })
-    console.log('null websocket...set one up here', this.props.placeState.geohash);
-    this.props.startLocationWebSocket(geohash);
-    this.zoomToMyCurrentLocation();
-  }
+  // openWebSocket(geohash: string) {
+  //   this.setState({
+  //     isSettingUpWebsocket: true
+  //   })
+  //   console.log('null websocket...set one up here', this.props.placeState.geohash);
+  //   this.props.startLocationWebSocket(geohash);
+  //   this.zoomToMyCurrentLocation();
+  // }
 
   setCurrentLocationOnLoad() {
     getCurrentLocation().then(async (location: any) => {
