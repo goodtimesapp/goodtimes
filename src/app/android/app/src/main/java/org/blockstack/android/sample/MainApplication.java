@@ -8,7 +8,6 @@ import com.horcrux.svg.SvgPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rnfs.RNFSPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
-import ui.apptour.RNAppTourPackage;
 import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -53,7 +52,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFetchBlobPackage(),
             new RNFSPackage(),
             new RNFusedLocationPackage(),
-            new RNAppTourPackage(),
             new BottomSheetBehaviorPackage(),
             new AsyncStoragePackage(),
             new LinearGradientPackage(),

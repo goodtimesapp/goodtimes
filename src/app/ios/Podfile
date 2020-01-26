@@ -36,7 +36,7 @@ target 'example-sdk-module' do
 
   #   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
-  #   pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
   #   pod 'RNSecureStorage', :path => '../node_modules/react-native-secure-storage'
 
