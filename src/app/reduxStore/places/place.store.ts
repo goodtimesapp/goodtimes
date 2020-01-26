@@ -69,7 +69,7 @@ export function getMyCurrentLocation() {
             getCurrentLocation().then((location: any) => {
                 console.log('current loc', location);
                 dispatch(succeeded(location, ActionTypes.GET_MY_CURRENT_LOCATION));
-                dispatch(getNearestPopulatedGeohash());
+                dispatch(getNearestPopulatedGeohash(location));
             });
         } catch (e) {
             console.log('error', e)
@@ -81,10 +81,9 @@ export function getMyCurrentLocation() {
 // query the server to determine the best populated geohash region with more than people present
 // 1) start at the local location with 9 precision points, if there are more than 5 people then that is your geohash
 // 2) zoom the map out to 8 and so forth until you are at 1 (the whole wide world)
-export function getNearestPopulatedGeohash(){
+export function getNearestPopulatedGeohash(location: LatLng){
 
     return async (dispatch: any) => {
-        getCurrentLocation().then( async (location: any) =>{
             let geoResp = await fetch(`${GOODTIMES_RADIKS_SERVER}/placeinfo/nearest/populated/${location.latitude}/${location.longitude}`, {
                 "method": "GET",
             });
@@ -92,9 +91,8 @@ export function getNearestPopulatedGeohash(){
             let geohash = geoJson.geohash;
             let headcount = geoJson.count;
             console.log('Created geohash', geohash, headcount);
-            dispatch(succeeded({geohash,headcount}, ActionTypes.GET_NEAREST_POPULATED_GEOHASH));
             dispatch(startLocationWebSocket(geohash));
-        });
+            dispatch(succeeded({geohash,headcount}, ActionTypes.GET_NEAREST_POPULATED_GEOHASH));
     }      
 }
 

@@ -24,7 +24,6 @@ import {
   profileSettingsSelector
 } from './../../reduxStore/profile/profile.store';
 import {
-  getNearestPopulatedGeohash,
   startLocationWebSocket,
   getMyCurrentLocation,
   placeState,
@@ -76,7 +75,6 @@ interface Props {
   navigation: any;
   profileSettingsSelector: Profile;
   placeState: PlaceStateModel;
-  getNearestPopulatedGeohash: () => void;
   startLocationWebSocket: (geohash: string) => void;
   getMyCurrentLocation: () => void;
   websocketsState: WebsocketsStateModel;
@@ -605,7 +603,6 @@ const mapStateToProps: any = (state: ReduxState) => ({
 const mapDispatchToProps = {
   putProfileSettings: putProfileSettings,
   getProfileSettings: getProfileSettings,
-  getNearestPopulatedGeohash: getNearestPopulatedGeohash,
   startLocationWebSocket: startLocationWebSocket,
   getMyCurrentLocation: getMyCurrentLocation,
 }
