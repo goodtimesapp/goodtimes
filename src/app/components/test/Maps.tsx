@@ -120,7 +120,7 @@ class Maps extends Component<Props, State> {
   }
 
   componentDidMount() {   
-    
+    this.props.startLocationWebSocket('a');
     // this.setCurrentLocationOnLoad();
     this.props.getMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
