@@ -1,6 +1,6 @@
 import React from "react";
 import { withNavigation } from 'react-navigation';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, Dimensions, Alert, TouchableOpacity } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Text, Icon, Right, List, Body, Thumbnail } from 'native-base';
 import { human, iOSUIKit } from 'react-native-typography';
 

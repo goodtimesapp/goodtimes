@@ -1,6 +1,6 @@
 import React from "react";
 import { withNavigation } from 'react-navigation';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, Dimensions, Alert, Animated } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Text, Icon, Right, List, Body, Thumbnail } from 'native-base';
 
 interface Props {

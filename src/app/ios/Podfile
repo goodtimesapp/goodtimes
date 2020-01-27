@@ -1,65 +1,72 @@
-# Uncomment the next line to define a global platform for your project
+# File contents of "ios/Podfile"
 platform :ios, '11.0'
-
+ 
 target 'example-sdk-module' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for example-sdk-module
-  pod 'Blockstack'
 
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
-  'Core',
-  'CxxBridge', # Include this for RN >= 0.47
-  'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
-  'RCTText',
-  'RCTNetwork',
-  'RCTWebSocket', # Needed for debugging
-  # Add any other subspecs you want to use in your project
+    'Core',
+    'CxxBridge',
+    'DevSupport',
+    # the following ones are the ones taken from "Libraries" in Xcode:
+    'RCTAnimation',
+    'RCTActionSheet',
+    'RCTBlob',
+    'RCTGeolocation',
+    'RCTImage',
+    'RCTLinkingIOS',
+    'RCTNetwork',
+    'RCTSettings',
+    'RCTText',
+    'RCTVibration',
+    'RCTWebSocket'
   ]
-  # Explicitly include Yoga if you are using RN >= 0.42.0
-  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
-
-  # Third party deps podspec link
+ 
+  # the following dependencies are dependencies of React native itself.
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-  # target 'example-sdk-moduleTests' do
-  #   inherit! :search_paths
-  #   # Pods for testing
-  #   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
-
-  #   pod 'react-native-radar', :path => '../node_modules/react-native-radar'
-
-  #   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
-  #   pod 'react-native-config', :path => '../node_modules/react-native-config'
-
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/GLog.podspec'
+ 
+  # your other libraries will follow here!
+  pod 'PromisesObjC',:modular_headers => true
+  pod 'Blockstack'
   pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+  pod 'RNSecureStorage', :path => '../node_modules/react-native-secure-storage'
+  pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
 
-  #   pod 'RNSecureStorage', :path => '../node_modules/react-native-secure-storage'
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
+  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary.podspec"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
 
-  #   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
-
-  #   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
-
-  #   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-
-  #   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-
-  #   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
-
-
-  #   pod 'RNFS', :path => '../node_modules/react-native-fs'
-
-  #   pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
-
-  #   pod 'RNSVG', :path => '../node_modules/react-native-svg'
-
-  # end
-
-
+  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  rn_path = '../node_modules/react-native'
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-maps', path: rn_maps_path, :modular_headers => false
+  pod 'react-native-google-maps', path: rn_maps_path  # Uncomment this line if you want to support GoogleMaps on iOS
+  pod 'GoogleMaps'  # Uncomment this line if you want to support GoogleMaps on iOS
+  pod 'Google-Maps-iOS-Utils' # Uncomment this line if you want to support GoogleMaps on iOS
+
+end
+ 
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == 'react-native-google-maps'
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_ENABLE_MODULES'] = 'No'
+      end
+    end
+  end
 end

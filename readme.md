@@ -205,3 +205,14 @@ If a government or local police department wants access to the encryted data the
 All client side code will be signed and checksum'd to the peer reviewed code (via google play and apple app stores) . If a regional operator decides to fork and create their own client (maybe with a backdoor) they will be kicked off the network as the client code hash (or signed code) will not be in consensus with the majority of regional node operators
 
 
+## ios , xocde and cocopods
+
+Read these two articles on dependency manamgent in xcode with react-native....it can be tricky
+
+- https://engineering.brigad.co/demystifying-react-native-modules-linking-ae6c017a6b4a
+- https://sandstorm.de/de/blog/post/react-native-managing-native-dependencies-using-xcode-and-cocoapods.html
+
+The key takeaway is that you should be careful with the command `react-native link`. If you run this command it could put files in the Library directory
+of your xcode project instead of the PODS project. 
+
+Be careful with the react-native-maps package, i had to specifiucally download the verion `0.24.2` in npm to avoid xcode build errors with RCTImage

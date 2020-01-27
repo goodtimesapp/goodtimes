@@ -6,11 +6,12 @@ import {
     Animated,
     Image,
     Dimensions,
-    PermissionsAndroid,
     Alert,
     TouchableHighlight,
-    TouchableOpacity
+    TouchableOpacity,
+    Platform
 } from "react-native";
+import {PERMISSIONS} from 'react-native-permissions';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { Fab, Icon, Button, Container, Content, Item } from 'native-base';
 import MapViewDirections from 'react-native-maps-directions';
@@ -134,10 +135,17 @@ export default class Markers extends Component<Props, State> {
 
     _onMapReady = () => {
         this.setState({ marginBottom: 0 });
-        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
-            .then(granted => {
-                this.setState({ paddingTop: 0 });
-            });
+
+        // if (Platform.OS === 'ios') {
+
+        // } else {
+        //     PERMISSIONS.ANDROID.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+        //     .then(granted => {
+        //         this.setState({ paddingTop: 0 });
+        //     });
+        // }
+
+       
     }
 
     _keyExtractor = (item: any, index: any) => item.title + rando().toString();

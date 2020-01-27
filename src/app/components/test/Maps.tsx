@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, ScrollView, PermissionsAndroid, Dimensions, Alert, Animated, TouchableOpacity, AppState } from 'react-native';
+import { StyleSheet, View, Button, ScrollView, Dimensions, Alert, Animated, TouchableOpacity, AppState } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Circle, Polygon } from 'react-native-maps';
 // @ts-ignore
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -304,10 +304,10 @@ class Maps extends Component<Props, State> {
 
   _onMapReady = () => {
     this.setState({ marginBottom: 0 });
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
-      .then(granted => {
-        this.setState({ paddingTop: 0 });
-      });
+    // PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+    //   .then(granted => {
+    //     this.setState({ paddingTop: 0 });
+    //   });
   }
 
 
