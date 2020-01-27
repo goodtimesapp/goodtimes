@@ -58,6 +58,8 @@ target 'example-sdk-module' do
   pod 'GoogleMaps'  # Uncomment this line if you want to support GoogleMaps on iOS
   pod 'Google-Maps-iOS-Utils' # Uncomment this line if you want to support GoogleMaps on iOS
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
 end
  
 
