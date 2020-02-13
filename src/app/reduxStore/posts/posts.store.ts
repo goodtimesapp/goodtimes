@@ -15,8 +15,8 @@ import uuidv4 from 'uuid/v4';
 
 //#region Initial State
 export interface State {
-    posts: Array<any> // Array<Post>,
-    markers: Array<any>
+    posts: Array<any>; // Array<Post>,
+    markers: Array<any>;
 }
 export const initialState: State = {
     posts: [
@@ -66,6 +66,7 @@ export enum ActionTypes {
     DELETE_POST = '[POSTS] DELETE_POST',
     CLEAR_POSTS = '[POSTS] CLEAR_POST',
     ADD_POST_FROM_WEBSOCKET = '[POSTS] ADD_POST_FROM_WEBSOCKET',
+    ADD_JOINER_FROM_WEBSOCKET = '[POSTS] ADD_JOINER_FROM_WEBSOCKET',
     POSTS_ACTION_STARTED = '[POSTS] POSTS_ACTION_STARTED',
     POSTS_ACTION_SUCCEEDED = '[POSTS] POSTS_ACTION_SUCCEEDED',
     POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED'
@@ -125,6 +126,34 @@ export function addPostFromWebSocket(post: any) {
             // markers and pics
 
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.ADD_POST_FROM_WEBSOCKET));
+        }
+    }
+}
+
+export function addJoinerFromWebSocket(data: any) {
+    return async (dispatch: any) => {
+        try {
+            let payload;
+            try{
+                payload = {
+                    name: data.user,
+                    coordinate: {
+                        latitude: data.latitude,
+                        longitude: data.longitude
+                    },
+                    image: data.image.uri
+                };
+            } catch(e){
+                console.error('addJoinerFromWebSocket error', e)
+            }
+            
+            debugger;
+            if (payload){
+                dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
+            }
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.ADD_POST_FROM_WEBSOCKET));
@@ -222,29 +251,45 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
-        case ActionTypes.ADD_POST_FROM_WEBSOCKET: {
-            if (!action.payload.attrs){
-                action.payload = {
-                    attrs: action.payload
-                }
-            }
-            let clientGuid = action.payload.attrs.clientGuid;
-            let poppedPosts = state.posts;
-            if (clientGuid){
-                let existingPost = state.posts.find( g => g.attrs.clientGuid == clientGuid );
-                if (existingPost){
-                    _.remove(poppedPosts, existingPost);
-                }
-            }
-            
+        case ActionTypes.ADD_JOINER_FROM_WEBSOCKET: {
             return {
                 ...state,
-                posts: [
-                    ...poppedPosts,
-                    action.payload
-                ],                
-                markers: initialState.markers
+                markers: [
+                    ...state.markers,
+                    action.payload 
+                ]
             }
+        }
+
+        case ActionTypes.ADD_POST_FROM_WEBSOCKET: {
+            try{
+                if (!action.payload.attrs){
+                    action.payload = {
+                        attrs: action.payload
+                    }
+                }
+                let clientGuid = action.payload.attrs.clientGuid;
+                let poppedPosts = state.posts;
+                if (clientGuid){
+                    let existingPost = state.posts.find( g => g.attrs.clientGuid == clientGuid );
+                    if (existingPost){
+                        _.remove(poppedPosts, existingPost);
+                    }
+                }
+                
+                return {
+                    ...state,
+                    posts: [
+                        ...poppedPosts,
+                        action.payload
+                    ],                
+                    markers: initialState.markers
+                }
+            } catch(e){
+                console.error('ADD_POST_FROM_WEBSOCKET reducer error', e);
+                return state;
+            }
+            
         }
 
 

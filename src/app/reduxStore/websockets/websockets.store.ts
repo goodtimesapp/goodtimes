@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { API, accessDenied, apiError, apiStart, apiEnd } from './../common/api';
 import { store } from './../configureStore';
-import { addPostFromWebSocket } from './../posts/posts.store';
+import { addPostFromWebSocket, addJoinerFromWebSocket } from './../posts/posts.store';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import Message from './../../models/Message';
@@ -49,8 +49,9 @@ export function setupWebsockets(placeId: string) {
             // const socket = io.connect(GOODTIMES_RADIKS_SERVER);
             const ws = io(`${GOODTIMES_RADIKS_SERVER}`);
             
+            window.ws = ws;
+            window.io = io;
             
-           
             console.log(`Setup Websocket for place ${placeId}`)
 
             ws.on('message',  (data: any) => {
@@ -67,6 +68,8 @@ export function setupWebsockets(placeId: string) {
                             dispatch(addPostFromWebSocket(data));
                             // Alert.alert(data.content);
                             dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
+                        case "Join":
+                            dispatch(addJoinerFromWebSocket(data));
                         default:
                             return;
                     }

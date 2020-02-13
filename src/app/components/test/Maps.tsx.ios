@@ -36,6 +36,9 @@ import _ from 'lodash';
 import { workerData } from 'worker_threads';
 import * as turf from '@turf/turf';
 import { postsState, State as PostsStateModel, initialState } from './../../reduxStore/posts/posts.store';
+// @ts-ignore
+import { KeyboardAwareView } from 'react-native-keyboard-aware-view';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -120,11 +123,12 @@ class Maps extends Component<Props, State> {
   }
 
   componentDidMount() {   
+    this.zoomToMyCurrentLocation();
     this.props.startLocationWebSocket('a');
     // this.setCurrentLocationOnLoad();
     this.props.getMyCurrentLocation();
     AppState.addEventListener('change', this._handleAppStateChange);
-    this.zoomToMyCurrentLocation();
+   
   }
 
   
@@ -155,11 +159,9 @@ class Maps extends Component<Props, State> {
 
     if (this.props.postsState !== prevProps.postsState) {
       console.log('[componentDidUpdate] Maps.tsx props.postsState' );
-      if (this.props.postsState.markers !== prevProps.postsState.markers){
-        this.setState({
-          markers: this.props.postsState.markers
-        })
-      }
+      this.setState({
+        markers: this.props.postsState.markers
+      })
     }
 
     if (this.props.profileSettingsSelector !== prevProps.profileSettingsSelector) {
@@ -354,7 +356,7 @@ class Maps extends Component<Props, State> {
 
     return (
 
-      <View style={{ flex: 1, flexDirection: 'row' }}>
+      <KeyboardAwareView style={{ flex: 1, flexDirection: 'row' }}>
         <ParallaxScrollView
           ref="parallaxScrollView"
           style={{ flex: 1, backgroundColor: 'transparent', overflow: 'hidden' }}
@@ -512,7 +514,7 @@ class Maps extends Component<Props, State> {
         }
 
 
-        <View style={{
+        <KeyboardAwareView style={{
           backgroundColor: "rgba(15.7,20.4,27.8,0.7)",
           height: 70,
           width: "100%",
@@ -527,9 +529,9 @@ class Maps extends Component<Props, State> {
 
           <ChatFooter placeState={this.props.placeState} ></ChatFooter>
 
-        </View>
+        </KeyboardAwareView>
 
-      </View>
+      </KeyboardAwareView>
     );
 
   }

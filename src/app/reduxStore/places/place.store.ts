@@ -69,7 +69,7 @@ export function getMyCurrentLocation() {
             getCurrentLocation().then((location: any) => {
                 console.log('current loc', location);
                 dispatch(succeeded(location, ActionTypes.GET_MY_CURRENT_LOCATION));
-                dispatch(getNearestPopulatedGeohash(location));
+                // dispatch(getNearestPopulatedGeohash(location));
             });
         } catch (e) {
             console.log('error', e)
