@@ -8,7 +8,10 @@ export let posts: any;
 export class Post extends Model {
   static className = 'Post';
 
-  static schema = {
+  // @ts-ignore
+  attrs: IPost;
+  
+  static schema  = {
     description: {
       type: String,
       decrypted: true,
@@ -53,6 +56,10 @@ export class Post extends Model {
       type: number,
       decrypted: true
     },
+    location: {
+      type: Array,
+      decrypted: true
+    },
     isSynced: {
       type: Boolean,
       decrypted: true
@@ -62,6 +69,8 @@ export class Post extends Model {
       decrypted: true
     }
   };
+  
+  
 
   async afterFetch() {
     posts = await Comment.fetchList({
@@ -70,4 +79,27 @@ export class Post extends Model {
     })
   }
 
+}
+
+export interface IPost {
+  _id: string;
+  user: string;
+  description?: string;
+  image: string;
+  avatar?: string;
+  createdBy?: string;
+  likes?: number;
+  placeId: string;
+  geohash: string;
+  content : string;
+  tags: Array<string>;
+  updatedAt?: number;
+  latitude? : number;
+  longitude?: number;
+  location: Array<number>;
+  isSynced?: Boolean;
+  clientGuid: string;
+  hashtagColor: string;
+  time: string;
+  pullRight: boolean;
 }

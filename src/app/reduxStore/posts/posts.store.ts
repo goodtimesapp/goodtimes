@@ -1,6 +1,6 @@
 
 import { createSelector } from 'reselect';
-import {  Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
@@ -15,35 +15,24 @@ import uuidv4 from 'uuid/v4';
 
 //#region Initial State
 export interface State {
-    posts: Array<any>; // Array<Post>,
+    posts: Array<Post>; // Array<Post>,
     markers: Array<any>;
 }
 export const initialState: State = {
     posts: [
-        // {
-        //     _id: '44',
-        //     attrs: {
-        //         avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
-        //         user: 'Nick',
-        //         hashtag: "#coffee",
-        //         hashtagColor: "#4c9aff",
-        //         time: "5 mins",
-        //         content: "44",
-        //         pullRight: true
-        //     }
-        // },
-        // {
-        //     _id: '45',
-        //     attrs: {
-        //         avatar: 'https://avatars1.githubusercontent.com/u/1273575?s=40&v=4',
-        //         user: 'Will',
-        //         hashtag: "#woot",
-        //         hashtagColor: "#4c9aff",
-        //         time: "4 mins",
-        //         content: "45",
-        //         pullRight: false
-        //     }
-        // }
+        new Post({
+            _id: '44',
+            image: 'https://banter-pub.imgix.net/users/nicktee.id',
+            user: 'Nick',
+            tags: ["#coffee"],
+            hashtagColor: "#4c9aff",
+            time: "5 mins",
+            content: "44",
+            pullRight: true,
+            location: [2, 3],
+            clientGuid: '30c9854a-290b-4bfa-b089-8e0864444007',
+            geohash: 'a'
+        })
     ],
     markers: [
         {
@@ -53,7 +42,7 @@ export const initialState: State = {
                 longitude: -88.564358
             },
             image: 'https://banter-pub.imgix.net/users/nicktee.id'
-        } 
+        }
     ]
 }
 //#endregion Initial State
@@ -72,7 +61,7 @@ export enum ActionTypes {
     POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED'
 }
 
-export function getChats(){
+export function getChats() {
     return async (dispatch: any) => {
         dispatch(started());
         try {
@@ -90,7 +79,6 @@ export function getPosts(filter: any = {}) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
-
             let posts = await Post.fetchList(filter);
             const payload = posts;
             dispatch(succeeded(payload, ActionTypes.GET_POST));
@@ -122,7 +110,7 @@ export function addPostFromWebSocket(post: any) {
     return async (dispatch: any) => {
         try {
             let payload = post;
-            
+
             // markers and pics
 
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
@@ -137,7 +125,7 @@ export function addJoinerFromWebSocket(data: any) {
     return async (dispatch: any) => {
         try {
             let payload;
-            try{
+            try {
                 payload = {
                     name: data.user,
                     coordinate: {
@@ -146,11 +134,11 @@ export function addJoinerFromWebSocket(data: any) {
                     },
                     image: data.image.uri
                 };
-            } catch(e){
+            } catch (e) {
                 console.error('addJoinerFromWebSocket error', e)
             }
-            
-            if (payload){
+
+            if (payload) {
                 dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
             }
         } catch (e) {
@@ -245,7 +233,7 @@ export function reducers(state: State = initialState, action: any) {
                 ...state,
                 posts: [
                     ...state.posts,
-                    action.payload 
+                    action.payload
                 ]
             }
         }
@@ -255,40 +243,40 @@ export function reducers(state: State = initialState, action: any) {
                 ...state,
                 markers: [
                     ...state.markers,
-                    action.payload 
+                    action.payload
                 ]
             }
         }
 
         case ActionTypes.ADD_POST_FROM_WEBSOCKET: {
-            try{
-                if (!action.payload.attrs){
+            try {
+                if (!action.payload.attrs) {
                     action.payload = {
                         attrs: action.payload
                     }
                 }
                 let clientGuid = action.payload.attrs.clientGuid;
                 let poppedPosts = state.posts;
-                if (clientGuid){
-                    let existingPost = state.posts.find( g => g.attrs.clientGuid == clientGuid );
-                    if (existingPost){
+                if (clientGuid) {
+                    let existingPost = state.posts.find(g => g.attrs.clientGuid == clientGuid);
+                    if (existingPost) {
                         _.remove(poppedPosts, existingPost);
                     }
                 }
-                
+
                 return {
                     ...state,
                     posts: [
                         ...poppedPosts,
                         action.payload
-                    ],                
+                    ],
                     markers: initialState.markers
                 }
-            } catch(e){
+            } catch (e) {
                 console.error('ADD_POST_FROM_WEBSOCKET reducer error', e);
                 return state;
             }
-            
+
         }
 
 

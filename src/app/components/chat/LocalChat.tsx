@@ -10,23 +10,24 @@ import AllCaughtUp from "./AllCaughtUp";
 import ShowBtn from './../chat/ShowBtn';
 import { connect } from 'react-redux';
 import { State as ReduxState } from './../../reduxStore/index';
-import { postsState, getPosts, getChats, clearPosts } from './../../reduxStore/posts/posts.store';
+import { postsState, getPosts, getChats, clearPosts, State as PostsStateModel } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel } from './../../reduxStore/places/place.store';
 import { store } from "reduxStore/configureStore";
 import { HorzScrollTrending } from "./HorzScrollTrending";
 import moment from 'moment';
+import { Post, IPost } from './../../models/Post';
 
 
 interface Props {
   navigation: any;
-  postsState: any;
+  postsState: PostsStateModel;
   getChats: () => void;
   getPosts: (filter: any) => void;
   clearPosts: () => void;
   placeState: PlaceStateModel
 }
 interface State {
-  posts: Array<any>;
+  posts: Array<Post>;
   placeState: PlaceStateModel
 }
 
@@ -161,16 +162,17 @@ export class LocalChat extends React.Component<Props, State> {
 
           {
             <FlatList
-              data={this.state.posts}
-              renderItem={({ item }: any) => {
+              data={this.state.posts as Array<Post>}
+              renderItem={ ( { item } ) => {
+                let i = item.attrs as IPost;
                 return <ChatItem
-                  avatar={item.attrs.image || {uri:item.attrs.avatar } }
-                  hashtag={item.attrs.hashtag}
-                  hashtagColor={item.attrs.hashtagColor}
-                  user={item.attrs.user}
-                  time={item.attrs.time}
-                  content={item.attrs.content}
-                  pullRight={item.attrs.pullRight}
+                  avatar={i.image || {uri : i.avatar } }
+                  hashtag={i.tags ? i.tags[0] : 'msg' }
+                  hashtagColor={i.hashtagColor}
+                  user={i.user}
+                  time={i.time}
+                  content={i.content}
+                  pullRight={i.pullRight}
                 />
               }
               }
