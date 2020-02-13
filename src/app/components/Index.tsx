@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Linking, ScrollView, Platform, TouchableOpacity, Dimensions, View } from "react-native";
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text, Footer, Content, FooterTab, Badge, StyleProvider } from "native-base";
-import Markers from "./test/Markers";
+import Markers from "./maps/Markers";
 import Camera from './camera/Camera.Container';
 import FooterComponent from './Footer';
 import { createBottomTabNavigator, createStackNavigator, createAppContainer, createDrawerNavigator, SafeAreaView, createSwitchNavigator } from 'react-navigation';
@@ -20,7 +20,7 @@ const { width, height } = Dimensions.get('screen');
 import { PostsPage } from './posts/Index';
 import { LocalChat } from './chat/LocalChat';
 import ProfileSettings  from './profile/ProfileSettings';
-import Maps from './test/Maps';
+import Maps from './maps/Maps';
 
 
 

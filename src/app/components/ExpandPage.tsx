@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import ExpandMenu from './expandmenu/ExpandMenu';
 import { StyleProvider } from 'native-base';
 import { Icon, Button, Text, Thumbnail } from 'native-base';
-import Markers from './test/Markers';
+import Markers from './maps/Markers';
 import { material } from 'react-native-typography';
 import Tabs from './tabs/Tabs.Container';
 

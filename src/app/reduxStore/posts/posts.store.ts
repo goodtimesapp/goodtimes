@@ -150,7 +150,6 @@ export function addJoinerFromWebSocket(data: any) {
                 console.error('addJoinerFromWebSocket error', e)
             }
             
-            debugger;
             if (payload){
                 dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
             }
