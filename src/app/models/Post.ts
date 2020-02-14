@@ -2,6 +2,7 @@
 import Model from './../radiks/src/model';
 import { number, any, string } from 'prop-types';
 import Comment from './Comment';
+import { Attrs } from './../radiks/src/types';
 
 export let posts: any;
 
@@ -67,9 +68,11 @@ export class Post extends Model {
     clientGuid: {
       type: string,
       decrypted: true
+    },
+    enc: {
+      type: string
     }
   };
-  
   
 
   async afterFetch() {
@@ -81,8 +84,7 @@ export class Post extends Model {
 
 }
 
-export interface IPost {
-  _id: string;
+export interface IPost extends Attrs {
   user: string;
   description?: string;
   image: string;
@@ -93,7 +95,6 @@ export interface IPost {
   geohash: string;
   content : string;
   tags: Array<string>;
-  updatedAt?: number;
   latitude? : number;
   longitude?: number;
   location: Array<number>;
@@ -102,4 +103,5 @@ export interface IPost {
   hashtagColor: string;
   time: string;
   pullRight: boolean;
+  enc?: string;
 }

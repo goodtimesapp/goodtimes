@@ -1,7 +1,7 @@
 
 import { createSelector } from 'reselect';
 import { Dimensions } from 'react-native';
-import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
+import { configure, User, UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
 import _ from 'lodash';
@@ -95,6 +95,7 @@ export function putPost(post: Post) {
         try {
             post.attrs.isSynced = false;
             post.attrs.clientGuid = uuidv4();
+            post.attrs.enc = "tacos";
             dispatch(succeeded(post, ActionTypes.PUT_POST));
             let resp = await post.save();
             console.log('radiks resp', resp);
@@ -109,10 +110,12 @@ export function putPost(post: Post) {
 export function addPostFromWebSocket(post: any) {
     return async (dispatch: any) => {
         try {
-            let payload = post;
+
+            let p = await new Post(post).decrypt();
+            let payload = p.attrs;
 
             // markers and pics
-
+            
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
         } catch (e) {
             console.log('error', e)
