@@ -35,7 +35,7 @@ export enum ActionTypes {
     DELETE_WEBSOCKETS = "[WEBSOCKETS] DELETE WEBSOCKETS",
     WEBSOCKETS_ACTION_STARTED = "[WEBSOCKETS] WEBSOCKETS ACTION STARTED",
     WEBSOCKETS_ACTION_SUCCEEDED = "[WEBSOCKETS] WEBSOCKETS ACTION SUCEEDED",
-    WEBSOCKETS_ACTION_FAILED = "[WEBSOCKETS] WEBSOCKETS ACTION FAILED",
+    WEBSOCKETS_ACTION_FAILED = "[WEBSOCKETS] WEBSOCKETS ACTION FAILED"    
 }
 
 
@@ -59,26 +59,27 @@ export function setupWebsockets(placeId: string) {
                 // a message was received
                 console.log(`[WEBSOCKET ON MESSAGE from place ${placeId}] `);
                 try {
-                    let modelType = data.radiksType;
-                    switch (modelType) {
-                        case "Message":
-                            if (!data.content) return;
-                            let msg = data.content;
-                            dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_MESSAGE));
-                        case "Post":
-                            dispatch(addPostFromWebSocket(data));
-                            // Alert.alert(data.content);
-                            dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
-                        case "RoomInvitation":
-                            dispatch(acceptRoomInvitation(data));
-                        case "NewJoiner":
-                            dispatch(addJoinerFromWebSocket(data));
-                        case "Error":
-                            dispatch(apiError(data));
-                        default:
-                            return;
+                    if (data){
+                        let modelType = data.radiksType;
+                        switch (modelType) {
+                            case "Message":
+                                if (!data.content) return;
+                                let msg = data.content;
+                                dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_MESSAGE));
+                            case "Post":
+                                dispatch(addPostFromWebSocket(data));
+                                // Alert.alert(data.content);
+                                dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
+                            case "GroupInvitation":
+                                dispatch(acceptRoomInvitation(data));
+                            case "NewJoiner":
+                                // dispatch(addJoinerFromWebSocket(data));
+                            default:
+                                return;
+                        }
+                    } else {
+                        // no data passed from websocket
                     }
-
                 } catch (e) {
                     dispatch(apiError(e));
                 }

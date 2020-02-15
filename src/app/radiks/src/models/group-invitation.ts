@@ -50,7 +50,9 @@ export default class GroupInvitation extends Model {
       signingKeyPrivateKey: this.attrs.signingKeyPrivateKey,
       signingKeyId: this.attrs.signingKeyId,
     });
-    await groupMembership.save();
+    // @TODO  kept on breaking on server with Error when validating: No signing key is present with id: '[object Object]'
+    // await groupMembership.save();
+    // cache the keys here
     await GroupMembership.cacheKeys();
     return groupMembership;
   }

@@ -26,7 +26,8 @@ import {
 import { Profile } from './../models/Profile';
 import { store } from './../reduxStore/configureStore';
 import _ from 'lodash';
-
+// @ts-ignore
+import localStorage from 'react-native-sync-localstorage';
 
 interface Props {
   navigation: any;
@@ -61,7 +62,15 @@ export class Splash extends React.Component<Props, State> {
       showIntro: true,
       visible: true
     });
-    this.trySilentLogin();
+    // localstorage polyfill then start app
+    localStorage.getAllFromLocalStorage()
+      .then(() => {
+        this.trySilentLogin();  
+      })
+      .catch((err: any) => {
+        console.warn(err)
+      })
+    
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {

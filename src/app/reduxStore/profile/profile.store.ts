@@ -110,7 +110,8 @@ export function silentLogin(state: State) {
             window.userSession = userSession;
             configureRadiks(userSession);
             // @todo remov this below...i dont think we need this becuase the userSession is cached and recreated on silentLogin
-            // let blockstackUser = await User.createWithCurrentUser();
+            let blockstackUser = await User.createWithCurrentUser();
+            
             // window.User = blockstackUser;
             let payload: State = {
                 ...state,
@@ -224,7 +225,6 @@ export function getGroups() {
         
         try {
             let groups  = await UserGroup.myGroups();
-            debugger;
             const payload = groups;
             dispatch(succeeded(payload, ActionTypes.GET_GROUPS));
         } catch (e) {
@@ -234,12 +234,18 @@ export function getGroups() {
     }
 }
 
-export function acceptRoomInvitation(invitation: any){
+export function acceptRoomInvitation(inivite: any){
     return async (dispatch: any) => {
         try {
-           
-            const payload = invitation;
-            dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
+            const invitation: any = await GroupInvitation.findById(inivite._id);
+            if (invitation){
+                let resp = await invitation.activate();
+                console.log("invite resp=>", resp);
+                const payload = resp;
+                dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
+            } else{
+               dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
+            }
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.ACCEPT_ROOM_INVITATION));
@@ -359,6 +365,12 @@ export function reducers(state: State = initialState, action: any) {
                 ...state,
                 error: action.payload,
                 progress: action.payload.progress
+            }
+        }
+
+        case ActionTypes.ACCEPT_ROOM_INVITATION: {
+            return {
+                ...state,
             }
         }
 

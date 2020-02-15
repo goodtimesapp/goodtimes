@@ -25,6 +25,8 @@ import getTheme from './native-base-theme/components';
 import platform from './native-base-theme/variables/platform';
 // @ts-ignore
 import Geohash from 'latlon-geohash';
+// @ts-ignore
+import localStorage from 'react-native-sync-localstorage';
 
 export interface Props { }
 interface State {
@@ -37,8 +39,8 @@ export default class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    window.SecureStorage = SecureStorage;
-    window.AsyncStorage = AsyncStorage;
+    window.secureStorage = SecureStorage;
+    window.asyncStorage = AsyncStorage;
     window.blockstack = require('blockstack');
     // window.blockstackRN = require('react-native-blockstack');
     // window.bitcoinjs = bitcoinjs;
@@ -51,6 +53,7 @@ export default class App extends Component<Props, State> {
     // window.postsStore = postsStore;
     window.profileStore = profileStore;
     // window.Geohash = Geohash;
+    window.localStorage = localStorage;
   }
 
 
