@@ -128,6 +128,9 @@ export function addJoinerFromWebSocket(data: any) {
     return async (dispatch: any) => {
         try {
             let payload;
+
+            // radiks accept invitation
+
             try {
                 payload = {
                     name: data.user,

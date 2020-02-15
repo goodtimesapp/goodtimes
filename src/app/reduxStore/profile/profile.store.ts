@@ -14,8 +14,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
 import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
-import {Profile} from './../../models/Profile';
-
+import { Profile } from './../../models/Profile';
+import { store } from './../../reduxStore/configureStore';
 
 
 //#region Initial State
@@ -29,6 +29,8 @@ export interface State {
     profileJSON: any;
     settings: Profile;
     progress: string; 
+    keys: any; // ref to personalSigningKeyId in mongo radiksType: SigningKey _id=key
+    groups: any;
 }
 export const initialState: State = {
     userSession: {} as UserSession,
@@ -42,7 +44,9 @@ export const initialState: State = {
         image: require('./../../assets/profile.png'),
         firstName: "First Name"
     }),
-    progress: 'initializing...'
+    progress: 'initializing...',
+    keys: null,
+    groups: null
 }
 //#endregion Initial State
 
@@ -56,6 +60,8 @@ export enum ActionTypes {
     PROFILE_ACTION_FAILED = '[PROFILE] PROFILE_ACTION_FAILED',
     GET_PROFILE_SETTINGS = '[PROFILE] GET_PROFILE_SETTINGS',
     PUT_PROFILE_SETTINGS = '[PROFILE] PUT_PROFILE_SETTINGS',
+    GET_KEYS = '[PROFILE] GET_KEYS',
+    GET_GROUPS = '[PROFILE] GET_GROUPS',
 }
 
 
@@ -198,6 +204,35 @@ export function getProfileSettings() {
     }
 }
 
+export function getKeys() {
+    return async (dispatch: any) => {
+        
+        try {
+            let keys  = await User.fetchList({_id: store.getState().profile.username});
+            const payload = keys[0].attrs.personalSigningKeyId;
+            dispatch(succeeded(payload, ActionTypes.GET_KEYS));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.GET_KEYS));
+        }
+    }
+}
+
+export function getGroups() {
+    return async (dispatch: any) => {
+        
+        try {
+            let groups  = await UserGroup.myGroups();
+            debugger;
+            const payload = groups;
+            dispatch(succeeded(payload, ActionTypes.GET_GROUPS));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.GET_GROUPS));
+        }
+    }
+}
+
 export function putProfileSettings(profile: Profile) {
     return async (dispatch: any) => {
         dispatch(started('saving profile settings...'));
@@ -271,6 +306,20 @@ export function reducers(state: State = initialState, action: any) {
                 ...state,
                 settings: action.payload,
                 progress: 'got profile settings...'
+            }
+        }
+
+        case ActionTypes.GET_KEYS : {
+            return {
+                ...state,
+                keys: action.payload
+            }
+        }
+
+        case ActionTypes.GET_GROUPS : {
+            return {
+                ...state,
+                groups: action.payload
             }
         }
 

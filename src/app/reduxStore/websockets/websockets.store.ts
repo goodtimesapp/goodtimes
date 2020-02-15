@@ -68,8 +68,12 @@ export function setupWebsockets(placeId: string) {
                             dispatch(addPostFromWebSocket(data));
                             // Alert.alert(data.content);
                             dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
-                        case "Join":
-                            dispatch(addJoinerFromWebSocket(data));
+                        case "RoomInvitation":
+                            //dispatch(addJoinerFromWebSocket(data));
+                        case "NewJoiner":
+                            //dispatch(addJoinerFromWebSocket(data));
+                        case "Error":
+                            dispatch(apiError(data));
                         default:
                             return;
                     }
@@ -89,7 +93,8 @@ export function setupWebsockets(placeId: string) {
             });
 
 
-            ws.emit('join', placeId);
+            let authToken = (store.getState().profile.userSession as any).store.sessionData.userData.authResponseToken;
+            ws.emit('join', { room: placeId, authToken: authToken });
 
             // ws.onclose = (e: any) => {
             //     // connection closed

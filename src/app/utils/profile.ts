@@ -16,6 +16,8 @@ import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 // @ts-ignore
 import { configure } from './../radiks/src/index';
 import * as bitcoinjs from 'bitcoinjs-lib';
+// @ts-ignore
+import { makeAuthResponse } from 'blockstack/lib/auth/index';
 
 export const initWallet = async () => {
 
@@ -51,12 +53,14 @@ export function makeUserSession(appPrivateKey: string, appPublicKey: string, use
         appUrl
     )
 
+    let authResponseToken = makeAuthResponse(appPrivateKey, profileJSON, username, {});
+
 
     const userData: UserData = {
         username: username,
         decentralizedID: 'did:btc-addr:' + appPublicKey,
         appPrivateKey: appPrivateKey,
-        authResponseToken: '',
+        authResponseToken: authResponseToken,
         hubUrl: hubUrl,
         identityAddress: appPublicKey,
         profile: profileJSON,
