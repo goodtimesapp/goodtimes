@@ -113,7 +113,7 @@ export default class Radiks extends Component<Props, State> {
     async GenGroupKeyPutCentral(){
 
         let placeId = "1234";
-        const key = "place_" + placeId;
+        const key = placeId;
 
         let group = await this.createRadiksGroup(key);
         const value = { group: group };

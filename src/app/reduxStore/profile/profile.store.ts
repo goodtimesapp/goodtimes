@@ -29,8 +29,8 @@ export interface State {
     profileJSON: any;
     settings: Profile;
     progress: string; 
-    keys: any; // ref to personalSigningKeyId in mongo radiksType: SigningKey _id=key
-    groups: any;
+    keys?: any; // ref to personalSigningKeyId in mongo radiksType: SigningKey _id=key
+    groups?: any;
 }
 export const initialState: State = {
     userSession: {} as UserSession,
@@ -62,6 +62,7 @@ export enum ActionTypes {
     PUT_PROFILE_SETTINGS = '[PROFILE] PUT_PROFILE_SETTINGS',
     GET_KEYS = '[PROFILE] GET_KEYS',
     GET_GROUPS = '[PROFILE] GET_GROUPS',
+    ACCEPT_ROOM_INVITATION = '[PROFILE] ACCEPT_ROOM_INVITATION',
 }
 
 
@@ -78,7 +79,7 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
             configureRadiks(userSession);
             let blockstackUser = await User.createWithCurrentUser();
             window.User = blockstackUser;
-            const payload: State = {
+            let payload: State = {
                 backupPhrase: keychain.backupPhrase,
                 publicKey: id.appPublicKey,
                 privateKey: id.appPrivateKey,
@@ -229,6 +230,19 @@ export function getGroups() {
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.GET_GROUPS));
+        }
+    }
+}
+
+export function acceptRoomInvitation(invitation: any){
+    return async (dispatch: any) => {
+        try {
+           
+            const payload = invitation;
+            dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.ACCEPT_ROOM_INVITATION));
         }
     }
 }
