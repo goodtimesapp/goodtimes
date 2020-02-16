@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { ScrollView, Text, TextInput, Button } from 'react-native'
-import { UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
+import { UserGroup, GroupInvitation, Central } from 'radiks/src/index';
 import Message from './../../models/Message';
 import EncryptedMessage from './../../models/EncryptedMessage';
 import AsyncStorage from '@react-native-community/async-storage';
 declare let window: any;
-window.radiks = require('./../../radiks/src/index');
+window.radiks = require('radiks/src/index');
 window.EncryptedMessage = EncryptedMessage;
 
 interface Props {

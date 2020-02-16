@@ -1,4 +1,4 @@
-import { UserSession } from './../../radiks/src/types/index';
+import { UserSession } from 'radiks/src/types/index';
 import { createSelector } from 'reselect';
 import { 
     configureRadiks,
@@ -13,7 +13,7 @@ declare let window: any;
 import AsyncStorage from '@react-native-community/async-storage';
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
-import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
+import { configure, User, UserGroup, GroupInvitation, Model, Central } from 'radiks/src/index';
 import { Profile } from './../../models/Profile';
 import { store } from './../../reduxStore/configureStore';
 
@@ -234,18 +234,20 @@ export function getGroups() {
     }
 }
 
-export function acceptRoomInvitation(inivite: any){
+export function acceptRoomInvitation(inviteId: string){
     return async (dispatch: any) => {
         try {
-            const invitation: any = await GroupInvitation.findById(inivite._id);
-            if (invitation){
-                let resp = await invitation.activate();
-                console.log("invite resp=>", resp);
-                const payload = resp;
-                dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
-            } else{
-               dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
-            }
+            // const invitation: any = await GroupInvitation.findById(inviteId);
+            // if (invitation){                
+            //     // let resp = await invitation.activate();
+            //     // console.log("invite resp=>", resp);
+            //     // const payload = resp;
+            //     // @todo add group key to cache
+
+            //     dispatch(succeeded("payload", ActionTypes.ACCEPT_ROOM_INVITATION));
+            // } else{
+            //    dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
+            // }
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.ACCEPT_ROOM_INVITATION));

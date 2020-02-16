@@ -1,8 +1,7 @@
-// @ts-ignore
-import Model from './../radiks/src/model';
+import Model from 'radiks/src/model';
 import { number, any, string } from 'prop-types';
 import Comment from './Comment';
-import { Attrs } from './../radiks/src/types';
+import { Attrs } from 'radiks/src/types';
 
 export let posts: any;
 

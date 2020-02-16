@@ -66,6 +66,7 @@
     "path-browserify": "0.0.0",
     "process": "^0.11.10",
     "qs": "^6.7.0",
+    "radiks": "^0.2.2-beta.1",
     "react": "^16.8.3",
     "react-devtools": "^3.6.3",
     "react-native-app-intro-slider": "^3.0.0",

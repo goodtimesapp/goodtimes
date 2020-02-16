@@ -1,7 +1,6 @@
 
 import { createSelector } from 'reselect';
 import { Dimensions } from 'react-native';
-import { configure, User, UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
 import { Post } from './../../models/Post';
 import Comment from './../../models/Comment';
 import _ from 'lodash';

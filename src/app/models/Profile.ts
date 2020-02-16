@@ -1,5 +1,4 @@
-// @ts-ignore
-import Model from './../radiks/src/model';
+import Model from 'radiks/src/model';
 
 export class Profile extends Model {
   static className = 'Profile';

@@ -1,5 +1,4 @@
-// @ts-ignore
-import Model from './../radiks/src/model';
+import Model from 'radiks/src/model';
 
 export default class EncryptedMessage extends Model {
   static className = 'EncryptedMessage';

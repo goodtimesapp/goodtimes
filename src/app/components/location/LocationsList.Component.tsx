@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Location } from '../../models/Location'
 import {  StyleSheet } from 'react-native';
 import { View, ListItem, Left, List, Icon, Right, Container, Button, Text } from 'native-base';
-import * as radiks from './../../radiks/src/index';
+import * as radiks from 'radiks/src/index';
 import * as blockstack from 'blockstack';
 import HeaderComponent from '../Header';
 import { material } from 'react-native-typography';

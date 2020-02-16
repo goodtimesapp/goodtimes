@@ -15,14 +15,13 @@ import { randomBytes } from 'crypto'
 import * as blockstack from 'blockstack';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
-// @ts-ignore
-import { configure, User, UserGroup, GroupInvitation, Model, Central } from './../../radiks/src/index';
+import { configure, User, UserGroup, GroupInvitation, Model, Central } from 'radiks/src/index';
 import Message from './../../models/Message';
 import EncryptedMessage from './../../models/EncryptedMessage';
 import AsyncStorage from '@react-native-community/async-storage';
 import Radiks from './Radiks';
 declare let window: any;
-window.radiks = require('./../../radiks/src/index');
+window.radiks = require('radiks/src/index');
 window.EncryptedMessage = EncryptedMessage;
 
 

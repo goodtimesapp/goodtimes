@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 // @ts-ignore
 const API_ENDPOINT = '';
-import { UserGroup, GroupInvitation, Central } from './../../radiks/src/index';
 import { setupWebsockets } from './../websockets/websockets.store';
 import { getCurrentLocation } from './../../utils/location-utils';
 // @ts-ignore

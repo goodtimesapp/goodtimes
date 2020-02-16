@@ -13,8 +13,7 @@ import { randomBytes } from 'crypto'
 import * as blockstack from 'blockstack';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
-// @ts-ignore
-import { configure } from './../radiks/src/index';
+import { configure } from 'radiks/src/index';
 import * as bitcoinjs from 'bitcoinjs-lib';
 // @ts-ignore
 import { makeAuthResponse } from 'blockstack/lib/auth/index';
