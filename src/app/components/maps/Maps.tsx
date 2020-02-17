@@ -219,7 +219,7 @@ class Maps extends Component<Props, State> {
       case 'active': {
         console.log('activated');
         // check to make sure you have an active websocket if you are logged in
-        //this.openWebSocket(this.props.placeState.geohash);
+        this.props.startLocationWebSocket('a');
         this.props.getMyCurrentLocation();
         break;
       }

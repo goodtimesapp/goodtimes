@@ -71,9 +71,11 @@ export function setupWebsockets(placeId: string) {
                                 // Alert.alert(data.content);
                                 dispatch(succeeded(data.content, ActionTypes.RECEIVED_WEBSOCKET_POST));
                             case "GroupInvitation":
-                                dispatch(acceptRoomInvitation(data.inviteId));
+                                // dispatch(acceptRoomInvitation(data.inviteId));
+                                return;
                             case "NewJoiner":
                                 // dispatch(addJoinerFromWebSocket(data));
+                                return;
                             default:
                                 return;
                         }

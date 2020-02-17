@@ -28,6 +28,7 @@ import { store } from './../reduxStore/configureStore';
 import _ from 'lodash';
 // @ts-ignore
 import localStorage from 'react-native-sync-localstorage';
+import { getCurrentLocation } from './../utils/location-utils';
 
 interface Props {
   navigation: any;
@@ -48,52 +49,39 @@ export class Splash extends React.Component<Props, State> {
     super(props);
     this.state = {
       visible: true,
-      showIntro: false,
-      loginStatus: 'status:'
-    };
+      showIntro: true,
+      loginStatus: 'status: not logged in'
+    }
   }
 
   componentDidMount() {
-    // this.setState({
-    //   showIntro: false,
-    //   visible: false
-    // });
-    this.setState({
-      showIntro: true,
-      visible: true
-    });
+
+    getCurrentLocation();
+
     // localstorage polyfill then start app
     localStorage.getAllFromLocalStorage()
       .then(() => {
-        this.trySilentLogin();  
+        this.trySilentLogin();
       })
       .catch((err: any) => {
         console.warn(err)
       })
-    
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
-    // if (this.props.userSession !== prevProps.userSession) {
-    //     this.closeSplashModal();
-    //     this.props.navigation.navigate('App');
-    // }
 
     if (this.props.profileState !== prevProps.profileState) {
-      console.log('[componentDidUpdate] Splash.tsx props.profileState.progess' );
       this.setState({
         loginStatus: this.props.profileState.progress
-      });
-      if (this.props.profileState.progress == "got profile settings..." || 
-          this.props.profileState.progress == "no profile settings created yet" || 
-          this.props.profileState.progress == "created account silently..." ||
-          this.props.profileState.progress == "silent logged in..."
-      ) {
+      })
+    }
+
+    if (prevProps.profileState.userSession !== this.props.profileState.userSession) {
+      if (this.props.profileState.privateKey !== "") {
         this.closeSplashModal();
         this.props.navigation.navigate('App');
       }
     }
-
   }
 
 
@@ -101,10 +89,16 @@ export class Splash extends React.Component<Props, State> {
     let profileState = store.getState().profile;
     if (!_.isEmpty(profileState.userSession)) {
       this.props.silentLogin(profileState);
+      this.closeSplashModal();
+      this.props.navigation.navigate('App');
+    } else {
+        this.setState({
+          loginStatus: `please login `
+        })
     }
   }
 
- 
+
   closeSplashModal() {
     this.setState({
       visible: false

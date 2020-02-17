@@ -256,30 +256,6 @@ export class ProfileSettings extends React.Component<Props, State> {
               </Content>
             </View>
 
-
-
-            <View style={{
-              height: 50,
-              alignSelf: "flex-end",
-              marginRight: 30,
-            }}>
-              <Content style={{ flex: 1 }}>
-                <TouchableOpacity style={{
-                  height: 42,
-                  width: 120,
-                  backgroundColor: "#ff5230",
-                  borderRadius: 21,
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                  flexDirection: "row"
-                }}
-                onPress={()=>{this.props.navigation.navigate('Maps');}}
-                >
-                  <Text style={{ color: "#ffffff", fontSize: 18 }}>Ok</Text>
-                </TouchableOpacity>
-              </Content>
-            </View>
-
             <View style={{
               height: 50,
               alignSelf: "flex-end",
