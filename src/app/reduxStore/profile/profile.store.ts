@@ -112,9 +112,9 @@ export function silentLogin(state: State) {
             window.userSession = userSession;
             configureRadiks(userSession);
             // @todo remov this below...i dont think we need this becuase the userSession is cached and recreated on silentLogin
-            let blockstackUser = await User.createWithCurrentUser();
-            
+            //let blockstackUser = await User.createWithCurrentUser();
             // window.User = blockstackUser;
+            
             let payload: State = {
                 ...state,
                 userSession: userSession as any,

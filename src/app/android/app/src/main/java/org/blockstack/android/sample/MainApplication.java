@@ -32,6 +32,9 @@ import java.util.List;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 
+import com.microsoft.appcenter.reactnative.crashes.AppCenterReactNativeCrashesPackage;
+import com.microsoft.appcenter.reactnative.analytics.AppCenterReactNativeAnalyticsPackage;
+import com.microsoft.appcenter.reactnative.appcenter.AppCenterReactNativePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -64,8 +67,11 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativeConfigPackage(),
             new MapsPackage(),
             new RNBlockstackSdkPackage(),
-              new VectorIconsPackage(),
-              new RNPermissionsPackage()
+            new VectorIconsPackage(),
+            new RNPermissionsPackage(),
+            new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
+            new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
+            new AppCenterReactNativePackage(MainApplication.this)
       );
     }
 

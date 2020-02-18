@@ -64,3 +64,4 @@ src/app/ios/Pods/
 src/app/ios/Podfile.lock
 src/app/package-lock.json
 *.env
+**/appcenter-config.json

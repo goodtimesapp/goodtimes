@@ -29,6 +29,7 @@ import _ from 'lodash';
 // @ts-ignore
 import localStorage from 'react-native-sync-localstorage';
 import { getCurrentLocation } from './../utils/location-utils';
+import Analytics from 'appcenter-analytics';
 
 interface Props {
   navigation: any;
@@ -56,6 +57,10 @@ export class Splash extends React.Component<Props, State> {
 
   componentDidMount() {
 
+    Analytics.trackEvent('(1) componentDidMount', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
+
+    
+
     getCurrentLocation();
 
     // localstorage polyfill then start app
@@ -78,8 +83,7 @@ export class Splash extends React.Component<Props, State> {
 
     if (prevProps.profileState.userSession !== this.props.profileState.userSession) {
       if (this.props.profileState.privateKey !== "") {
-        this.closeSplashModal();
-        this.props.navigation.navigate('App');
+        this.gotoApp();
       }
     }
   }
@@ -89,13 +93,19 @@ export class Splash extends React.Component<Props, State> {
     let profileState = store.getState().profile;
     if (!_.isEmpty(profileState.userSession)) {
       this.props.silentLogin(profileState);
-      this.closeSplashModal();
-      this.props.navigation.navigate('App');
+      this.gotoApp();
     } else {
         this.setState({
           loginStatus: `please login `
         })
     }
+  }
+
+  gotoApp(){
+    Analytics.trackEvent('(2) navigate to App', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
+    this.closeSplashModal();
+    this.props.navigation.navigate('App');
+    
   }
 
 
