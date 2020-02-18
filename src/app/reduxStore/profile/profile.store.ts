@@ -79,8 +79,8 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
             let userSession = makeUserSession(id.appPrivateKey, id.appPublicKey, id.username, id.profileJSON.decodedToken.payload.claim);
            
             configureRadiks(userSession);
-            let blockstackUser = await User.createWithCurrentUser();
-            window.User = blockstackUser;
+            User.createWithCurrentUser();
+            
             let payload: State = {
                 backupPhrase: keychain.backupPhrase,
                 publicKey: id.appPublicKey,
@@ -142,9 +142,10 @@ export function saveStateFromBlockstackLogin(state: State) {
         dispatch(started('silently logging in...'));
         try {
             window.userSession = state.userSession;
+            
             configureRadiks(state.userSession);
-            let blockstackUser = await User.createWithCurrentUser();
-            window.User = blockstackUser;
+            User.createWithCurrentUser();
+
             let payload: State = {
                 ...state,
                 userSession: state.userSession as any,
@@ -241,17 +242,18 @@ export function getGroups() {
 export function acceptRoomInvitation(inviteId: string){
     return async (dispatch: any) => {
         try {
-            // const invitation: any = await GroupInvitation.findById(inviteId);
-            // if (invitation){                
-            //     // let resp = await invitation.activate();
-            //     // console.log("invite resp=>", resp);
-            //     // const payload = resp;
-            //     // @todo add group key to cache
-
-            //     dispatch(succeeded("payload", ActionTypes.ACCEPT_ROOM_INVITATION));
-            // } else{
-            //    dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
-            // }
+            await User.createWithCurrentUser();
+            const invitation: any = await GroupInvitation.findById(inviteId);
+            if (invitation){  
+                invitation.signingKeyId = "personal";          
+                let resp = await invitation.activate();
+                console.log("invite resp=>", resp);
+                const payload = resp;
+                // @todo add group key to cache
+                dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
+            } else{
+               dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
+            }
         } catch (e) {
             console.log('error', e)
             dispatch(failed(e, ActionTypes.ACCEPT_ROOM_INVITATION));
