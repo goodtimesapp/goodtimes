@@ -46,6 +46,8 @@ interface State {
 
 export class Splash extends React.Component<Props, State> {
 
+  _isMounted = false;
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -56,6 +58,8 @@ export class Splash extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+
+    this._isMounted = true;
 
     Analytics.trackEvent('(1) componentDidMount', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
 
@@ -76,9 +80,11 @@ export class Splash extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
 
     if (this.props.profileState !== prevProps.profileState) {
-      this.setState({
-        loginStatus: this.props.profileState.progress
-      })
+      if (this._isMounted){
+        this.setState({
+          loginStatus: this.props.profileState.progress
+        })
+      }
     }
 
     if (prevProps.profileState.userSession !== this.props.profileState.userSession) {
@@ -87,6 +93,11 @@ export class Splash extends React.Component<Props, State> {
       }
     }
   }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
 
 
   async trySilentLogin() {
@@ -105,14 +116,15 @@ export class Splash extends React.Component<Props, State> {
     Analytics.trackEvent('(2) navigate to App', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
     this.closeSplashModal();
     this.props.navigation.navigate('App');
-    
   }
 
 
   closeSplashModal() {
-    this.setState({
-      visible: false
-    });
+    if (this._isMounted){
+      this.setState({
+        visible: false
+      });
+    }
   }
 
   _renderItem = ({ item, dimensions }: any) => (

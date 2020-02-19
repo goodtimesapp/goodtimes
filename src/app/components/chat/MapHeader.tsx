@@ -50,7 +50,7 @@ export class MapHeader extends React.Component<Props, State> {
                         justifyContent: 'space-evenly',
                         alignItems: 'center',
                 }}>
-                    <Thumbnail small source={this.props.avatar} />
+                    <Thumbnail small source={{uri: this.props.avatar}} />
                 </TouchableOpacity>
                 <View  style={{
                     marginLeft: 40, 

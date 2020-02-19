@@ -4,6 +4,7 @@ import  { Image, TouchableOpacity } from 'react-native'
 import { Container, Header, Title, Button, Left, Right, Body, Icon, Text, View, Footer, Content, FooterTab, Badge, StyleProvider } from "native-base";
 import { withNavigation } from 'react-navigation';
 import { StackActions } from 'react-navigation';
+// @ts-ignore
 import theme from '@theme/variables/commonColor.js';
 
 interface Props {

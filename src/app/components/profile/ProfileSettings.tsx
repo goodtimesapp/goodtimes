@@ -21,7 +21,8 @@ import {Profile} from './../../models/Profile';
 import _ from 'lodash';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
-
+declare let window: any;
+import { PutFileOptions, UserSession } from 'blockstack';
 
 
 interface Props {
@@ -35,14 +36,16 @@ interface Props {
 interface State {
   avatarSource: any;
   firstName: string;
+  imageBlob: any;
 }
 
 const options = {
   title: 'Choose an image',
   storageOptions: {
     skipBackup: true,
-    path: 'images',
+    path: 'images'
   },
+  quality: .65
 };
 
 export class ProfileSettings extends React.Component<Props, State> {
@@ -51,8 +54,9 @@ export class ProfileSettings extends React.Component<Props, State> {
     super(props);
     
     this.state = {
-      avatarSource: require('./../../assets/profile.png'),
-      firstName: ""
+      avatarSource: "https://gaia.blockstack.org/hub/19fsW5FBcgyUNya4WgECcLuwMLXra1aJm4/avatar.jpeg",
+      firstName: "",
+      imageBlob: null
     };
   }
 
@@ -60,7 +64,7 @@ export class ProfileSettings extends React.Component<Props, State> {
   componentDidMount() {
     if (this.props.profileSettingsSelector.attrs ){
       this.setState({
-        avatarSource:this.props.profileSettingsSelector.attrs.image,
+        avatarSource: this.props.profileSettingsSelector.attrs.image,
         firstName: this.props.profileSettingsSelector.attrs.firstName
       });
     }
@@ -73,7 +77,7 @@ export class ProfileSettings extends React.Component<Props, State> {
       try {
         this.setState({
           firstName: this.props.profileSettingsSelector.attrs.firstName,
-          avatarSource: this.props.profileSettingsSelector.attrs.image
+          avatarSource: this.props.profileSettingsSelector.attrs.image,
         }); 
       } catch(e) {
         console.log('cannot update data.profileSettingsSelector.attrs')
@@ -94,7 +98,7 @@ export class ProfileSettings extends React.Component<Props, State> {
   }
 
   chooseImage() {
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -104,27 +108,33 @@ export class ProfileSettings extends React.Component<Props, State> {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        //const source = { uri: response.uri };
-        // You can also display the image using data:
-        // @todo compress image
-        const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
+     
+        let blob = await this.b64toBlob(response.data);
         this.setState({
-          avatarSource: source,
-          firstName: ""
+          imageBlob: blob
         });
+
       }
     });
   }
 
-  saveProfile(){
-    //Alert.alert(this.state.firstName, this.state.avatarSource.uri);
+  async b64toBlob (base64: any, type = 'image/jpeg') {
+    let res = await fetch(`data:${type};base64,${base64}`);
+    return res.blob()
+  } 
+  
+
+  async saveProfile(){
+    let avatarUrl = await ((window as any).userSession as UserSession).putFile("avatar.jpeg", this.state.imageBlob, {contentType: "image/jpeg", encrypt: false } as PutFileOptions )
     let profile: Profile = new Profile({
       firstName: this.state.firstName,
-      image: this.state.avatarSource
+      image: avatarUrl
+    });
+    this.setState({
+      avatarSource: { uri: avatarUrl},
+      firstName: ""
     });
     this.props.putProfileSettings(profile);
-    // this.props.navigation.navigate('Goodtimes');
   }
 
   logout(){
@@ -183,7 +193,7 @@ export class ProfileSettings extends React.Component<Props, State> {
             }} >
               <TouchableOpacity onPress={() => { this.chooseImage() }}>
                 
-                <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={this.state.avatarSource} />
+                <Image style={{ alignSelf: "center", width: 200, height: 200, borderRadius: 100 }} source={{uri: this.state.avatarSource}} />
                
                 <View style={{
                   height: 32,
