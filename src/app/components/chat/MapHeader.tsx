@@ -13,7 +13,7 @@ import { human, iOSUIKit } from 'react-native-typography';
 
 interface Props {
     navigation: any;
-    avatar: any;
+    avatar: string;
 }
 interface State {
 

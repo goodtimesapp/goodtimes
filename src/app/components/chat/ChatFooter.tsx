@@ -20,10 +20,10 @@ import * as moment from 'moment';
 
 
 interface Props {
-    navigation: any;
-    putPost: (post: Post )=> void;
-    placeState: PlaceStateModel;
-    profileState: ProfileStateModel;
+    navigation?: any;
+    putPost?: (post: Post )=> void;
+    placeState?: PlaceStateModel;
+    profileState?: ProfileStateModel;
 }
 interface State {
     chatText: string;

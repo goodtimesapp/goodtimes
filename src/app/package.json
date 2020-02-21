@@ -29,7 +29,9 @@
     "apk:run": "react-native run-android --variant=release",
     "ios": "react-native run-ios",
     "clear-cache": "react-native start --reset-cache",
-    "devtools": "react-devtools"
+    "devtools": "react-devtools",
+    "appium:doctor": "appium-doctor",
+    "appium": "appium"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
@@ -49,6 +51,8 @@
     "appcenter": "2.6.1",
     "appcenter-analytics": "2.6.1",
     "appcenter-crashes": "2.6.1",
+    "appium": "^1.16.0",
+    "appium-doctor": "^1.13.1",
     "assert": "^1.5.0",
     "asyncstorage-down": "^4.2.0",
     "axios": "^0.19.0",
@@ -127,7 +131,8 @@
     "underscore": "^1.9.1",
     "url": "^0.11.0",
     "uuid": "^3.3.2",
-    "vm-browserify": "0.0.4"
+    "vm-browserify": "0.0.4",
+    "wd": "^1.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
@@ -142,6 +147,7 @@
     "babel-plugin-module-resolver": "^3.2.0",
     "command-line-args": "^5.1.1",
     "inquirer-directory": "^2.2.0",
+    "jasmine": "^3.5.0",
     "jest": "^24.8.0",
     "jetifier": "^1.6.3",
     "metro-react-native-babel-preset": "^0.54.1",
@@ -154,6 +160,7 @@
     "react-test-renderer": "16.8.3",
     "redux-devtools-cli": "0.0.1-1",
     "rn-nodeify": "^10.0.1",
+    "ts-node": "^8.6.2",
     "typescript": "^3.5.3"
   },
   "peerDependencies": {

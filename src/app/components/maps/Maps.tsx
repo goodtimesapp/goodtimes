@@ -525,7 +525,7 @@ class Maps extends Component<Props, State> {
           borderTopLeftRadius: 16
         }}>
 
-          <ChatFooter placeState={this.props.placeState} ></ChatFooter>
+          <ChatFooter></ChatFooter>
 
         </View>
 

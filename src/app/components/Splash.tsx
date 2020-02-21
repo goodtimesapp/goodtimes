@@ -30,6 +30,7 @@ import _ from 'lodash';
 import localStorage from 'react-native-sync-localstorage';
 import { getCurrentLocation } from './../utils/location-utils';
 import Analytics from 'appcenter-analytics';
+import { testProps } from './../utils/test-utils';
 
 interface Props {
   navigation: any;
@@ -60,12 +61,14 @@ export class Splash extends React.Component<Props, State> {
   componentDidMount() {
 
     this._isMounted = true;
-
     Analytics.trackEvent('(1) componentDidMount', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
 
-    
+    setTimeout(() => {
+      if (this._isMounted) {
+        getCurrentLocation();
+      }
+    }, 2000)
 
-    getCurrentLocation();
 
     // localstorage polyfill then start app
     localStorage.getAllFromLocalStorage()
@@ -80,7 +83,7 @@ export class Splash extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
 
     if (this.props.profileState !== prevProps.profileState) {
-      if (this._isMounted){
+      if (this._isMounted) {
         this.setState({
           loginStatus: this.props.profileState.progress
         })
@@ -106,13 +109,13 @@ export class Splash extends React.Component<Props, State> {
       this.props.silentLogin(profileState);
       this.gotoApp();
     } else {
-        this.setState({
-          loginStatus: `please login `
-        })
+      this.setState({
+        loginStatus: `please login `
+      })
     }
   }
 
-  gotoApp(){
+  gotoApp() {
     Analytics.trackEvent('(2) navigate to App', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
     this.closeSplashModal();
     this.props.navigation.navigate('App');
@@ -120,7 +123,7 @@ export class Splash extends React.Component<Props, State> {
 
 
   closeSplashModal() {
-    if (this._isMounted){
+    if (this._isMounted) {
       this.setState({
         visible: false
       });
@@ -129,6 +132,7 @@ export class Splash extends React.Component<Props, State> {
 
   _renderItem = ({ item, dimensions }: any) => (
     <LinearGradient
+      {...testProps('SplashPage')}
       style={[
         styles.mainContent,
         {
@@ -154,12 +158,9 @@ export class Splash extends React.Component<Props, State> {
         }
 
 
-
-
-
-
-
-        <View style={{ width: '100%', height: '100%', alignContent: 'center', alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: item.contentPad }} >
+        <View 
+        
+        style={{ width: '100%', height: '100%', alignContent: 'center', alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: item.contentPad }} >
           {
             item.image
               ?
@@ -256,8 +257,12 @@ export class Splash extends React.Component<Props, State> {
         visible={this.state.visible}
         onRequestClose={() => this.back('Markers')}>
         {renderEl}
-        <View style={{ justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
-          <Text style={{ color: 'white', alignSelf: 'center', backgroundColor: 'hotpink', width: '100%', height: 32, position: 'absolute', bottom: 125 }} >{this.state.loginStatus}</Text>
+        <View
+          style={{
+            justifyContent: 'center', alignItems: 'center', alignContent: 'center'
+          }}>
+          <Text 
+            style={{ color: 'white', alignSelf: 'center', backgroundColor: 'hotpink', width: '100%', height: 32, position: 'absolute', bottom: 125 }} >{this.state.loginStatus}</Text>
         </View>
 
       </Modal>

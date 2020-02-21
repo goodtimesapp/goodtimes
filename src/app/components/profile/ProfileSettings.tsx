@@ -111,7 +111,8 @@ export class ProfileSettings extends React.Component<Props, State> {
      
         let blob = await this.b64toBlob(response.data);
         this.setState({
-          imageBlob: blob
+          imageBlob: blob,
+          avatarSource: response.uri
         });
 
       }
@@ -131,7 +132,7 @@ export class ProfileSettings extends React.Component<Props, State> {
       image: avatarUrl
     });
     this.setState({
-      avatarSource: { uri: avatarUrl},
+      avatarSource:  avatarUrl,
       firstName: ""
     });
     this.props.putProfileSettings(profile);

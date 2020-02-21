@@ -61,11 +61,12 @@ export default class App extends Component<Props, State> {
   render() {
     return (
 
-      <StyleProvider style={getTheme(platform)}>
+      // @ts-ignore
+      <StyleProvider style={getTheme(platform)} >
         <Provider store={store} >
           <PersistGate loading={null} persistor={persistor}>
             {/* <SafeAreaView style={{ flex: 1 }}> */}
-              <Index />
+              <Index accessibilityLabel='indexPage' testId="indexPage" />
             {/* </SafeAreaView> */}
           </PersistGate>
         </Provider>

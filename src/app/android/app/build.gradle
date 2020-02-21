@@ -113,8 +113,8 @@ android {
         applicationId "org.blockstack.android.sample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
-        versionName "1.19"
+        versionCode 22
+        versionName "1.22"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

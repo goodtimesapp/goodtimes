@@ -166,7 +166,7 @@ export class LocalChat extends React.Component<Props, State> {
               renderItem={ ( { item } ) => {
                 let i = item.attrs as IPost;
                 return <ChatItem
-                  avatar={i.image || {uri : i.avatar } }
+                  avatar={i.avatar  ? i.avatar : "https://banter-pub.imgix.net/users"}
                   hashtag={i.tags ? i.tags[0] : 'msg' }
                   hashtagColor={i.hashtagColor}
                   user={i.user}

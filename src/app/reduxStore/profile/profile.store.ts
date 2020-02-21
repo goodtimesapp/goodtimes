@@ -19,6 +19,7 @@ import { store } from './../../reduxStore/configureStore';
 // @ts-ignore
 import localStorage from 'react-native-sync-localstorage';
 
+const PLACEHOLDER_IMAGE_URL = "https://t4.ftcdn.net/jpg/01/40/46/19/240_F_140461947_tWo9D0W8QQnrhzhCXJbDHIXblMV9BTZv.jpg"
 
 //#region Initial State
 export interface State {
@@ -43,7 +44,7 @@ export const initialState: State = {
     username: '',
     profileJSON: {},
     settings: new Profile({
-        image: require('./../../assets/profile.png'),
+        image: PLACEHOLDER_IMAGE_URL,
         firstName: "First Name"
     }),
     progress: 'initializing...',
@@ -90,7 +91,7 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
                 error: 'none',
                 profileJSON: id.profileJSON,
                 settings: new Profile({
-                    image: require('./../../assets/profile.png'),
+                    image: PLACEHOLDER_IMAGE_URL,
                     firstName: "First Name"
                 }),
                 progress: 'created account silently...'
@@ -123,7 +124,7 @@ export function silentLogin(state: State) {
                 //username: state.username,
                 //profileJSON: state.profileJSON,
                 // settings: new Profile({
-                //     image: require('./../../assets/profile.png'), // placeholders
+                //     image: PLACEHOLDER_IMAGE_URL, // placeholders
                 //     firstName: "" // placeholders
                 // }),
                 progress: 'silent logged in...'
@@ -154,7 +155,7 @@ export function saveStateFromBlockstackLogin(state: State) {
                 username: state.username,
                 profileJSON: state.profileJSON,
                 settings: new Profile({
-                    image: require('./../../assets/profile.png'), // placeholders
+                    image: PLACEHOLDER_IMAGE_URL, // placeholders
                     firstName: "" // placeholders
                 }),
                 progress: 'silent logged in...'
