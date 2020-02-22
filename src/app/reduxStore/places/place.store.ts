@@ -17,7 +17,8 @@ export interface State {
     key: string,
     geohash: string,
     headcount: number,
-    currentLocation: LatLng
+    currentLocation: LatLng,
+    userGroupId: string
 }
 export const initialState: State = {
     place: '',
@@ -28,7 +29,8 @@ export const initialState: State = {
     currentLocation: {
         latitude:1,
         longitude: 2
-    }
+    },
+    userGroupId: ''
 }
 //#endregion state
 
@@ -45,7 +47,8 @@ export enum ActionTypes {
     PLACE_ACTION_STARTED = "[PLACE] PLACE Action STARTED",
     PLACE_ACTION_SUCCEEDED = "[PLACE] PLACE Action SUCEEDED",
     PLACE_ACTION_FAILED = "[PLACE] PLACE Action FAILED",
-    GET_MY_CURRENT_LOCATION = "[PLACE] GET_MY_CURRENT_LOCATION"
+    GET_MY_CURRENT_LOCATION = "[PLACE] GET_MY_CURRENT_LOCATION",
+    SET_USER_GROUP_ID = "[PLACE] SET_USER_GROUP_ID"
 }
 
 // legacy
@@ -112,7 +115,11 @@ export function setGeohashState(geohash: string){
 }
 
 
-
+export function setUserGroupId(userGroupId: string){
+    return async (dispatch: any) => {
+        dispatch(succeeded(userGroupId, ActionTypes.SET_USER_GROUP_ID));
+    }      
+}
 
 export function startLocationWebSocketAtCurrentLocation(){
     return async (dispatch: any) => {
@@ -199,6 +206,13 @@ export function reducers(state: State = initialState, action: any) {
             return {
                 ...state,
                 placeId: action.payload
+            }
+        }
+
+        case ActionTypes.SET_USER_GROUP_ID: {
+            return {
+                ...state,
+                userGroupId: action.payload
             }
         }
         

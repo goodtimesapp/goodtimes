@@ -7,6 +7,7 @@ import {
     makeUserSession, 
     makeProfileJSON, 
     saveProfileJSON  } from './../../utils/profile';
+import { setUserGroupId  } from './../places/place.store';
 // @ts-ignore
 import { getBlockchainIdentities, DEFAULT_PROFILE } from '@utils'; // copied from the blockstack browser project utils https://github.com/blockstack/blockstack-browser/tree/master/app/js/utils
 declare let window: any;
@@ -246,12 +247,11 @@ export function acceptRoomInvitation(inviteId: string){
             await User.createWithCurrentUser();
             const invitation: any = await GroupInvitation.findById(inviteId);
             if (invitation){  
-                invitation.signingKeyId = "personal";          
                 let resp = await invitation.activate();
                 console.log("invite resp=>", resp);
                 const payload = resp;
-                // @todo add group key to cache
                 dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
+                dispatch(setUserGroupId(invitation.attrs.userGroupId));
             } else{
                dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
             }

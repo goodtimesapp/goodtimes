@@ -37,8 +37,8 @@ export class Post extends Model {
       decrypted: true
     },
     content : {
-      type: string,
-      decrypted: true
+      type: string
+      //decrypted: true
     },
     tags: {
       type: Array,
@@ -70,7 +70,11 @@ export class Post extends Model {
     },
     enc: {
       type: string
-    }
+    },
+    userGroupId: {
+      type: String,
+      decrypted: true,
+    },
   };
   
 
@@ -103,4 +107,5 @@ export interface IPost extends Attrs {
   time: string;
   pullRight: boolean;
   enc?: string;
+  usersGroupId?: string;
 }

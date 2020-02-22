@@ -94,7 +94,9 @@ export function putPost(post: Post) {
         try {
             post.attrs.isSynced = false;
             post.attrs.clientGuid = uuidv4();
-            post.attrs.enc = "tacos";
+
+            // get the group to post to 
+
             dispatch(succeeded(post, ActionTypes.PUT_POST));
             let resp = await post.save();
             console.log('radiks resp', resp);
@@ -109,7 +111,7 @@ export function putPost(post: Post) {
 export function addPostFromWebSocket(post: any) {
     return async (dispatch: any) => {
         try {
-
+            debugger;
             let p = await new Post(post).decrypt();
             let payload = p.attrs;
 
