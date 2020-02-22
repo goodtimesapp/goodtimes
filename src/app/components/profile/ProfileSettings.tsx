@@ -23,6 +23,7 @@ import _ from 'lodash';
 import { GOODTIMES_RADIKS_SERVER } from 'react-native-dotenv';
 declare let window: any;
 import { PutFileOptions, UserSession } from 'blockstack';
+import { getConfig } from 'radiks/src';
 
 
 interface Props {
@@ -126,7 +127,9 @@ export class ProfileSettings extends React.Component<Props, State> {
   
 
   async saveProfile(){
-    let avatarUrl = await ((window as any).userSession as UserSession).putFile("avatar.jpeg", this.state.imageBlob, {contentType: "image/jpeg", encrypt: false } as PutFileOptions )
+
+    let userSession = getConfig().userSession;
+    let avatarUrl = await userSession.putFile("avatar.jpeg", this.state.imageBlob, {contentType: "image/jpeg", encrypt: false } as PutFileOptions )
     let profile: Profile = new Profile({
       firstName: this.state.firstName,
       image: avatarUrl

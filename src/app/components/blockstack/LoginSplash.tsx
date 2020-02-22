@@ -14,6 +14,8 @@ import {Splash} from './../Splash';
 import AsyncStorage from '@react-native-community/async-storage';
 import { store } from './../../reduxStore/configureStore';
 import { State as ProfileStateModel } from './../../reduxStore/profile/profile.store';
+// @ts-ignore
+import localStorage from 'react-native-sync-localstorage';
 
 interface Props {
     userSession: any;
@@ -113,6 +115,9 @@ class LoginSplash extends Component<Props, State> {
                             },
                             (error: any) => {
                                 console.log("handleAuthResponse " + JSON.stringify(error));
+                                console.log("attempting to fix by clearing localstorage");
+                                AsyncStorage.clear();
+                                localStorage.clear();
                                 pendingAuth = false;
                             }
                         );

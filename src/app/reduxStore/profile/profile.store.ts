@@ -14,11 +14,13 @@ declare let window: any;
 import AsyncStorage from '@react-native-community/async-storage';
 // @ts-ignore
 import SecureStorage from 'react-native-secure-storage';
-import { configure, User, UserGroup, GroupInvitation, Model, Central } from 'radiks/src/index';
+import { configure, User, UserGroup, GroupInvitation, Model, Central, getConfig } from 'radiks/src/index';
 import { Profile } from './../../models/Profile';
 import { store } from './../../reduxStore/configureStore';
 // @ts-ignore
 import localStorage from 'react-native-sync-localstorage';
+import { putActiveUser } from './../../reduxStore/posts/posts.store';
+
 
 const PLACEHOLDER_IMAGE_URL = "https://t4.ftcdn.net/jpg/01/40/46/19/240_F_140461947_tWo9D0W8QQnrhzhCXJbDHIXblMV9BTZv.jpg"
 
@@ -67,6 +69,7 @@ export enum ActionTypes {
     GET_KEYS = '[PROFILE] GET_KEYS',
     GET_GROUPS = '[PROFILE] GET_GROUPS',
     ACCEPT_ROOM_INVITATION = '[PROFILE] ACCEPT_ROOM_INVITATION',
+    SET_LOGIN_STATUS = '[PROFILE] SET_LOGIN_STATUS'
 }
 
 
@@ -78,10 +81,11 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
 
             let keychain = await initWallet();
             let id = await createBlockchainIdentity(keychain);
-            let userSession = makeUserSession(id.appPrivateKey, id.appPublicKey, id.username, id.profileJSON.decodedToken.payload.claim);
+            let uSession = makeUserSession(id.appPrivateKey, id.appPublicKey, id.username, id.profileJSON.decodedToken.payload.claim);
            
-            configureRadiks(userSession);
-            User.createWithCurrentUser();
+            configureRadiks(uSession);
+            const { userSession } = getConfig();
+            let sesh = await User.createWithCurrentUser();
             
             let payload: State = {
                 backupPhrase: keychain.backupPhrase,
@@ -95,7 +99,7 @@ export function createAccountSilently(userChosenName: string, avatar: string) {
                     image: PLACEHOLDER_IMAGE_URL,
                     firstName: "First Name"
                 }),
-                progress: 'created account silently...'
+                progress: 'logged in'
             }
             dispatch(succeeded(payload, ActionTypes.CREATE_ACCOUNT_SILENTLY));
         } catch (e) {
@@ -110,13 +114,16 @@ export function silentLogin(state: State) {
     return async (dispatch: any) => {
         dispatch(started('silently logging in...'));
         try {
-            let userSession = makeUserSession(state.privateKey, state.publicKey, state.username, state.profileJSON.decodedToken.payload.claim);
-            window.userSession = userSession;
-            configureRadiks(userSession);
+            let uSession = makeUserSession(state.privateKey, state.publicKey, state.username, state.profileJSON.decodedToken.payload.claim);
+            window.userSession = uSession;
+            configureRadiks(uSession);
             // @todo remov this below...i dont think we need this becuase the userSession is cached and recreated on silentLogin
             //let blockstackUser = await User.createWithCurrentUser();
-            // window.User = blockstackUser;
-            
+            //let config = getConfig();
+            //window.User = blockstackUser;
+            const { userSession } = getConfig();
+            let sesh = await User.createWithCurrentUser();
+
             let payload: State = {
                 ...state,
                 userSession: userSession as any,
@@ -128,7 +135,7 @@ export function silentLogin(state: State) {
                 //     image: PLACEHOLDER_IMAGE_URL, // placeholders
                 //     firstName: "" // placeholders
                 // }),
-                progress: 'silent logged in...'
+                progress: 'logged in'
             }
             // dispatch(getProfileSettings());
             dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
@@ -144,10 +151,10 @@ export function saveStateFromBlockstackLogin(state: State) {
         dispatch(started('silently logging in...'));
         try {
             window.userSession = state.userSession;
-            
             configureRadiks(state.userSession);
-            User.createWithCurrentUser();
-
+            const { userSession } = getConfig();
+            let sesh = await User.createWithCurrentUser();
+           
             let payload: State = {
                 ...state,
                 userSession: state.userSession as any,
@@ -159,7 +166,7 @@ export function saveStateFromBlockstackLogin(state: State) {
                     image: PLACEHOLDER_IMAGE_URL, // placeholders
                     firstName: "" // placeholders
                 }),
-                progress: 'silent logged in...'
+                progress: 'logged in'
             }
             dispatch(getProfileSettings());
             dispatch(succeeded(payload, ActionTypes.SILENT_LOGIN));
@@ -252,8 +259,11 @@ export function acceptRoomInvitation(inviteId: string){
                 const payload = resp;
                 dispatch(succeeded(payload, ActionTypes.ACCEPT_ROOM_INVITATION));
                 dispatch(setUserGroupId(invitation.attrs.userGroupId));
+                // dispatch(putActiveUser())
             } else{
-               dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
+                // probably already accepted the invitation. 
+                // @todo maybe check localstorage for the group key
+                // dispatch(failed("no invitation found", ActionTypes.ACCEPT_ROOM_INVITATION));    
             }
         } catch (e) {
             console.log('error', e)
@@ -261,6 +271,7 @@ export function acceptRoomInvitation(inviteId: string){
         }
     }
 }
+
 
 export function putProfileSettings(profile: Profile) {
     return async (dispatch: any) => {
@@ -276,6 +287,15 @@ export function putProfileSettings(profile: Profile) {
         }
     }
 }
+
+export function setLoginStatus(status: string) {
+    return {
+        type: ActionTypes.SET_LOGIN_STATUS,
+        payload: status,
+        status: ActionTypes.SET_LOGIN_STATUS
+    };
+}
+
 
 export function started(message: string) {
     return {
@@ -322,6 +342,12 @@ export function reducers(state: State = initialState, action: any) {
             return action.payload
         }
         
+        case ActionTypes.SET_LOGIN_STATUS: {
+            return  { 
+                ...state,
+                progress: action.payload
+            }
+        }
 
         case ActionTypes.LOGOUT: {
             return  { 

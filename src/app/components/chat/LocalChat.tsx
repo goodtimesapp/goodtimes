@@ -46,7 +46,16 @@ export class LocalChat extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.placeChangeHandler();
+    if (this.props.placeState.userGroupId !== ''){
+      // this.placeChangeHandler();
+    }
+    this.showInitialState();
+  }
+
+  showInitialState(){
+    this.setState({
+      posts: (this.props.postsState.posts.length > 0 ? this.props.postsState.posts : [])
+    })
   }
 
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
@@ -61,10 +70,10 @@ export class LocalChat extends React.Component<Props, State> {
     }
 
     // place state change subscriber
-    if (this.props.placeState !==  prevProps.placeState ) {
+    if (this.props.placeState.geohash !==  prevProps.placeState.geohash ) {
       // console.log('placeChangeHandler', this.props.placeState);
       console.log('[componentDidUpdate] LocalChat.tsx place.postsState' );
-      // this.placeChangeHandler();
+      this.placeChangeHandler();
     }
 
   }
@@ -171,7 +180,7 @@ export class LocalChat extends React.Component<Props, State> {
                   hashtagColor={i.hashtagColor}
                   user={i.user}
                   time={i.time}
-                  content={i.content}
+                  content={(typeof i.content == "string") ? i.content : `locked with key ${i.signingKeyId}` }
                   pullRight={i.pullRight}
                 />
               }

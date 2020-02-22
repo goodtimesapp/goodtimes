@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { API, accessDenied, apiError, apiStart, apiEnd } from './../common/api';
 import { store } from './../configureStore';
-import { addPostFromWebSocket, addJoinerFromWebSocket } from './../posts/posts.store';
+import { addPostFromWebSocket, addActiveUserFromWebSocket } from './../posts/posts.store';
 import { acceptRoomInvitation } from './../profile/profile.store';
 // @ts-ignore
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
@@ -73,8 +73,9 @@ export function setupWebsockets(placeId: string) {
                             case "GroupInvitation":
                                 dispatch(acceptRoomInvitation(data.inviteId));
                                 return;
-                            case "NewJoiner":
-                                // dispatch(addJoinerFromWebSocket(data));
+                            case "ActiveUser":
+                                debugger;
+                                dispatch(addActiveUserFromWebSocket(data.attrs));
                                 return;
                             default:
                                 return;

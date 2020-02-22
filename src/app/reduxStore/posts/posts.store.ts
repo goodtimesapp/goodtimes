@@ -11,11 +11,16 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const LATITUDE = 47.122036;
 const LONGITUDE = -88.564358;
 import uuidv4 from 'uuid/v4';
+import { IActiveUser, ActiveUser } from './../../models/ActiveUser';
+import { ACL } from './../../models/ACL';
+import { store } from './../../reduxStore/configureStore';
+import { User, Model } from 'radiks/src';
 
 //#region Initial State
 export interface State {
     posts: Array<Post>; // Array<Post>,
     markers: Array<any>;
+    error: any;
 }
 export const initialState: State = {
     posts: [
@@ -42,7 +47,8 @@ export const initialState: State = {
             },
             image: 'https://banter-pub.imgix.net/users/nicktee.id'
         }
-    ]
+    ],
+    error: {}
 }
 //#endregion Initial State
 
@@ -54,7 +60,8 @@ export enum ActionTypes {
     DELETE_POST = '[POSTS] DELETE_POST',
     CLEAR_POSTS = '[POSTS] CLEAR_POST',
     ADD_POST_FROM_WEBSOCKET = '[POSTS] ADD_POST_FROM_WEBSOCKET',
-    ADD_JOINER_FROM_WEBSOCKET = '[POSTS] ADD_JOINER_FROM_WEBSOCKET',
+    PUT_ACTIVE_USER = '[POSTS] PUT_ACTIVE_USER',
+    ADD_ACTIVE_USER_FROM_WEBSOCKET = '[POSTS] ADD_ACTIVE_USER_FROM_WEBSOCKET',
     POSTS_ACTION_STARTED = '[POSTS] POSTS_ACTION_STARTED',
     POSTS_ACTION_SUCCEEDED = '[POSTS] POSTS_ACTION_SUCCEEDED',
     POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED'
@@ -78,6 +85,7 @@ export function getPosts(filter: any = {}) {
     return async (dispatch: any) => {
         dispatch(started());
         try {
+            await User.createWithCurrentUser();
             let posts = await Post.fetchList(filter);
             const payload = posts;
             dispatch(succeeded(payload, ActionTypes.GET_POST));
@@ -94,9 +102,11 @@ export function putPost(post: Post) {
         try {
             post.attrs.isSynced = false;
             post.attrs.clientGuid = uuidv4();
-
+            let activeUser = new ActiveUser();
+            let d = store.getState();
+            post.attrs.userGroupId = d.places.userGroupId;
             // get the group to post to 
-
+            await User.createWithCurrentUser();
             dispatch(succeeded(post, ActionTypes.PUT_POST));
             let resp = await post.save();
             console.log('radiks resp', resp);
@@ -111,12 +121,8 @@ export function putPost(post: Post) {
 export function addPostFromWebSocket(post: any) {
     return async (dispatch: any) => {
         try {
-            debugger;
             let p = await new Post(post).decrypt();
             let payload = p.attrs;
-
-            // markers and pics
-            
             dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
         } catch (e) {
             console.log('error', e)
@@ -125,32 +131,63 @@ export function addPostFromWebSocket(post: any) {
     }
 }
 
-export function addJoinerFromWebSocket(data: any) {
+export function putActiveUser() {
+    return async (dispatch: any) => {
+        dispatch(started());
+        try {
+            await User.createWithCurrentUser();
+            let activeUser = new ActiveUser();
+            let d = store.getState();
+            activeUser.attrs = {
+                awayMessage: 'away message',
+                user: d.profile.username,
+                userGroupId: d.places.userGroupId,
+                avatar: d.profile.settings.attrs.image,
+                // acl: {
+                //     distance: 1000,
+                //     expires: 9999999,
+                //     geohash: d.places.geohash,
+                //     location: [d.places.currentLocation.latitude,d.places.currentLocation.longitude],
+                //     readers: ["*"]
+                // }
+            } as IActiveUser
+            // @ts-ignore
+            //let resp = await activeUser.save();
+            //const payload = resp;
+            dispatch(succeeded("payload", ActionTypes.PUT_ACTIVE_USER));
+        } catch (e) {
+            console.log('error', e)
+            dispatch(failed(e, ActionTypes.PUT_ACTIVE_USER));
+        }
+    }
+}
+
+export function addActiveUserFromWebSocket(activeUser: IActiveUser){
     return async (dispatch: any) => {
         try {
             let payload;
-
-            // radiks accept invitation
-
+            debugger;
+            // @ts-ignore
+            let aUser: IActiveUser = new ActiveUser(activeUser).decrypt();
             try {
                 payload = {
-                    name: data.user,
+                    name: aUser.user,
                     coordinate: {
-                        latitude: data.latitude,
-                        longitude: data.longitude
+                        latitude: aUser.acl.location[0],
+                        longitude: aUser.acl.location[1]
                     },
-                    image: data.image.uri
+                    image: aUser.avatar
                 };
             } catch (e) {
-                console.error('addJoinerFromWebSocket error', e)
+                console.error('addActiveUserFromWebSocket error', e)
             }
 
             if (payload) {
-                dispatch(succeeded(payload, ActionTypes.ADD_POST_FROM_WEBSOCKET));
+                dispatch(succeeded(payload, ActionTypes.ADD_ACTIVE_USER_FROM_WEBSOCKET));
             }
         } catch (e) {
             console.log('error', e)
-            dispatch(failed(e, ActionTypes.ADD_POST_FROM_WEBSOCKET));
+            dispatch(failed(e, ActionTypes.ADD_ACTIVE_USER_FROM_WEBSOCKET));
         }
     }
 }
@@ -207,8 +244,8 @@ export function failed(error: any, action: ActionTypes) {
     return {
         type: ActionTypes.POSTS_ACTION_FAILED,
         payload: {
-            error,
-            action
+            error: error,
+            action: action
         },
         status: ActionTypes.POSTS_ACTION_FAILED,
     };
@@ -245,7 +282,7 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
-        case ActionTypes.ADD_JOINER_FROM_WEBSOCKET: {
+        case ActionTypes.ADD_ACTIVE_USER_FROM_WEBSOCKET: {
             return {
                 ...state,
                 markers: [
@@ -276,8 +313,7 @@ export function reducers(state: State = initialState, action: any) {
                     posts: [
                         ...poppedPosts,
                         action.payload
-                    ],
-                    markers: initialState.markers
+                    ]
                 }
             } catch (e) {
                 console.error('ADD_POST_FROM_WEBSOCKET reducer error', e);
@@ -308,7 +344,10 @@ export function reducers(state: State = initialState, action: any) {
             console.log("POSTS_FAILED", action.payload);
             return {
                 ...state,
-                error: action.payload
+                error: {
+                    message: action.payload.error.message,
+                    action: action.payload.error.action
+                }
             }
         }
 

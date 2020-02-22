@@ -21,7 +21,8 @@ import {
   silentLogin,
   createAccountSilently,
   State as ProfileStateModel,
-  profileState
+  profileState,
+  setLoginStatus
 } from './../reduxStore/profile/profile.store';
 import { Profile } from './../models/Profile';
 import { store } from './../reduxStore/configureStore';
@@ -34,6 +35,7 @@ import { testProps } from './../utils/test-utils';
 
 interface Props {
   navigation: any;
+  setLoginStatus: (status: string) => void;
   silentLogin: (state: any) => Promise<any>;
   getUserName: any;
   userSession: any;
@@ -63,16 +65,11 @@ export class Splash extends React.Component<Props, State> {
     this._isMounted = true;
     Analytics.trackEvent('(1) componentDidMount', { Category: 'Splash.tsx', FileName: 'Splash.tsx' });
 
-    setTimeout(() => {
-      if (this._isMounted) {
-        getCurrentLocation();
-      }
-    }, 2000)
-
-
     // localstorage polyfill then start app
     localStorage.getAllFromLocalStorage()
       .then(() => {
+        this.props.setLoginStatus("checking login status...");
+        getCurrentLocation();
         this.trySilentLogin();
       })
       .catch((err: any) => {
@@ -95,6 +92,13 @@ export class Splash extends React.Component<Props, State> {
         this.gotoApp();
       }
     }
+
+    if (this.state.loginStatus !== prevState.loginStatus){
+      if (this.state.loginStatus == "logged in"){
+        this.gotoApp();
+      }
+    }
+    
   }
 
   componentWillUnmount() {
@@ -107,7 +111,7 @@ export class Splash extends React.Component<Props, State> {
     let profileState = store.getState().profile;
     if (!_.isEmpty(profileState.userSession)) {
       this.props.silentLogin(profileState);
-      this.gotoApp();
+      // this.gotoApp();
     } else {
       this.setState({
         loginStatus: `please login `
@@ -387,6 +391,7 @@ const mapStateToProps: any = (state: ReduxState) => ({
 })
 // Actions to dispatch
 const mapDispatchToProps = {
+  setLoginStatus: setLoginStatus,
   silentLogin: silentLogin,
   createAccountSilently: createAccountSilently
 }
