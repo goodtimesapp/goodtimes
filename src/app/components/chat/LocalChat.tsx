@@ -10,9 +10,9 @@ import AllCaughtUp from "./AllCaughtUp";
 import ShowBtn from './../chat/ShowBtn';
 import { connect } from 'react-redux';
 import { State as ReduxState } from './../../reduxStore/index';
-import { postsState, getPosts, getChats, clearPosts, State as PostsStateModel } from './../../reduxStore/posts/posts.store';
+import { postsState, getPosts, getChats, clearPosts, State as PostsStateModel, ActionTypes as PostsActionTypes } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel } from './../../reduxStore/places/place.store';
-import { store } from "reduxStore/configureStore";
+import { store } from "./../../reduxStore/configureStore";
 import { HorzScrollTrending } from "./HorzScrollTrending";
 import moment from 'moment';
 import { Post, IPost } from './../../models/Post';
@@ -24,7 +24,8 @@ interface Props {
   getChats: () => void;
   getPosts: (filter: any) => void;
   clearPosts: () => void;
-  placeState: PlaceStateModel
+  placeState: PlaceStateModel;
+  getPostsSaga: (geoHash: string) => void;
 }
 interface State {
   posts: Array<Post>;
@@ -53,6 +54,9 @@ export class LocalChat extends React.Component<Props, State> {
   }
 
   showInitialState(){
+    if (this.props.placeState.geohash !== ''){
+      this.props.getPostsSaga(this.props.placeState.geohash);
+    }
     this.setState({
       posts: (this.props.postsState.posts.length > 0 ? this.props.postsState.posts : [])
     })
@@ -86,7 +90,8 @@ export class LocalChat extends React.Component<Props, State> {
 
   placeChangeHandler() {
     this.props.clearPosts();
-    this.props.getPosts({ geohash: this.props.placeState.geohash });
+    // this.props.getPosts({ geohash: this.props.placeState.geohash });
+    this.props.getPostsSaga( this.props.placeState.geohash );
     this.setState({
       placeState: this.props.placeState
     });
@@ -221,9 +226,13 @@ const mapStateToProps: any = (state: ReduxState) => ({
   postsState: postsState(state.posts),
   placeState: placeState(state.places)
 })
-const mapDispatchToProps = {
-  getPosts: getPosts,
-  getChats: getChats,
-  clearPosts: clearPosts,
+const mapDispatchToProps: any = (dispatch: any) => {
+  return {
+    getPosts: getPosts,
+    getPostsSaga: (geohash: string) => dispatch( {type: PostsActionTypes.BEGIN_POSTS_SAGA, geohash: geohash } ),
+    getChats: getChats,
+    clearPosts: clearPosts,
+  }
 }
+
 export default withNavigation(connect(mapStateToProps, mapDispatchToProps)(LocalChat));

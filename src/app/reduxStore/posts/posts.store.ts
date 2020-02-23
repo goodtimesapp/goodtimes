@@ -15,6 +15,9 @@ import { IActiveUser, ActiveUser } from './../../models/ActiveUser';
 import { ACL } from './../../models/ACL';
 import { store } from './../../reduxStore/configureStore';
 import { User, Model } from 'radiks/src';
+import { call, put, takeEvery, takeLatest, take, fork } from 'redux-saga/effects'
+
+
 
 //#region Initial State
 export interface State {
@@ -64,8 +67,35 @@ export enum ActionTypes {
     ADD_ACTIVE_USER_FROM_WEBSOCKET = '[POSTS] ADD_ACTIVE_USER_FROM_WEBSOCKET',
     POSTS_ACTION_STARTED = '[POSTS] POSTS_ACTION_STARTED',
     POSTS_ACTION_SUCCEEDED = '[POSTS] POSTS_ACTION_SUCCEEDED',
-    POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED'
+    POSTS_ACTION_FAILED = '[POSTS] POSTS_ACTION_FAILED',
+    BEGIN_POSTS_SAGA = '[POSTS SAGA] BEGIN_POSTS_SAGA',
+    YIELDY = "YIELDY"
 }
+
+// #region sagas
+
+// Get Posts Saga (Main Saga) 
+// =>
+//  1) Gotta be logged in with a token [worker saga] 
+//  2) Gotta have geohash [worker saga] 
+//  3) Gotta have a room key 
+//  4) Finally you can get posts for a room
+//
+// call like this from a component 
+//    store.dispatch( {type: '[POSTS SAGA] BEGIN_POSTS_SAGA', data: 'd1' } )
+export function *postsSaga() {
+    console.log('yielding for BEGIN_POSTS_SAGA');
+    const { geohash } = yield take(ActionTypes.BEGIN_POSTS_SAGA);
+    console.log(`called ${ActionTypes.BEGIN_POSTS_SAGA}`, geohash);
+    let postsResponse =  yield call( getPostsApi, { geohash } ); // call the getPostsApi and wait for a response
+    yield put({   // dispatch the posts to the reducer
+        type: ActionTypes.POSTS_ACTION_SUCCEEDED,
+        payload: postsResponse,
+        status: ActionTypes.POSTS_ACTION_SUCCEEDED
+    });
+}
+// //#endregion sagas
+
 
 export function getChats() {
     return async (dispatch: any) => {
@@ -80,6 +110,11 @@ export function getChats() {
     }
 }
 
+export async function getPostsApi(filter: any = {}): Promise<any>{
+    await User.createWithCurrentUser();
+    let posts = Post.fetchList(filter);
+    return posts;
+}
 
 export function getPosts(filter: any = {}) {
     return async (dispatch: any) => {
@@ -272,6 +307,13 @@ export function reducers(state: State = initialState, action: any) {
             }
         }
 
+        case ActionTypes.POSTS_ACTION_SUCCEEDED: {
+            return {
+                ...state,
+                posts: action.payload
+            }
+        }
+
         case ActionTypes.PUT_POST: {
             return {
                 ...state,
@@ -349,6 +391,20 @@ export function reducers(state: State = initialState, action: any) {
                     action: action.payload.error.action
                 }
             }
+        }
+
+        case ActionTypes.BEGIN_POSTS_SAGA: {
+            console.log("BEGIN_POSTS_SAGA REDUCER");
+            return {
+                ...state
+            };
+        }
+
+        case ActionTypes.YIELDY: {
+            console.log("YIELDY");
+            return {
+                ...state
+            };
         }
 
         default:

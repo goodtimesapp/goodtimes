@@ -162,6 +162,23 @@ configureStore.ts
 index.ts
 ```
 
+Redux Sagas pattern
+-------------------
+We orignally used redux thunk for fetching data async, but it did not scale. For example to Get posts we had to (1) get a access token 
+(2) get a geohash from the server (3) get a room key via a websocket (4) then finally get the posts from the api.
+
+This led to alot dispatches and for the compontDidUpdate to have to manage state updates to kick off the next step. 
+
+A better, more scalable, organized approach is to use Redux Sagas.
+
+Read here:
+- https://shift.infinite.red/using-redux-saga-to-simplify-your-growing-react-native-codebase-2b8036f650de#.7wl4wr1tk
+- https://redux-saga.js.org/docs/basics/UsingSagaHelpers.html
+- https://hackernoon.com/moving-form-redux-thunk-to-redux-saga-5c19d0011ca0
+- https://medium.com/@deeepakampolu/from-redux-thunk-to-sagas-2896c0abc676
+- https://www.youtube.com/watch?v=Q1_RfF_qRMc&t=1349s
+- https://levelup.gitconnected.com/react-native-redux-implementing-redux-saga-for-an-asynchronous-flow-90a0e9d7d8e8
+ 
 Generate Code
 ------------
 Using plopjs to generate the redux strux above with CRUD operations, a model, a component, and a container. View plopfile.js for the config and templates

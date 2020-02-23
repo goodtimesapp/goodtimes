@@ -9,7 +9,6 @@ import Geohash from 'latlon-geohash';
 import { GOODTIMES_RADIKS_SERVER, GOODTIMES_RADIKS_WEBSOCKET } from 'react-native-dotenv';
 import { LatLng } from 'react-native-maps';
 
-
 //#region state
 export interface State {
     place: string,
@@ -33,6 +32,7 @@ export const initialState: State = {
     userGroupId: ''
 }
 //#endregion state
+
 
 //#region actions
 export enum ActionTypes {

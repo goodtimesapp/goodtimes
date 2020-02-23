@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Provider } from 'react-redux';
-import { store, persistor } from './reduxStore/configureStore';
+import { store, persistor, sagaMiddleware } from './reduxStore/configureStore';
 import * as websocketsStore from './reduxStore/websockets/websockets.store';
 import * as placeStore from './reduxStore/places/place.store';
 import * as postsStore from './reduxStore/posts/posts.store';
@@ -27,6 +27,7 @@ import platform from './native-base-theme/variables/platform';
 import Geohash from 'latlon-geohash';
 // @ts-ignore
 import localStorage from 'react-native-sync-localstorage';
+import { call, put, takeEvery, takeLatest, take } from 'redux-saga/effects'
 
 export interface Props { }
 interface State {
@@ -54,6 +55,10 @@ export default class App extends Component<Props, State> {
     window.profileStore = profileStore;
     // window.Geohash = Geohash;
     window.localStorage = localStorage;
+    window.saga = {};
+    window.saga.put = put;
+    window.saga.call = call;
+    window.saga.take = take;
   }
 
 

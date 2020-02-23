@@ -47,3 +47,9 @@ export const reducer = combineReducers<State>({
   websockets: fromWebsockets.reducers,
   places: fromPlaces.reducers
 })
+
+
+
+export const sagas = {
+  postsSaga: fromPosts.postsSaga
+}
