@@ -16,6 +16,7 @@ import { ACL } from './../../models/ACL';
 import { store } from './../../reduxStore/configureStore';
 import { User, Model } from 'radiks/src';
 import { call, put, takeEvery, takeLatest, take, fork } from 'redux-saga/effects'
+import { AppAction } from './../../utils/redux-utils';
 
 
 
@@ -83,7 +84,7 @@ export enum ActionTypes {
 //
 // call like this from a component 
 //    store.dispatch( {type: '[POSTS SAGA] BEGIN_POSTS_SAGA', data: 'd1' } )
-export function *postsSaga() {
+export function * postsSaga(action: AppAction) {
     console.log('yielding for BEGIN_POSTS_SAGA');
     const { geohash } = yield take(ActionTypes.BEGIN_POSTS_SAGA);
     console.log(`called ${ActionTypes.BEGIN_POSTS_SAGA}`, geohash);
