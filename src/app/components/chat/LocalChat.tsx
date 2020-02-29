@@ -10,7 +10,7 @@ import AllCaughtUp from "./AllCaughtUp";
 import ShowBtn from './../chat/ShowBtn';
 import { connect } from 'react-redux';
 import { State as ReduxState } from './../../reduxStore/index';
-import { postsState, getPosts, getChats, clearPosts, State as PostsStateModel, ActionTypes as PostsActionTypes } from './../../reduxStore/posts/posts.store';
+import { actions, selectors, IState as PostsStateModel, ActionTypes as PostsActionTypes } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel } from './../../reduxStore/places/place.store';
 import { store } from "./../../reduxStore/configureStore";
 import { HorzScrollTrending } from "./HorzScrollTrending";
@@ -223,15 +223,15 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps: any = (state: ReduxState) => ({
-  postsState: postsState(state.posts),
+  postsState: selectors.postsSelector(state.posts),
   placeState: placeState(state.places)
 })
 const mapDispatchToProps: any = (dispatch: any) => {
   return {
-    getPosts: getPosts,
+    getPosts: actions.getPosts,
     getPostsSaga: (geohash: string) => dispatch( {type: PostsActionTypes.BEGIN_POSTS_SAGA, geohash: geohash } ),
-    getChats: getChats,
-    clearPosts: clearPosts,
+    getChats: actions.getChats,
+    clearPosts: actions.clearPosts,
   }
 }
 

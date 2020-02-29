@@ -12,7 +12,7 @@ import { human, iOSUIKit } from 'react-native-typography';
 import nlp from 'compromise';
 import { connect } from 'react-redux';
 import { State as ReduxState } from './../../reduxStore/index';
-import { putPost } from './../../reduxStore/posts/posts.store';
+import { actions } from './../../reduxStore/posts/posts.store';
 import { placeState, State as PlaceStateModel  } from './../../reduxStore/places/place.store';
 import { profileState, State as ProfileStateModel  } from './../../reduxStore/profile/profile.store';
 import { Post } from "./../../models/Post";
@@ -21,7 +21,7 @@ import * as moment from 'moment';
 
 interface Props {
     navigation?: any;
-    putPost?: (post: Post )=> void;
+    putPost: (post: Post )=> void;
     placeState?: PlaceStateModel;
     profileState?: ProfileStateModel;
 }
@@ -47,9 +47,11 @@ export class ChatFooter extends React.Component<Props, State> {
         // place state change subscriber
         if (this.props.placeState !== prevProps.placeState) {
             console.log('[componentDidUpdate] ChatFooter.tsx props.placeState' );
-            this.setState({
-              placeState: this.props.placeState
-            });
+            if (this.props.placeState){
+                this.setState({
+                    placeState: this.props.placeState 
+                });
+            }
         }
     }
 
@@ -68,7 +70,7 @@ export class ChatFooter extends React.Component<Props, State> {
         this.sentenceTagger(this.state.chatText);
         const post = new Post({
             avatar: 'https://banter-pub.imgix.net/users/nicktee.id',
-            user: this.props.profileState.username,
+            user: this.props.profileState?.username,
             hashtag: this.state.tags,
             hashtagColor: "#4c9aff",
             // @ts-ignore
@@ -76,9 +78,9 @@ export class ChatFooter extends React.Component<Props, State> {
             content: chatText,
             pullRight: false,
             geohash: this.state.placeState.geohash,
-            latitude: this.props.placeState.currentLocation.latitude,
-            longitude: this.props.placeState.currentLocation.longitude,
-            image: this.props.profileState.settings.attrs.image, // @todo - this should not be base64...maybe a link...maybe base64 is ok
+            latitude: this.props.placeState?.currentLocation.latitude,
+            longitude: this.props.placeState?.currentLocation.longitude,
+            image: this.props.profileState?.settings.attrs.image, // @todo - this should not be base64...maybe a link...maybe base64 is ok
         })
         this.props.putPost(post);
         this.setState({
@@ -224,7 +226,7 @@ const mapStateToProps: any = (state: ReduxState) => ({
     profileState: profileState(state.profile)
 })
 const mapDispatchToProps = {
-    putPost: putPost
+    putPost: actions.putPost
 }
 export default withNavigation( connect(mapStateToProps, mapDispatchToProps)( ChatFooter ) );
   

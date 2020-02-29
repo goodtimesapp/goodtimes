@@ -233,3 +233,32 @@ The key takeaway is that you should be careful with the command `react-native li
 of your xcode project instead of the PODS project. 
 
 Be careful with the react-native-maps package, i had to specifiucally download the verion `0.24.2` in npm to avoid xcode build errors with RCTImage
+
+
+File Structure
+===============
+
+Chat.tsx
+  
+
+
+Map.tsx
+  Markers.tsx
+  CircleRadius.tsx
+
+Header.tsx
+
+
+
+Profile.tsx
+  ProfileDetails.tsx
+  Photos.tsx
+  AboutMe.tsx
+
+
+DirectMessages.tsx
+  DMList.tsx
+  DMChat.tsx
+
+
+Settings.tsx

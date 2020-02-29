@@ -35,7 +35,7 @@ import { mapStyle } from './Maps.Styles';
 import _ from 'lodash';
 import { workerData } from 'worker_threads';
 import * as turf from '@turf/turf';
-import { postsState, State as PostsStateModel, initialState } from './../../reduxStore/posts/posts.store';
+import { selectors, IState as PostsStateModel, initialState } from './../../reduxStore/posts/posts.store';
 
 
 const { width, height } = Dimensions.get('window');
@@ -599,7 +599,7 @@ const mapStateToProps: any = (state: ReduxState) => ({
   profileSettingsSelector: profileSettingsSelector(state.profile),
   placeState: placeState(state.places),
   websocketsState: websocketsState(state.websockets),
-  postsState: postsState
+  postsState: selectors.postsSelector(state.posts)
 })
 // Actions to dispatch
 const mapDispatchToProps = {

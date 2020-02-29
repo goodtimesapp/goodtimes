@@ -16,7 +16,7 @@ export interface State {
     tabs: fromTabs.State,
     profile: fromProfile.State,
     global: fromGlobal.State,
-    posts: fromPosts.State,
+    posts: fromPosts.IState,
     websockets: fromWebsockets.State,
     places: fromPlaces.State
 }
@@ -51,5 +51,5 @@ export const reducer = combineReducers<State>({
 
 
 export const sagas = {
-  postsSaga: fromPosts.postsSaga
+  postsSaga: fromPosts.sagas.rootWatcherSaga
 }
